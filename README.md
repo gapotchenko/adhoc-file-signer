@@ -11,3 +11,13 @@ The project consists of two main components:
 - **Server:** an HTTP service that performs the actual signing using a hardware token, HSM, or a certificate file
 
 `adhoc-sign-tool` can then be used in various build environments to sign produced files without exposing sensitive signing material.
+
+## Limitations
+
+While `adhoc-file-signer` provides many benefits, its simple architecture also introduces several constraints:
+
+- **File transmission:** Each file must be sent in full to the server for signing — a brute-force approach. A more advanced design would allow signing to happen locally, with the server acting only as a remote HSM. This would reduce client-server traffic by several orders of magnitude (up to ~10,000× less on average).
+
+- **Authentication:** Currently, authorization is limited to a basic API key mechanism.
+
+- **Networking:** To be accessible globally, the `adhoc-file-signer` server must be exposed to the internet. Since it lacks built-in encryption (HTTPS) and tunneling (port forwarding), securing traffic requires a third-party solution such as [Tailscale Funnel](https://tailscale.com/kb/1223/funnel), which may add operational costs over time.
