@@ -23,10 +23,6 @@
 **/ABOUT text=auto
 **/LICENSE text=auto
            
-# Code
-*.ts text=auto
-*.js text=auto
-
 # Configuration
 **/.editorconfig text=auto
 

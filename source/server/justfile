@@ -1,0 +1,32 @@
+set dotenv-load := true
+set windows-shell := ["gnu-tk", "-i", "-c"]
+set script-interpreter := ["gnu-tk", "-i", "-l", "sh", "-eu"]
+set unstable := true
+
+@help:
+    just --list
+
+# Format source code
+[group("development")]
+[script]
+format:
+    echo 'Formatting **/*.sh...'
+    find . -type d -name '.?*' -prune -o -type f -name '*file' -prune -o -type f -name '*.sh' -o -type f ! -name '*.*' -exec shfmt -l -w "{}" \;
+    echo 'Formatting **/justfile...'
+    find . -type d -name '.?*' -prune -o -type f -name justfile -exec just --unstable --fmt --justfile "{}" \;
+    echo 'Formatting opt/server...'
+    (cd srv/deno; just format)
+
+# Check source code
+[group("development")]
+[script]
+check:
+    echo 'Checking **/*.sh...'
+    find . -type d -name '.?*' -prune -o -type f -name '*file' -prune -o -type f -name '*.sh' -o -type f ! -name '*.*' -exec shellcheck "{}" \;
+    echo 'Checking opt/server...'
+    (cd srv/deno; just check)
+
+# Lint source code
+[group("development")]
+lint:
+    cd srv/deno; just lint

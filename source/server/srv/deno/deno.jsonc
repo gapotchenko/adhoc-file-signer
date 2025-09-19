@@ -1,0 +1,24 @@
+{
+  "imports": {
+    "@gapotchenko/deno-cgi": "jsr:@gapotchenko/deno-cgi@1.0.2",
+    "@std/crypto": "jsr:@std/crypto@^1.0.5",
+    "@std/path": "jsr:@std/path@^1.1.2"
+  },
+  "compilerOptions": {
+    "strict": true,
+    // Best practices
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true
+  },
+  "lint": {
+    "rules": {
+      /*"exclude": ["no-import-prefix", "no-unversioned-import"]*/
+    }
+  },
+  "fmt": {
+    "exclude": [".vscode"]
+  }
+}

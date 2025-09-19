@@ -1,0 +1,42 @@
+set unstable := true
+set fallback := true
+set dotenv-load := true
+set windows-shell := ["gnu-tk", "-i", "-c"]
+set script-interpreter := ["gnu-tk", "-i", "-l", "sh", "-eu"]
+
+export DENO_FUTURE := "1"
+
+@help:
+    just --list
+
+# Start IDE using the project environment
+[group("development")]
+[windows]
+develop:
+    start "" *.code-workspace
+
+# Start IDE using the project environment
+[group("development")]
+[unix]
+develop:
+    open *.code-workspace
+
+# Format source code
+[group("development")]
+format:
+    deno fmt
+
+# Format source code
+[group("development")]
+check:
+    deno check
+
+# Lint source code
+[group("development")]
+lint:
+    deno lint
+
+# Run the development server in debug mode
+[group("diagnostics")]
+serve:
+    GP_ADHOC_FILE_SIGNER_API_KEY=123456 ./run.sh develop
