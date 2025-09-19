@@ -3,19 +3,25 @@
 
 # But for some files, allow Git to normalize line endings
 
-**/ABOUT text=auto
-**/LICENSE text=auto
+# Text
 *.txt text=auto
 *.md text=auto
-
+**/ABOUT text=auto
+**/LICENSE text=auto
+           
+# Code
 *.ts text=auto
 *.js text=auto
 
-# GitHub actions
-*.yml text eol=lf
+# Git
+**/.gitignore text=auto
+**/.gitattributes text=auto
 
-# Unix shell scripts
+# GitHub
+.github/**/*.yml text eol=lf
+
+# Unix
 *.sh text eol=lf
 
-# Shellcheck configuration
+# Shellcheck
 **/.shellcheckrc text eol=lf
