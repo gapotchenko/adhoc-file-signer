@@ -20,4 +20,4 @@ While `adhoc-file-signer` provides many benefits, its simple architecture also i
 
 - **Authentication:** Currently, authorization is limited to a basic API key mechanism.
 
-- **Networking:** To be accessible globally, the `adhoc-file-signer` server must be exposed to the internet. Since it lacks built-in encryption (HTTPS) and tunneling (port forwarding), securing traffic requires a third-party solution such as [Tailscale Funnel](https://tailscale.com/kb/1223/funnel), which may add operational costs over time.
+- **Networking:** To be accessible globally, the `adhoc-file-signer` server must be exposed to the internet. Since it lacks built-in encryption (HTTPS) and tunneling (port forwarding) support, securing traffic requires a third-party solution such as [Tailscale Funnel](https://tailscale.com/kb/1223/funnel), which may add operational costs over time.
