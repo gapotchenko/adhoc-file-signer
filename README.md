@@ -37,4 +37,4 @@ introduces several constraints:
   [Tailscale Funnel](https://tailscale.com/kb/1223/funnel) is required to secure
   the traffic, which may add operational costs over time. Alternatively, you can
   do it yourself by utilizing an intermediate HTTP proxy server with a proper
-  TLS termination and port forwarding to the outside world.
+  TLS termination and port forwarding to WAN.
