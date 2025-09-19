@@ -23,16 +23,16 @@ While `adhoc-file-signer` provides many benefits, its simple architecture also
 introduces several constraints:
 
 - **File transmission:** Each file must be sent in full to the server for
-  signing which is a brute-force approach. A more advanced design would allow signing
-  to happen locally, with the server acting only as a remote HSM. This would
-  reduce client-server traffic by several orders of magnitude (up to ~10,000×
-  less on average).
+  signing which is a brute-force approach. A more advanced design would allow
+  signing to happen locally, with the server acting only as a remote HSM. This
+  would reduce client-server traffic by several orders of magnitude (up to
+  ~10,000× less on average).
 
 - **Authentication:** Currently, authorization is limited to a basic API key
   mechanism.
 
 - **Networking:** To be accessible globally, the `adhoc-file-signer` server must
   be exposed to the internet. Since it lacks built-in encryption (HTTPS) and
-  tunneling support (port forwarding), a third-party
-  solution such as [Tailscale Funnel](https://tailscale.com/kb/1223/funnel) is required to secure the traffic,
-  which may add operational costs over time.
+  tunneling support (port forwarding), a third-party solution such as
+  [Tailscale Funnel](https://tailscale.com/kb/1223/funnel) is required to secure
+  the traffic, which may add operational costs over time.
