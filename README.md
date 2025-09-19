@@ -17,6 +17,10 @@ The project consists of two main components:
 `adhoc-sign-tool` can then be used in various build environments to sign
 produced files without exposing sensitive cryptographic material.
 
+## Getting Started
+
+TODO
+
 ## Limitations
 
 While `adhoc-file-signer` provides many benefits, its simple architecture also
