@@ -35,4 +35,6 @@ introduces several constraints:
   be exposed to the internet. Since it lacks built-in encryption (HTTPS) and
   tunneling support (port forwarding), a third-party solution such as
   [Tailscale Funnel](https://tailscale.com/kb/1223/funnel) is required to secure
-  the traffic, which may add operational costs over time.
+  the traffic, which may add operational costs over time. Alternatively, you can
+  do it yourself by utilizing an intermediate HTTP proxy server with a proper
+  TLS termination and port forwarding to the outside world.
