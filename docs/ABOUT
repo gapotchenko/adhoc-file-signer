@@ -1,0 +1,6 @@
+Adhoc File Signer
+
+A minimalistic distributed file signing system with Authenticode and PKCS#11
+support.
+
+Project page: https://github.com/gapotchenko/adhoc-file-signer
