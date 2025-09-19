@@ -3,6 +3,13 @@
 
 # But for some files, allow Git to normalize line endings
 
+# Git
+**/.gitignore text=auto
+**/.gitattributes text=auto
+
+# GitHub
+.github/**/*.yml text eol=lf
+
 # Text
 *.txt text=auto
 *.md text=auto
@@ -13,12 +20,8 @@
 *.ts text=auto
 *.js text=auto
 
-# Git
-**/.gitignore text=auto
-**/.gitattributes text=auto
-
-# GitHub
-.github/**/*.yml text eol=lf
+# Configuration
+**/.editorconfig text=auto
 
 # Unix
 *.sh text eol=lf
