@@ -1,0 +1,23 @@
+set windows-shell := ["gnu-tk", "-i", "-c"]
+set script-interpreter := ["gnu-tk", "-i", "-l", "sh", "-eu"]
+set unstable := true
+
+@help:
+    just --list
+
+# Format source code
+[group("development")]
+format:
+    cd client; just format
+    cd server; just format
+
+# Check source code
+[group("development")]
+check:
+    cd client; just check
+    cd server; just check
+
+# Lint source code
+[group("development")]
+lint:
+    cd server; just lint

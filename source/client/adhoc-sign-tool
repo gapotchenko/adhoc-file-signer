@@ -1,0 +1,324 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# -----------------------------------------------------------------------------
+
+NAME=adhoc-sign-tool
+VERSION=0.0.0
+
+help() {
+    echo "$NAME  Version $VERSION
+Copyright © Gapotchenko and Contributors
+
+Signs a file using 'adhoc-file-signer' service.
+
+Usage: $NAME -f <file> -k <api-key> --server <server-url> [--dry] [--echo] [--verbose]"
+}
+
+# -----------------------------------------------------------------------------
+# Options
+# -----------------------------------------------------------------------------
+
+FILE=""
+API_KEY="${GP_ADHOC_FILE_SIGNER_API_KEY-}"
+SERVER_URL="${GP_ADHOC_FILE_SIGNER_SERVER_URL-}"
+DRY=""
+ECHO=""
+VERBOSE=""
+
+# Parse options
+while [ $# -gt 0 ]; do
+    case "$1" in
+    --help)
+        help
+        exit
+        ;;
+    -f | --file)
+        FILE="$2"
+        shift 2
+        ;;
+    -k | --api-key)
+        API_KEY="$2"
+        shift 2
+        ;;
+    --server)
+        SERVER_URL="$2"
+        shift 2
+        ;;
+    --dry)
+        DRY=1
+        shift
+        ;;
+    --echo)
+        ECHO=1
+        shift
+        ;;
+    --verbose)
+        VERBOSE=1
+        shift
+        ;;
+    --)
+        shift
+        break
+        ;;
+    *)
+        echo "Unknown option: $1" >&2
+        exit 2
+        ;;
+    esac
+done
+
+# Validate options
+if [ -z "$FILE" ] || [ -z "$API_KEY" ] || [ -z "$SERVER_URL" ]; then
+    help >&2
+    exit 2
+fi
+
+# Options normalization
+
+normalize_server_url() {
+    SERVER_URL=${SERVER_URL%/}
+}
+
+normalize_server_url
+
+# -----------------------------------------------------------------------------
+# Auxilary Functions
+# -----------------------------------------------------------------------------
+
+log() {
+    echo "LOG: $1" >&2
+}
+
+on_exit() {
+    if [ "$1" -ne 0 ]; then
+        echo "sign-file.sh: failed with status $1." >&2
+    fi
+    # Cleanup
+    [ -n "${hdrfile-}" ] && rm -f "$hdrfile"
+    [ -n "${tmpfile-}" ] && rm -f "$tmpfile"
+    [ -n "${digestfile1-}" ] && rm -f "$digestfile1" || true
+    [ -n "${digestfile2-}" ] && rm -f "$digestfile2" || true
+    # Preserve the exit status.
+    exit "$1"
+}
+
+trap 'on_exit "$?"' EXIT
+
+# -----------------------------------------------------------------------------
+# Server Communication
+# -----------------------------------------------------------------------------
+
+# Create a temporary file for HTTP headers.
+hdrfile="$(mktemp -t sign-file.hdr.XXXXXX)"
+
+get_response_header() {
+    sed -n "s/^$1:[[:space:]]*//Ip" "$hdrfile"
+}
+
+# -----------------------------------------------------------------------------
+
+HTTP_USER_AGENT_HEADER="User-Agent: $NAME/$VERSION"
+
+echo "Connecting to server..."
+
+[ -n "$VERBOSE" ] && log "Probing for server URL redirections..." || true
+
+# Probe the server URL for possible redirections.
+curl -fsSL -D "$hdrfile" --compressed -I -H "$HTTP_USER_AGENT_HEADER" "$SERVER_URL" >/dev/null
+
+new_location="$(get_response_header Location | tail -n1)"
+if [ -n "$new_location" ]; then
+    SERVER_URL="$new_location"
+    normalize_server_url
+    [ -n "$VERBOSE" ] && log "Server URL is redirected to $SERVER_URL location." || true
+else
+    [ -n "$VERBOSE" ] && log "No server URL redirections found." || true
+fi
+
+# -----------------------------------------------------------------------------
+# Server Capabilities
+# -----------------------------------------------------------------------------
+
+[ -n "$VERBOSE" ] && log "Retrieving server capabilities..." || true
+
+# Retrieve server capabilities.
+curl -fsSL -D "$hdrfile" --compressed -I -H "$HTTP_USER_AGENT_HEADER" "$SERVER_URL/capabilities?apiKey=$API_KEY" >/dev/null
+
+CAPS_ACCEPT_ENCODING="$(get_response_header 'Accept-Encoding')"
+[ -n "$VERBOSE" ] && log "Encodings accepted by server: $CAPS_ACCEPT_ENCODING" || true
+
+echo "Server connection established."
+
+# -----------------------------------------------------------------------------
+# Compression
+# -----------------------------------------------------------------------------
+
+# Choose compression
+if printf '%s\n' "$CAPS_ACCEPT_ENCODING" | grep -qiE '(^|,)[[:space:]]*zstd[[:space:]]*(,|$)' && command -v zstd >/dev/null 2>&1; then
+    REQUEST_CONTENT_ENCODING=zstd
+elif printf '%s\n' "$CAPS_ACCEPT_ENCODING" | grep -qiE '(^|,)[[:space:]]*gzip[[:space:]]*(,|$)'; then
+    REQUEST_CONTENT_ENCODING=gzip
+else
+    REQUEST_CONTENT_ENCODING=
+fi
+
+[ -n "$VERBOSE" ] && log "Negotiated request encoding: $REQUEST_CONTENT_ENCODING" || true
+
+compress_file() {
+    if [ -z "${REQUEST_CONTENT_ENCODING-}" ]; then
+        cat "$1"
+    elif [ "$REQUEST_CONTENT_ENCODING" = "gzip" ]; then
+        gzip -c -f "$1"
+    elif [ "$REQUEST_CONTENT_ENCODING" = "zstd" ]; then
+        zstd -c -f "$1"
+    else
+        echo "Unsupported REQUEST_CONTENT_ENCODING." >&2
+        exit 1
+    fi
+}
+
+# -----------------------------------------------------------------------------
+# Server API
+# -----------------------------------------------------------------------------
+
+hex_to_bin() {
+    if command -v xxd >/dev/null 2>&1; then
+        xxd -r -p
+    else
+        awk '{ for (i=1; i<=length($0); i+=2) printf "%c", strtonum("0x" substr($0,i,2)) }'
+    fi
+}
+
+sha256_b64() {
+    sha256sum "$1" | awk '{print $1}' | hex_to_bin | base64
+}
+
+sha256_digest() {
+    echo "sha-256=$(sha256_b64 "$1")"
+}
+
+call_api() {
+    local call
+    call=$([ -n "$ECHO" ] && echo echo-file || echo sign-file)
+
+    compress_file "$1" | curl -fsSL -D "$hdrfile" --compressed -X POST --data-binary @- -H "Want-Content-Digest: sha-256=1" -H "Content-Encoding: $REQUEST_CONTENT_ENCODING" -H "Content-Digest: ${HTTP_CONTENT_DIGEST-}" -H "$HTTP_USER_AGENT_HEADER" "$SERVER_URL/$call?apiKey=$API_KEY"
+}
+
+get_expected_content_digest() {
+    get_response_header "Content-Digest"
+}
+
+get_expected_request_content_digest() {
+    get_response_header "X-Request-Content-Digest"
+}
+
+# -----------------------------------------------------------------------------
+# Core Functionality
+# -----------------------------------------------------------------------------
+
+digest_verification_failed() {
+    echo "Data integrity verification failed." >&2
+    exit 1
+}
+
+sign_file() {
+    local FILE=$1
+
+    echo "Signing file '$FILE'..."
+
+    if [ "$FILE" = "-" ]; then
+        # Streaming mode
+
+        [ -n "$VERBOSE" ] && log "Data exchange mode: streaming" || true
+
+        digestfile1="$(mktemp -t sign-file.digest1.XXXXXX)"
+        digestfile2="$(mktemp -t sign-file.digest2.XXXXXX)"
+
+        [ -n "$ECHO" ] && [ -n "$VERBOSE" ] && log "ECHO mode is active." || true
+        [ -n "$VERBOSE" ] && log "Streaming the data..." || true
+
+        # Sign the data using the API in streaming mode, calculate in/out digests
+        # progressively while doing it.
+        tee >(sha256_digest - >"$digestfile1") | call_api - | tee >(sha256_digest - >"$digestfile2")
+
+        # Verify request integrity.
+        [ -n "$VERBOSE" ] && log "Validating server request digest..." || true
+        EXPECTED_REQUEST_CONTENT_DIGEST=$(get_expected_request_content_digest)
+        if [ -n "$EXPECTED_REQUEST_CONTENT_DIGEST" ]; then
+            ACTUAL_REQUEST_CONTENT_DIGEST=$(cat "$digestfile1")
+            if [ "$EXPECTED_REQUEST_CONTENT_DIGEST" != "$ACTUAL_REQUEST_CONTENT_DIGEST" ]; then
+                [ -n "$VERBOSE" ] && log "Request digest mismatch." || true
+                digest_verification_failed
+            fi
+        fi
+
+        # Verify response integrity.
+        [ -n "$VERBOSE" ] && log "Validating server response digest..." || true
+        EXPECTED_CONTENT_DIGEST=$(get_expected_content_digest)
+        ACTUAL_CONTENT_DIGEST=$(cat "$digestfile2")
+        if [ "$EXPECTED_CONTENT_DIGEST" != "$ACTUAL_CONTENT_DIGEST" ]; then
+            [ -n "$VERBOSE" ] && log "Response digest mismatch." || true
+            digest_verification_failed
+        fi
+
+        [ -n "$VERBOSE" ] && log "The digests are validated." || true
+    else
+        # Batch mode
+
+        [ -n "$VERBOSE" ] && log "Data exchange mode: batch" || true
+
+        # Calculate content digest for integrity verification.
+        [ -n "$VERBOSE" ] && log "Calculating content digest..." || true
+        HTTP_CONTENT_DIGEST="$(sha256_digest "$FILE")"
+
+        # Create a temporary file.
+        tmpfile="$(mktemp -t sign-file.XXXXXX)"
+
+        [ -n "$ECHO" ] && [ -n "$VERBOSE" ] && log "ECHO mode is active." || true
+        [ -n "$VERBOSE" ] && log "Calling the server API..." || true
+
+        # Sign the input file and store result in the temporary file.
+        call_api "$FILE" >"$tmpfile"
+        EXPECTED_CONTENT_DIGEST=$(get_expected_content_digest)
+
+        [ -n "$VERBOSE" ] && log "Validating server response digest..." || true
+
+        case $EXPECTED_CONTENT_DIGEST in
+        "")
+            # Digest is not specified. This means a broken HTTP response
+            [ -n "$VERBOSE" ] && log "Digest not specified, assuming a broken response from the server." || true
+            digest_verification_failed
+            ;;
+        sha-256=*)
+            [ -n "$VERBOSE" ] && log "Using SHA-256 algorithm for digest validation." || true
+            ACTUAL_CONTENT_DIGEST="$(sha256_digest "$tmpfile")"
+            if [ "$EXPECTED_CONTENT_DIGEST" != "$ACTUAL_CONTENT_DIGEST" ]; then
+                [ -n "$VERBOSE" ] && log "Response digest mismatch." || true
+                digest_verification_failed
+            fi
+            ;;
+        *)
+            # Unsupported digest algorithm
+            [ -n "$VERBOSE" ] && log "Unsupported digest algorithm." || true
+            digest_verification_failed
+            ;;
+        esac
+
+        [ -n "$VERBOSE" ] && log "Response digest validated." || true
+
+        [ -n "$DRY" ] && [ -n "$VERBOSE" ] && log "DRY mode is active, not storing the result." || true
+
+        if [ -z "$DRY" ] && [ -z "$ECHO" ]; then
+            # Atomically replace the destination file.
+            [ -n "$VERBOSE" ] && log "Atomically replacing the destination file..." || true
+            mv -f "$tmpfile" "$FILE"
+            [ -n "$VERBOSE" ] && log "The file has been successfully replaced." || true
+        fi
+    fi
+
+    echo "File has been signed successfully."
+}
+
+sign_file "$FILE"

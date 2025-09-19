@@ -10,6 +10,13 @@
 # GitHub
 .github/**/*.yml text eol=lf
 
+# Unix
+*.sh text eol=lf
+
+# Windows
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
 # Text
 *.txt text=auto
 *.md text=auto
@@ -22,9 +29,6 @@
 
 # Configuration
 **/.editorconfig text=auto
-
-# Unix
-*.sh text eol=lf
 
 # Shellcheck
 **/.shellcheckrc text eol=lf
