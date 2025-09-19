@@ -2,4 +2,121 @@
 
 set -eu
 
-exec 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.26100.0/x64/signtool.exe' "$@"
+get_program_files_x86_path() {
+    pf86=$(reg.exe query 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion' -v 'ProgramFilesDir (x86)' 2>/dev/null |
+        tr -d '\r' |
+        awk -F'    ' '/ProgramFilesDir \(x86\)/ {print $NF}')
+
+    # Fallback for 32-bit Windows
+    if [ -z "$pf86" ]; then
+        pf86=$(reg.exe query 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion' -v 'ProgramFilesDir' 2>/dev/null |
+            tr -d '\r' |
+            awk -F'    ' '/ProgramFilesDir/ {print $NF}')
+    fi
+
+    echo "$pf86"
+}
+
+translate_windows_path() {
+    if [ -n "${WSL_DISTRO_NAME-}" ]; then
+        wslpath "$1"
+    else
+        printf '%s' "$1" | tr "\\\\" '/'
+    fi
+}
+
+# Orders versioned directories in descending order.
+order_versioned_dirs() {
+    dir=$1
+
+    # Emit: "<version>\t<fullpath>" for each matching subdirectory
+    {
+        for d in "$dir"/*/; do
+            [ -d "$d" ] || continue
+            bn=${d%/}
+            bn=${bn##*/} # basename without trailing "/"
+
+            # keep only names of the form digits+ '.' digits '.' digits '.' digits
+            case $bn in
+            *[!0-9.]* | '') continue ;; # only digits and dots allowed
+            *.*.*.*.*) continue ;;      # more than 3 dots -> skip
+            *.*.*.*) ;;                 # exactly 3 dots -> keep
+            *) continue ;;
+            esac
+
+            printf '%s\t%s\n' "$bn" "$bn"
+        done
+    } |
+        # Numeric sort by each dot-separated field, descending
+        sort -t . -n -r -k1,1 -k2,2 -k3,3 -k4,4 |
+        # Output full paths
+        while IFS=$(printf '\t') read -r ver _; do
+            printf '%s/%s\n' "$dir" "$ver"
+        done
+}
+
+get_signtool_path() {
+    case "$(uname -m)" in
+    i?86)
+        arch=x86
+        ;;
+    x86_64)
+        arch=x64
+        ;;
+    aarch64 | arm64)
+        arch=arm64
+        ;;
+    *)
+        echo "Unable to determine machine architecture." >&2
+        return 1
+        ;;
+    esac
+
+    path=$(translate_windows_path "$(get_program_files_x86_path)")
+
+    signtool_path=$(order_versioned_dirs "$path/Windows Kits/10/bin" |
+        while IFS= read -r path; do
+            signtool_path="$path/$arch/signtool.exe"
+            if [ -f "$signtool_path" ]; then
+                echo "$signtool_path"
+                break
+            fi
+        done)
+
+    if [ -n "$signtool_path" ]; then
+        echo "$signtool_path"
+    else
+        echo "Cannot find signtool.exe utility." >&2
+        return 1
+    fi
+}
+
+run_on_windows() {
+    signtool=$(get_signtool_path)
+    exec "$signtool" "$@"
+}
+
+os=$(uname -o)
+
+signtool_not_evailable() {
+    echo "signtool utility is not available in '$os' operating system." >&2
+    exit 127
+}
+
+case "$os" in
+Cygwin | Msys | MS/Windows)
+    run_on_windows "$@"
+    ;;
+GNU/Linux)
+    if [ -n "${WSL_DISTRO_NAME-}" ]; then
+        # WSL
+        run_on_windows "$@"
+    else
+        # Unix
+        signtool_not_evailable
+    fi
+    ;;
+*)
+    signtool_not_evailable
+    ;;
+esac
