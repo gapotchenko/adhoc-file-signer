@@ -11,20 +11,22 @@ help() {
     echo "$NAME  Version $VERSION
 Copyright © Gapotchenko and Contributors
 
-Signs a file using 'adhoc-file-signer' service.
+Processes specified file(s) using 'adhoc-file-signer' service.
 
-Usage: $NAME -f <file> -k <api-key> --server <server-url> [--dry] [--echo] [--verbose]"
+Usage:
+  $NAME sign --server <server-url> -k <api-key> [--dry] [--verbose] [--] <file...>
+  $NAME echo --server <server-url> -k <api-key> [--verbose] [--] <file...>"
 }
 
 # -----------------------------------------------------------------------------
 # Options
 # -----------------------------------------------------------------------------
 
-FILE=""
+COMMAND=
+FILES=()
 API_KEY="${GP_ADHOC_FILE_SIGNER_API_KEY-}"
 SERVER_URL="${GP_ADHOC_FILE_SIGNER_SERVER_URL-}"
 DRY=""
-ECHO=""
 VERBOSE=""
 
 # Parse options
@@ -34,24 +36,16 @@ while [ $# -gt 0 ]; do
         help
         exit
         ;;
-    -f | --file)
-        FILE="$2"
+    --server)
+        SERVER_URL="$2"
         shift 2
         ;;
     -k | --api-key)
         API_KEY="$2"
         shift 2
         ;;
-    --server)
-        SERVER_URL="$2"
-        shift 2
-        ;;
     --dry)
         DRY=1
-        shift
-        ;;
-    --echo)
-        ECHO=1
         shift
         ;;
     --verbose)
@@ -62,15 +56,54 @@ while [ $# -gt 0 ]; do
         shift
         break
         ;;
-    *)
+    -*)
         echo "Unknown option: $1" >&2
         exit 2
+        ;;
+    *)
+        # Positional arguments
+        if [ -z "$COMMAND" ]; then
+            case "$1" in
+            sign | echo)
+                COMMAND=$1
+                ;;
+            *)
+                echo "Unknown command: $1" >&2
+                exit 2
+                ;;
+            esac
+        else
+            FILES+=("$1")
+        fi
+        shift
         ;;
     esac
 done
 
 # Validate options
-if [ -z "$FILE" ] || [ -z "$API_KEY" ] || [ -z "$SERVER_URL" ]; then
+if [ -z "$COMMAND" ] || [ -z "$API_KEY" ] || [ -z "$SERVER_URL" ]; then
+    help >&2
+    exit 2
+fi
+
+if [ -n "$DRY" ]; then
+    case "$COMMAND" in
+    sign) ;;
+    *)
+        echo "'--dry' option can only be used with 'sign' command." >&2
+        exit 2
+        ;;
+    esac
+fi
+
+# Complete parsing the rest of positional arguments, if any.
+while [ $# -gt 0 ]; do
+    FILES+=("$1")
+    shift
+done
+
+# Validate positional arguments
+if [ ${#FILES[@]} -eq 0 ]; then
     help >&2
     exit 2
 fi
@@ -201,7 +234,19 @@ sha256_digest() {
 
 call_api() {
     local call
-    call=$([ -n "$ECHO" ] && echo echo-file || echo sign-file)
+
+    case "$COMMAND" in
+    sign)
+        call=sign-file
+        ;;
+    echo)
+        call=echo-file
+        ;;
+    *)
+        echo "Internal error: unhandled API call command '$COMMAND'." >&2
+        exit 1
+        ;;
+    esac
 
     compress_file "$1" | curl -fsSL -D "$hdrfile" --compressed -X POST --data-binary @- -H "Want-Content-Digest: sha-256=1" -H "Content-Encoding: $REQUEST_CONTENT_ENCODING" -H "Content-Digest: ${HTTP_CONTENT_DIGEST-}" -H "$HTTP_USER_AGENT_HEADER" "$SERVER_URL/$call?apiKey=$API_KEY"
 }
@@ -236,7 +281,7 @@ sign_file() {
         digestfile1="$(mktemp -t sign-file.digest1.XXXXXX)"
         digestfile2="$(mktemp -t sign-file.digest2.XXXXXX)"
 
-        [ -n "$ECHO" ] && [ -n "$VERBOSE" ] && log "ECHO mode is active." || true
+        [ "$COMMAND" = "echo" ] && [ -n "$VERBOSE" ] && log "ECHO mode is active." || true
         [ -n "$VERBOSE" ] && log "Streaming the data..." || true
 
         # Sign the data using the API in streaming mode, calculate in/out digests
@@ -276,7 +321,7 @@ sign_file() {
         # Create a temporary file.
         tmpfile="$(mktemp -t sign-file.XXXXXX)"
 
-        [ -n "$ECHO" ] && [ -n "$VERBOSE" ] && log "ECHO mode is active." || true
+        [ "$COMMAND" = "echo" ] && [ -n "$VERBOSE" ] && log "ECHO mode is active." || true
         [ -n "$VERBOSE" ] && log "Calling the server API..." || true
 
         # Sign the input file and store result in the temporary file.
@@ -310,7 +355,7 @@ sign_file() {
 
         [ -n "$DRY" ] && [ -n "$VERBOSE" ] && log "DRY mode is active, not storing the result." || true
 
-        if [ -z "$DRY" ] && [ -z "$ECHO" ]; then
+        if [ -z "$DRY" ] && [ "$COMMAND" = "sign" ]; then
             # Atomically replace the destination file.
             [ -n "$VERBOSE" ] && log "Atomically replacing the destination file..." || true
             mv -f "$tmpfile" "$FILE"
@@ -321,4 +366,6 @@ sign_file() {
     echo "File has been signed successfully."
 }
 
-sign_file "$FILE"
+for file in "${FILES[@]}"; do
+    sign_file "$file"
+done
