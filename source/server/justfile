@@ -11,7 +11,7 @@ set unstable := true
 [script]
 format:
     echo 'Formatting **/*.sh...'
-    find . -type d -name '.?*' -prune -o -type f -name '*file' -prune -o -type f -name '*.sh' -o -type f ! -name '*.*' -exec shfmt -l -w "{}" \;
+    find . -type d -name '.?*' -prune -o -type f -name '*file' -prune -o -type f \( ! -name '*.*' -o -name '*.sh' \) -exec shfmt -l -w "{}" \;
     echo 'Formatting **/justfile...'
     find . -type d -name '.?*' -prune -o -type f -name justfile -exec just --unstable --fmt --justfile "{}" \;
     echo 'Formatting opt/server...'
@@ -22,7 +22,7 @@ format:
 [script]
 check:
     echo 'Checking **/*.sh...'
-    find . -type d -name '.?*' -prune -o -type f -name '*file' -prune -o -type f -name '*.sh' -o -type f ! -name '*.*' -exec shellcheck "{}" \;
+    find . -type d -name '.?*' -prune -o -type f -name '*file' -prune -o -type f \( ! -name '*.*' -o -name '*.sh' \) -exec shellcheck "{}" \;
     echo 'Checking opt/server...'
     (cd srv/deno; just check)
 
