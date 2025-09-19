@@ -1,0 +1,21 @@
+# Preserve line endings for all files (don't modify)
+* -text
+
+# But for some files, allow Git to normalize line endings
+
+**/ABOUT text=auto
+**/LICENSE text=auto
+*.txt text=auto
+*.md text=auto
+
+*.ts text=auto
+*.js text=auto
+
+# GitHub actions
+*.yml text eol=lf
+
+# Unix shell scripts
+*.sh text eol=lf
+
+# Shellcheck configuration
+**/.shellcheckrc text eol=lf
