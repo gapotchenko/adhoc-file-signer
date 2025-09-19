@@ -33,6 +33,6 @@ introduces several constraints:
 
 - **Networking:** To be accessible globally, the `adhoc-file-signer` server must
   be exposed to the internet. Since it lacks built-in encryption (HTTPS) and
-  tunneling (port forwarding) support, securing traffic requires a third-party
+  tunneling support (port forwarding), securing traffic requires a third-party
   solution such as [Tailscale Funnel](https://tailscale.com/kb/1223/funnel),
   which may add operational costs over time.
