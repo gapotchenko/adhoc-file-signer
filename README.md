@@ -23,7 +23,7 @@ While `adhoc-file-signer` provides many benefits, its simple architecture also
 introduces several constraints:
 
 - **File transmission:** Each file must be sent in full to the server for
-  signing — a brute-force approach. A more advanced design would allow signing
+  signing which is a brute-force approach. A more advanced design would allow signing
   to happen locally, with the server acting only as a remote HSM. This would
   reduce client-server traffic by several orders of magnitude (up to ~10,000×
   less on average).
