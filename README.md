@@ -10,7 +10,7 @@ The project consists of two main components:
 - **Client:** the `adhoc-sign-tool` command-line utility
 - **Server:** an HTTP service that performs the actual signing using a hardware token, HSM, or a certificate file
 
-`adhoc-sign-tool` can then be used in various build environments to sign produced files without exposing sensitive material.
+`adhoc-sign-tool` can then be used in various build environments to sign produced files without exposing sensitive cryptographic material.
 
 ## Limitations
 
