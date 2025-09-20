@@ -17,7 +17,7 @@ async function handleRequest(request: Request): Promise<Response> {
 
   const app = match.pathname.groups["app"];
 
-  if (app !== "adhoc-file-signer") return createNotFoundResponse();
+  if (app !== slug) return createNotFoundResponse();
   const call = match.pathname.groups["call"];
 
   if (call === undefined) {
@@ -64,3 +64,6 @@ function createForbiddenResponse(): Response {
 }
 
 const apiKey = Deno.env.get("GP_ADHOC_FILE_SIGNER_API_KEY");
+
+const slug = Deno.env.get("GP_ADHOC_FILE_SIGNER_SERVER_HTTP_SLUG") ||
+  "adhoc-file-signer";
