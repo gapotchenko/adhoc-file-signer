@@ -18,6 +18,10 @@ Usage: cgi-file-transform.sh -- <command> [args...]'
 # Parse options
 while [ $# -gt 0 ]; do
     case "$1" in
+    --help)
+        help
+        exit
+        ;;
     --)
         shift
         break
@@ -30,7 +34,8 @@ while [ $# -gt 0 ]; do
 done
 
 if [ $# -eq 0 ]; then
-    help >&2
+    echo "$NAME: missing program arguments
+Try '$NAME --help' for more information."
     exit 2
 fi
 
