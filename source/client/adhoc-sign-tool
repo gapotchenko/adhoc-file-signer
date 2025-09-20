@@ -105,9 +105,20 @@ while [ $# -gt 0 ]; do
 done
 
 # Validate options
-if [ -z "$COMMAND" ] || [ -z "$API_KEY" ] || [ -z "$SERVER_URL" ]; then
-    help >&2
+
+missing_option_error() {
+    echo "$NAME: $1 is not specified." >&2
     exit 2
+}
+
+if [ -z "$COMMAND" ]; then
+   missing_option_error 'command'
+fi
+if [ -z "$SERVER_URL" ]; then
+   missing_option_error 'server URL'
+fi
+if [ -z "$API_KEY" ]; then
+   missing_option_error 'API key'
 fi
 
 if [ -n "$DRY" ]; then
