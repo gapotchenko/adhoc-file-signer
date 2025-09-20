@@ -21,7 +21,7 @@ async function handleRequest(request: Request): Promise<Response> {
   const call = match.pathname.groups["call"];
 
   if (call === undefined) {
-    // Neccessary to allow a client to reliably detect location redirections by one 'curl' call.
+    // Allows a client to reliably detect location redirections using a single 'curl' call.
     // 4xx would make 'curl' fail.
     return new Response(null, { status: 204 });
   }

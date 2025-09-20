@@ -18,23 +18,22 @@ export async function tryDispatchCall(
   }
 }
 
-/** Ensures that CGI gateway is functioning. */
+/** Ensures that CGI gateway is working. */
 async function handlePingCall(request: Request): Promise<Response> {
   return await executeCgiScript(request, "cgi-ping.sh");
 }
 
 /** Gets server capabilities. */
 async function handleCapabilitiesCall(request: Request): Promise<Response> {
-  return await executeCgiScript(
-    request,
-    "cgi-capabilities.sh",
-  );
+  return await executeCgiScript(request, "cgi-capabilities.sh");
 }
 
+/** Echoes back the received file. */
 function handleEchoFileCall(request: Request): Promise<Response> {
   return cgiFileTransform(request, "cat");
 }
 
+/** Signs the file.  */
 function handleSignFileCall(request: Request): Promise<Response> {
   return cgiFileTransform(request, "sign-file.sh");
 }
