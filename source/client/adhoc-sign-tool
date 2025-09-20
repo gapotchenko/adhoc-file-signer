@@ -391,7 +391,7 @@ process_file() {
         [ -n "$VERBOSE" ] && log "Calling the server API..." || true
 
         # Sign the input file and store result in the temporary file.
-        status= && call_api "$FILE" >"$tmpfile" || status=$?
+        status=0 && call_api "$FILE" >"$tmpfile" || status=$?
 
         if [ "$status" -ne 0 ]; then
             # Write the error to stderr
