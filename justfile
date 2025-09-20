@@ -6,6 +6,17 @@ set unstable := true
     just --list
 
 # Format source code
+[group("development")]
 format:
     deno fmt *.md
     cd source; just format
+
+# Check source code
+[group("development")]
+check:
+    cd source; just check
+
+# Lint source code
+[group("development")]
+lint:
+    cd source; just lint
