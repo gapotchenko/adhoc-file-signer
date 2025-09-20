@@ -302,7 +302,7 @@ call_api() {
         ;;
     esac
 
-    compress_file "$1" | curl -fsSL -D "$hdrfile" --compressed -X POST --data-binary @- -H "Want-Content-Digest: sha-256=1" -H "Content-Encoding: $REQUEST_CONTENT_ENCODING" -H "Content-Digest: ${HTTP_CONTENT_DIGEST-}" -H "$HTTP_USER_AGENT_HEADER" "$SERVER_URL/$call?apiKey=$API_KEY"
+    compress_file "$1" | curl -sSL --fail-with-body -D "$hdrfile" --compressed -X POST --data-binary @- -H "Want-Content-Digest: sha-256=1" -H "Content-Encoding: $REQUEST_CONTENT_ENCODING" -H "Content-Digest: ${HTTP_CONTENT_DIGEST-}" -H "$HTTP_USER_AGENT_HEADER" "$SERVER_URL/$call?apiKey=$API_KEY"
 }
 
 get_expected_content_digest() {
@@ -391,7 +391,15 @@ process_file() {
         [ -n "$VERBOSE" ] && log "Calling the server API..." || true
 
         # Sign the input file and store result in the temporary file.
-        call_api "$FILE" >"$tmpfile"
+        status= && call_api "$FILE" >"$tmpfile" || status=$?
+
+        if [ "$status" -ne 0 ]; then
+            # Write the error to stderr
+            echo "Error message from the server:" >&2
+            cat "$tmpfile" >&2
+            exit "$status"
+        fi
+
         EXPECTED_CONTENT_DIGEST=$(get_expected_content_digest)
 
         [ -n "$VERBOSE" ] && log "Validating server response digest..." || true
