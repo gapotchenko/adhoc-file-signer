@@ -134,6 +134,12 @@ echo | sign)
         exit 2
     fi
     ;;
+*)
+    if [ ${#FILES[@]} -gt 0 ]; then
+        echo "$NAME: files can only be specified for 'echo' and 'sign' commands." >&2
+        exit 2
+    fi
+    ;;
 esac
 
 # Options normalization
@@ -288,6 +294,15 @@ get_expected_request_content_digest() {
 }
 
 # -----------------------------------------------------------------------------
+# Ping
+# -----------------------------------------------------------------------------
+
+if [ "$COMMAND" = "ping" ]; then
+    curl -fsSL -H "$HTTP_USER_AGENT_HEADER" "$SERVER_URL/ping?apiKey=$API_KEY"
+    exit
+fi
+
+# -----------------------------------------------------------------------------
 # Core Functionality
 # -----------------------------------------------------------------------------
 
@@ -353,7 +368,6 @@ process_file() {
         # Create a temporary file.
         tmpfile="$(mktemp -t $NAME.XXXXXX)"
 
-        [ "$COMMAND" = "echo" ] && [ -n "$VERBOSE" ] && log "ECHO mode is active." || true
         [ -n "$VERBOSE" ] && log "Calling the server API..." || true
 
         # Sign the input file and store result in the temporary file.
