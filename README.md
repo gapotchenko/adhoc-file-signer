@@ -21,6 +21,12 @@ produced files without exposing sensitive cryptographic material.
 
 TODO
 
+## Supported Platforms
+
+- Linux
+- macOS
+- Windows
+
 ## Limitations
 
 While `adhoc-file-signer` provides many benefits, its simple architecture also
