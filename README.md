@@ -10,8 +10,8 @@ assembling small, reliable components into a configurable and extensible system.
 
 The project consists of two main components:
 
-- **Client:** the `adhoc-sign-tool` command-line utility
-- **Server:** an HTTP service that performs the actual signing using a hardware
+- **[Client](source/client):** the `adhoc-sign-tool` command-line utility
+- **[Server](source/server):** an HTTP service that performs the actual signing using a hardware
   token, HSM, or a certificate file
 
 `adhoc-sign-tool` can then be used in various build environments to sign
