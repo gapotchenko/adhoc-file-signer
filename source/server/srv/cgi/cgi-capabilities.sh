@@ -6,6 +6,7 @@ set -eu
 
 # Determine which encodings are supported by the server.
 RESPONSE_ACCEPT_ENCODING=gzip
+# The list depends on tools availability.
 if command -v zstd >/dev/null 2>&1; then
     RESPONSE_ACCEPT_ENCODING="$RESPONSE_ACCEPT_ENCODING, zstd"
 fi
@@ -17,6 +18,7 @@ echo "$SERVER_PROTOCOL 200 OK"
 # Send HTTP headers.
 echo "Content-Type: text/plain;charset=UTF-8"
 echo "Content-Length: 0"
+
 if [ -n "$RESPONSE_ACCEPT_ENCODING" ]; then
     # Sending this header in a server response is not part of standard HTTP
     # semantics. However, we reuse the name of the standard request header to
