@@ -2,7 +2,25 @@
 
 The client tools provide functionality for interacting with the Adhoc File Signer Server.
 
-## Reference
+## Getting Started
+
+Download the client tools from the [releases page](https://github.com/gapotchenko/adhoc-file-signer/releases).\
+They are distributed as an archive named `adhoc-file-signer-X.Y.Z-client.tar.gz`.
+
+### First Steps
+
+1. **Set up environment variables**:
+
+   ```sh
+   export GP_ADHOC_FILE_SIGNER_SERVER="https://your-machine.example.ts.net/adhoc-file-signer"
+   export GP_ADHOC_FILE_SIGNER_API_KEY="your-api-key"
+   ```
+  
+   If you do not want to use environment variables, the corresponding parameters must be specified in the arguments of every command.
+
+2. **Verify connectivity** with the server:
+
+## Quick Reference
 
 ### adhoc-sign-tool
 
