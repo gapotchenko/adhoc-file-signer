@@ -49,7 +49,7 @@ fi
 COMMAND=
 SERVER_URL="${GP_ADHOC_FILE_SIGNER_SERVER-}"
 API_KEY="${GP_ADHOC_FILE_SIGNER_API_KEY-}"
-FILES=()
+FILES=""
 DRY=""
 VERBOSE=""
 
@@ -97,7 +97,8 @@ while [ $# -gt 0 ]; do
                 ;;
             esac
         else
-            FILES+=("$1")
+            FILES="$FILES
+$1"
         fi
         shift
         ;;
@@ -133,20 +134,21 @@ fi
 
 # Complete parsing the rest of positional arguments, if any.
 while [ $# -gt 0 ]; do
-    FILES+=("$1")
+    FILES="$FILES
+$1"
     shift
 done
 
 # Validate positional arguments
 case "$COMMAND" in
 echo | sign)
-    if [ ${#FILES[@]} -eq 0 ]; then
+    if [ -z "$FILES" ]; then
         echo "$NAME: missing file argument." >&2
         exit 2
     fi
     ;;
 *)
-    if [ ${#FILES[@]} -gt 0 ]; then
+    if [ -n "$FILES" ]; then
         echo "$NAME: files can only be specified for 'echo' and 'sign' commands." >&2
         exit 2
     fi
@@ -309,7 +311,7 @@ get_expected_request_content_digest() {
 # -----------------------------------------------------------------------------
 
 if [ "$COMMAND" = "ping" ]; then
-    curl -fsSL -H "$HTTP_USER_AGENT_HEADER" "$SERVER_URL/ping?apiKey=$API_KEY"
+    curl -sSL --fail-with-body -H "$HTTP_USER_AGENT_HEADER" "$SERVER_URL/ping?apiKey=$API_KEY"
     exit
 fi
 
@@ -421,21 +423,18 @@ process_file() {
     fi
 }
 
-for file in "${FILES[@]}"; do
+echo "$FILES" | while IFS= read -r file; do
+    [ -z "$file" ] && continue
     process_file "$file"
 done
 
+#for file in "${FILES[@]}"; do
+#    process_file "$file"
+#done
+
 if [ "$COMMAND" = "echo" ]; then
-    if [ ${#FILES[@]} -gt 1 ]; then
-        echo "Files have been transferred successfully."
-    else
-        echo "File has been transferred successfully."
-    fi
+    echo "Files have been transferred successfully."
     echo "Echo check passed."
 else
-    if [ ${#FILES[@]} -gt 1 ]; then
-        echo "Files have been signed successfully."
-    else
-        echo "File has been signed successfully."
-    fi
+    echo "Files have been signed successfully."
 fi
