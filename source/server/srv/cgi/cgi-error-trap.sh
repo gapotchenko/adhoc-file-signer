@@ -15,7 +15,7 @@ if [ "${1-}" = "--" ]; then
 fi
 
 if [ $# -eq 0 ]; then
-    echo '$SERVER_PROTOCOL 500 Internal Server Error'
+    echo "$SERVER_PROTOCOL 500 Internal Server Error"
     echo 'Content-Type: text/plain; charset=utf-8'
     echo 'X-CGI-ExitCode: 2'
     echo
@@ -51,7 +51,7 @@ fi
 
 # Synthesize CGI 500 if failed and no stdout
 if [ "$cmd_status" -ne 0 ] && [ "$bytes_out" -eq 0 ]; then
-    echo '$SERVER_PROTOCOL 500 Internal Server Error'
+    echo "$SERVER_PROTOCOL 500 Internal Server Error"
     echo 'Content-Type: text/plain; charset=utf-8'
     echo "X-CGI-ExitCode: $cmd_status"
     echo
