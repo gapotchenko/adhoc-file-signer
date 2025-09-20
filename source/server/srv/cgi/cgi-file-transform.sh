@@ -54,10 +54,10 @@ tmpfile="$(mktemp -t cgi-file-transform.XXXXXX)"
 
 if [ "${HTTP_CONTENT_ENCODING-}" = "gzip" ]; then
     # gzip compression
-    gzip -d >"$tmpfile"
+    gzip -d >"$tmpfile" 2>/dev/null
 elif [ "${HTTP_CONTENT_ENCODING-}" = "zstd" ]; then
     # zstd compression
-    zstd -d -f -o "$tmpfile"
+    zstd -d -f -o "$tmpfile" 2>/dev/null
 else
     # No compression
     cat >"$tmpfile"
