@@ -4,7 +4,7 @@ The client tools provide functionality for interacting with the Adhoc File Signe
 
 ## Getting Started
 
-Download the client tools from the [releases page](https://github.com/gapotchenko/adhoc-file-signer/releases).\
+Download the client tools from the [releases page](https://github.com/gapotchenko/adhoc-file-signer/releases).
 They are distributed as an archive named `adhoc-file-signer-X.Y.Z-client.tar.gz`.
 
 ### First Steps
@@ -20,11 +20,27 @@ They are distributed as an archive named `adhoc-file-signer-X.Y.Z-client.tar.gz`
 
 2. **Verify connectivity** with the server:
 
+   ```sh
+   adhoc-sign-tool ping
+   ```
+
+3. **Test data transfer** without signing:
+
+   ```sh
+   adhoc-sign-tool echo example.exe
+   ```
+
+4. **Sign your file**:
+
+   ```sh
+   adhoc-sign-tool sign example.exe
+   ```
+
 ## Quick Reference
 
 ### adhoc-sign-tool
 
-`adhoc-sign-tool` command-line utility offers both file-signing and diagnostic capabilities.
+`adhoc-sign-tool` command-line utility provides file-signing and diagnostic capabilities.
 
 #### Usage
 ```
