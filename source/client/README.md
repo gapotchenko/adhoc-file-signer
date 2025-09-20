@@ -36,6 +36,12 @@ They are distributed as an archive named `adhoc-file-signer-X.Y.Z-client.tar.gz`
    adhoc-sign-tool sign example.exe
    ```
 
+## Supported Platforms
+
+- Linux
+- macOS
+- Windows
+
 ## Quick Reference
 
 ### adhoc-sign-tool
