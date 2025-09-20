@@ -1,30 +1,58 @@
 #!/usr/bin/env bash
 
-# cgi-error-trap.sh
-#
-# Traps CGI command errors and communicates them to the client when possible.
-#
-# Usage: cgi-error-trap.sh -- <command> [args...]
-
-# We cannot use `set -e` because we need to handle child non-zero exits ourselves.
 set -u
 
-# Drop a leading -- if present
-if [ "${1-}" = "--" ]; then
-    shift
-fi
+NAME=cgi-error-trap.sh
+
+help() {
+    echo "$NAME
+Copyright © Gapotchenko and Contributors
+
+Captures errors from CGI commands and, when possible, reports them back to the
+client in a user-friendly format.
+
+Usage: $NAME -- <command> [args...]"
+}
+
+# -----------------------------------------------------------------------------
+
+error=
+
+# Parse options
+while [ $# -gt 0 ]; do
+    case "$1" in
+    --help)
+        help
+        exit
+        ;;
+    --)
+        shift
+        break
+        ;;
+    *)
+        error="$NAME: unknown option: $1"
+        ;;
+    esac
+done
 
 if [ $# -eq 0 ]; then
-    echo "$SERVER_PROTOCOL 500 Internal Server Error"
+    error="$NAME: missing program arguments"
+fi
+
+if [ -n "$error" ]; then
+    echo "${SERVER_PROTOCOL-HTTP/1.1} 500 Internal Server Error"
     echo 'Content-Type: text/plain; charset=utf-8'
     echo 'X-CGI-ExitCode: 2'
     echo
-    echo 'No command specified.'
+    echo "$error"
+    echo "Try '$NAME --help' for more information."
     exit 2
 fi
 
-countfile=$(mktemp -t cgi-error-trap.count.XXXXXX) || exit 1
-errfile=$(mktemp -t cgi-error-trap.err.XXXXXX) || exit 1
+# -----------------------------------------------------------------------------
+
+countfile=$(mktemp -t "$NAME.count.XXXXXX") || exit 1
+errfile=$(mktemp -t "$NAME.err.XXXXXX") || exit 1
 
 # shellcheck disable=SC2329
 on_exit() {
