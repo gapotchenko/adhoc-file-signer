@@ -2,11 +2,13 @@
 
 The client tools provide functionality for interacting with the Adhoc File Signer Server.
 
-## adhoc-sign-tool
+## Reference
+
+### adhoc-sign-tool
 
 `adhoc-sign-tool` command-line utility offers both file-signing and diagnostic capabilities.
 
-### Usage
+#### Usage
 ```
   adhoc-sign-tool sign --server <server-url> -k <api-key> <file...>
                        [--dry] [--verbose]
@@ -30,11 +32,15 @@ Options:
   --dry         Perform a dry run without applying any modifications.
 ```
 
-To sign a file, you simply invoke `adhoc-sign-tool` with the corresponding command-line parameters:
+To sign a file, run `adhoc-sign-tool` with the appropriate parameters:
 
 ```sh
 adhoc-sign-tool sign contoso-works.msi
 ```
 
 For the command to succeed, `adhoc-sign-tool` must know the server URL and API key.
-Those parameters can be specified in the command-line as well. An alternative to them
+These can be passed as command-line options, or alternatively provided via the environment variables:
+
+- `GP_ADHOC_FILE_SIGNER_SERVER` — the server URL, e.g. `https://your-machine.example.ts.net/adhoc-file-signer`
+- `GP_ADHOC_FILE_SIGNER_API_KEY` — the API key authorized by the server
+
