@@ -49,7 +49,7 @@ async function cgiFileTransform(
 
   return await executeCgiScript(
     request,
-    `cgi-file-transform.sh -- ${command}`,
+    `cgi-error-trap.sh -- cgi-file-transform.sh -- ${command}`,
     { streaming: true },
   );
 }
