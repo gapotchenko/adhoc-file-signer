@@ -1,6 +1,6 @@
-# Adhoc File Signer Client Tools
+# Adhoc File Signer Client
 
-The client tools provide functionality for interacting with Adhoc File Signer Server.
+The client tools provide functionality for interacting with the Adhoc File Signer Server.
 
 ## adhoc-sign-tool
 
