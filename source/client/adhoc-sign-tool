@@ -112,13 +112,13 @@ missing_option_error() {
 }
 
 if [ -z "$COMMAND" ]; then
-   missing_option_error 'command'
+    missing_option_error 'command'
 fi
 if [ -z "$SERVER_URL" ]; then
-   missing_option_error 'server URL'
+    missing_option_error 'server URL'
 fi
 if [ -z "$API_KEY" ]; then
-   missing_option_error 'API key'
+    missing_option_error 'API key'
 fi
 
 if [ -n "$DRY" ]; then
