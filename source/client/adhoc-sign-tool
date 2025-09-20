@@ -11,21 +11,46 @@ help() {
     echo "$NAME  Version $VERSION
 Copyright © Gapotchenko and Contributors
 
-Processes specified file(s) using 'adhoc-file-signer' service.
+Processes specified file(s) using the 'adhoc-file-signer' service.
 
 Usage:
-  $NAME sign --server <server-url> -k <api-key> [--dry] [--verbose] [--] <file...>
-  $NAME echo --server <server-url> -k <api-key> [--verbose] [--] <file...>"
+  adhoc-sign-tool sign --server <server-url> -k <api-key> <file...>
+                       [--dry] [--verbose]
+  adhoc-sign-tool echo --server <server-url> -k <api-key> <file...>
+                       [--verbose]
+  adhoc-sign-tool ping --server <server-url> -k <api-key> [--verbose]
+
+Commands:
+  sign  Sign the specified file(s) using the server.
+  echo  Send the specified file(s) to the server and recieve them back
+        unmodified. Useful for testing connectivity and data transfer.
+  ping  Ping the server using its API. Useful for testing connectivity and
+        verifying authorization.
+
+Options:
+  --server      The server URL. If omitted, the value of
+                GP_ADHOC_FILE_SIGNER_SERVER environment variable is used.
+  -k --api-key  The API authorization key. If omitted, the value of
+                GP_ADHOC_FILE_SIGNER_API_KEY environment variable is used.
+  --verbose     Enable verbose output.
+  --dry         Perform a dry run without applying any modifications.
+"
 }
 
 # -----------------------------------------------------------------------------
 # Options
 # -----------------------------------------------------------------------------
 
+if [ $# -eq 0 ]; then
+    echo "$NAME: missing program arguments
+Try '$NAME --help' for more information." >&2
+    exit 2
+fi
+
 COMMAND=
-FILES=()
+SERVER_URL="${GP_ADHOC_FILE_SIGNER_SERVER-}"
 API_KEY="${GP_ADHOC_FILE_SIGNER_API_KEY-}"
-SERVER_URL="${GP_ADHOC_FILE_SIGNER_SERVER_URL-}"
+FILES=()
 DRY=""
 VERBOSE=""
 
