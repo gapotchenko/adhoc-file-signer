@@ -11,8 +11,8 @@ assembling small, reliable components into a configurable and extensible system.
 The project consists of two main components:
 
 - **[Client](source/client):** the `adhoc-sign-tool` command-line utility
-- **[Server](source/server):** an HTTP service that performs the actual signing using a hardware
-  token, HSM, or a certificate file
+- **[Server](source/server):** an HTTP service that performs the actual signing
+  using a hardware token, HSM, or a certificate file
 
 `adhoc-sign-tool` can then be used in various build environments to sign
 produced files without exposing sensitive cryptographic material.
@@ -35,8 +35,8 @@ introduces several constraints:
 - **File transmission:** Each file must be sent in full to the server for
   signing which is a brute-force approach. A more advanced design would allow
   signing to happen locally, with the server acting only as a remote HSM. This
-  would reduce client-server traffic by several orders of magnitude making it
-  up to ~10,000× less on average.
+  would reduce client-server traffic by several orders of magnitude making it up
+  to ~10,000× less on average.
 
 - **Authentication:** Currently, authorization is limited to a basic API key
   mechanism.
