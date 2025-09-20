@@ -33,8 +33,7 @@ Options:
   -k --api-key  The API authorization key. If omitted, the value of
                 GP_ADHOC_FILE_SIGNER_API_KEY environment variable is used.
   --verbose     Enable verbose output.
-  --dry         Perform a dry run without applying any modifications.
-"
+  --dry         Perform a dry run without applying any modifications."
 }
 
 # -----------------------------------------------------------------------------
@@ -82,18 +81,18 @@ while [ $# -gt 0 ]; do
         break
         ;;
     -*)
-        echo "Unknown option: $1" >&2
+        echo "$NAME: unknown option: $1" >&2
         exit 2
         ;;
     *)
         # Positional arguments
         if [ -z "$COMMAND" ]; then
             case "$1" in
-            sign | echo)
+            echo | ping | sign)
                 COMMAND=$1
                 ;;
             *)
-                echo "Unknown command: $1" >&2
+                echo "$NAME: unknown command: $1" >&2
                 exit 2
                 ;;
             esac
@@ -115,7 +114,7 @@ if [ -n "$DRY" ]; then
     case "$COMMAND" in
     sign) ;;
     *)
-        echo "'--dry' option can only be used with 'sign' command." >&2
+        echo "$NAME: '--dry' option can only be used with 'sign' command." >&2
         exit 2
         ;;
     esac
@@ -128,10 +127,14 @@ while [ $# -gt 0 ]; do
 done
 
 # Validate positional arguments
-if [ ${#FILES[@]} -eq 0 ]; then
-    help >&2
-    exit 2
-fi
+case "$COMMAND" in
+echo | sign)
+    if [ ${#FILES[@]} -eq 0 ]; then
+        echo "$NAME: missing file argument." >&2
+        exit 2
+    fi
+    ;;
+esac
 
 # Options normalization
 
@@ -151,7 +154,7 @@ log() {
 
 on_exit() {
     if [ "$1" -ne 0 ]; then
-        echo "sign-file.sh: failed with status $1." >&2
+        echo "$NAME: failed with status $1." >&2
     fi
     # Cleanup
     [ -n "${hdrfile-}" ] && rm -f "$hdrfile"
@@ -169,7 +172,7 @@ trap 'on_exit "$?"' EXIT
 # -----------------------------------------------------------------------------
 
 # Create a temporary file for HTTP headers.
-hdrfile="$(mktemp -t sign-file.hdr.XXXXXX)"
+hdrfile="$(mktemp -t $NAME.hdr.XXXXXX)"
 
 get_response_header() {
     sed -n "s/^$1:[[:space:]]*//Ip" "$hdrfile"
@@ -232,7 +235,7 @@ compress_file() {
     elif [ "$REQUEST_CONTENT_ENCODING" = "zstd" ]; then
         zstd -c -f "$1"
     else
-        echo "Unsupported REQUEST_CONTENT_ENCODING." >&2
+        echo "$NAME: internal error: unsupported REQUEST_CONTENT_ENCODING." >&2
         exit 1
     fi
 }
@@ -268,7 +271,7 @@ call_api() {
         call=echo-file
         ;;
     *)
-        echo "Internal error: unhandled API call command '$COMMAND'." >&2
+        echo "$NAME: internal error: unhandled API call command '$COMMAND'." >&2
         exit 1
         ;;
     esac
@@ -289,22 +292,26 @@ get_expected_request_content_digest() {
 # -----------------------------------------------------------------------------
 
 digest_verification_failed() {
-    echo "Data integrity verification failed." >&2
+    echo "$NAME: data integrity verification failed." >&2
     exit 1
 }
 
-sign_file() {
+process_file() {
     local FILE=$1
 
-    echo "Signing file '$FILE'..."
+    if [ "$COMMAND" = "echo" ]; then
+        echo "Transferring file '$FILE'..."
+    else
+        echo "Signing file '$FILE'..."
+    fi
 
     if [ "$FILE" = "-" ]; then
         # Streaming mode
 
         [ -n "$VERBOSE" ] && log "Data exchange mode: streaming" || true
 
-        digestfile1="$(mktemp -t sign-file.digest1.XXXXXX)"
-        digestfile2="$(mktemp -t sign-file.digest2.XXXXXX)"
+        digestfile1="$(mktemp -t $NAME.digest1.XXXXXX)"
+        digestfile2="$(mktemp -t $NAME.digest2.XXXXXX)"
 
         [ "$COMMAND" = "echo" ] && [ -n "$VERBOSE" ] && log "ECHO mode is active." || true
         [ -n "$VERBOSE" ] && log "Streaming the data..." || true
@@ -344,7 +351,7 @@ sign_file() {
         HTTP_CONTENT_DIGEST="$(sha256_digest "$FILE")"
 
         # Create a temporary file.
-        tmpfile="$(mktemp -t sign-file.XXXXXX)"
+        tmpfile="$(mktemp -t $NAME.XXXXXX)"
 
         [ "$COMMAND" = "echo" ] && [ -n "$VERBOSE" ] && log "ECHO mode is active." || true
         [ -n "$VERBOSE" ] && log "Calling the server API..." || true
@@ -387,10 +394,23 @@ sign_file() {
             [ -n "$VERBOSE" ] && log "The file has been successfully replaced." || true
         fi
     fi
-
-    echo "File has been signed successfully."
 }
 
 for file in "${FILES[@]}"; do
-    sign_file "$file"
+    process_file "$file"
 done
+
+if [ "$COMMAND" = "echo" ]; then
+    if [ ${#FILES[@]} -gt 1 ]; then
+        echo "Files have been transferred successfully."
+    else
+        echo "File has been transferred successfully."
+    fi
+    echo "Echo check passed."
+else
+    if [ ${#FILES[@]} -gt 1 ]; then
+        echo "Files have been signed successfully."
+    else
+        echo "File has been signed successfully."
+    fi
+fi

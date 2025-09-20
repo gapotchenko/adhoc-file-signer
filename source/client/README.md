@@ -1,11 +1,13 @@
 # Adhoc File Signer Client
 
-The client tools provide functionality for interacting with the [Adhoc File Signer Server](https://github.com/gapotchenko/adhoc-file-signer/tree/main/source/server).
+The client tools provide functionality for interacting with the
+[Adhoc File Signer Server](https://github.com/gapotchenko/adhoc-file-signer/tree/main/source/server).
 
 ## Download
 
-The client tools are available from the [project releases page](https://github.com/gapotchenko/adhoc-file-signer/releases).
-They are distributed as an archive named: 
+The client tools are available from the
+[project releases page](https://github.com/gapotchenko/adhoc-file-signer/releases).
+They are distributed as an archive named:
 
 ```
 adhoc-file-signer-X.Y.Z-client.tar.gz
@@ -19,8 +21,9 @@ adhoc-file-signer-X.Y.Z-client.tar.gz
    export GP_ADHOC_FILE_SIGNER_SERVER="https://your-machine.example.ts.net/adhoc-file-signer"
    export GP_ADHOC_FILE_SIGNER_API_KEY="your-api-key"
    ```
-  
-   If you prefer not to use environment variables, the corresponding parameters must be provided in each command.
+
+   If you prefer not to use environment variables, the corresponding parameters
+   must be provided in each command.
 
 2. **Verify connectivity** with the server:
 
@@ -50,9 +53,11 @@ adhoc-file-signer-X.Y.Z-client.tar.gz
 
 ### adhoc-sign-tool
 
-`adhoc-sign-tool` command-line utility provides file-signing and diagnostic capabilities.
+`adhoc-sign-tool` command-line utility provides file-signing and diagnostic
+capabilities.
 
 #### Usage
+
 ```
   adhoc-sign-tool sign --server <server-url> -k <api-key> <file...>
                        [--dry] [--verbose]
@@ -82,9 +87,10 @@ To sign a file, run `adhoc-sign-tool` with the appropriate parameters:
 adhoc-sign-tool sign contoso-works.msi
 ```
 
-For the command to succeed, `adhoc-sign-tool` must know the server URL and API key.
-These can be passed as command-line options, or alternatively provided via the environment variables:
+For the command to succeed, `adhoc-sign-tool` must know the server URL and API
+key. These can be passed as command-line options, or alternatively provided via
+the environment variables:
 
-- `GP_ADHOC_FILE_SIGNER_SERVER` — the server URL, e.g. `https://your-machine.example.ts.net/adhoc-file-signer`
+- `GP_ADHOC_FILE_SIGNER_SERVER` — the server URL, e.g.
+  `https://your-machine.example.ts.net/adhoc-file-signer`
 - `GP_ADHOC_FILE_SIGNER_API_KEY` — the API key authorized by the server
-
