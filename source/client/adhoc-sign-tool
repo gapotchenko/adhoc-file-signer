@@ -53,6 +53,15 @@ FILES=""
 DRY=""
 VERBOSE=""
 
+add_file() {
+    if [ -z "$FILES" ]; then
+        FILES=$1
+    else
+        FILES="$FILES
+$1"
+    fi
+}
+
 # Parse options
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -97,8 +106,7 @@ while [ $# -gt 0 ]; do
                 ;;
             esac
         else
-            FILES="$FILES
-$1"
+            add_file "$1"
         fi
         shift
         ;;
@@ -134,8 +142,7 @@ fi
 
 # Complete parsing the rest of positional arguments, if any.
 while [ $# -gt 0 ]; do
-    FILES="$FILES
-$1"
+    add_file "$1"
     shift
 done
 
@@ -423,14 +430,9 @@ process_file() {
     fi
 }
 
-echo "$FILES" | while IFS= read -r file; do
-    [ -z "$file" ] && continue
+echo "$FILES" | awk '!seen[$0]++' | while IFS= read -r file; do
     process_file "$file"
 done
-
-#for file in "${FILES[@]}"; do
-#    process_file "$file"
-#done
 
 if [ "$COMMAND" = "echo" ]; then
     echo "Files have been transferred successfully."
