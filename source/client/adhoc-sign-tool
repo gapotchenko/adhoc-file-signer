@@ -324,9 +324,6 @@ call_file_api() {
     # Extract an extension from the file name: input_file.msi -> .msi
     # It may be used for selection of a file processing strategy on server.
     ext=$(expr "$file" : '.*\.\([^.]*\)$')
-    if [ -n "$ext" ]; then
-        ext=".$ext"
-    fi
 
     compress_file "$file" |
         curl -sSL "$2" -D "$hdrfile" --compressed -X POST --data-binary @- \
