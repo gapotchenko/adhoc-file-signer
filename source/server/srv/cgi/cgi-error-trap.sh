@@ -8,8 +8,8 @@ help() {
     echo "$NAME
 Copyright © Gapotchenko and Contributors
 
-Captures an error from the CGI command and, when possible, reports it back to
-the client in a user-friendly response.
+Captures an error from the specified CGI command and, when possible, reports it
+back to the client in a user-friendly format.
 
 Usage: $NAME -- <command> [args...]"
 }
