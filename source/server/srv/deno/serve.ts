@@ -17,7 +17,20 @@ async function handleRequest(request: Request): Promise<Response> {
 
   const app = match.pathname.groups["app"];
 
-  if (app !== slug) return createNotFoundResponse();
+  const textEncoder = new TextEncoder();
+
+  // The app slug may serve as part of a secret.
+  // Use a timing-safe equality check to prevent leaking information through
+  // timing attacks.
+  if (
+    !timingSafeEqual(
+      textEncoder.encode(app),
+      textEncoder.encode(slug),
+    )
+  ) {
+    return createNotFoundResponse();
+  }
+
   const call = match.pathname.groups["call"];
 
   if (call === undefined) {
@@ -38,7 +51,6 @@ async function handleRequest(request: Request): Promise<Response> {
     return createForbiddenResponse();
   }
 
-  const textEncoder = new TextEncoder();
   if (
     !timingSafeEqual(
       textEncoder.encode(actualApiKey),
