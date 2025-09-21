@@ -60,7 +60,7 @@ fileext="${HTTP_X_FILE_EXTENSION-}"
 # Allow only letters, digits, underscores, or dashes in the file extension.
 # ^...$ anchors the regex to the entire string.
 # \(.*\) is required because 'expr' only returns captured groups.
-if ! expr "$fileext" : '\([A-Za-z0-9_-]*\)$' >/dev/null; then
+if ! expr "$fileext" : '^\([A-Za-z0-9_-]*\)$' >/dev/null; then
     # Assign an explicit ".noext" extension to prevent downstream transforms
     # from accidentally using a random part of the file name.
     fileext=noext
