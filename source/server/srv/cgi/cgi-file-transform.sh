@@ -84,7 +84,7 @@ fi
 # Verify integrity of the received file
 # -----------------------------------------------------------------------------
 
-EXPECTED_CONTENT_DIGEST="${HTTP_CONTENT_DIGEST-}"
+EXPECTED_REPR_DIGEST="${HTTP_REPR_DIGEST-}"
 
 hex_to_bin() {
     if command -v xxd >/dev/null 2>&1; then
@@ -105,7 +105,7 @@ sha256_digest() {
 digest_verification_failed() {
     echo "$SERVER_PROTOCOL 400 Bad Request"
     echo "Content-Type: text/plain;charset=UTF-8"
-    echo "Want-Content-Digest: sha-256=1"
+    echo "Want-Repr-Digest: sha-256=1"
     echo
     echo "Digest verification failed"
 
@@ -113,17 +113,17 @@ digest_verification_failed() {
     exit 1
 }
 
-case $EXPECTED_CONTENT_DIGEST in
+case $EXPECTED_REPR_DIGEST in
 "")
     # Digest is not specified
-    if [ -n "${HTTP_WANT_CONTENT_DIGEST-}" ]; then
+    if [ -n "${HTTP_WANT_REPR_DIGEST-}" ]; then
         # Allow a client to validate digest of the received file.
-        REQUEST_CONTENT_DIGEST="$(sha256_digest "$tmpfile")"
+        REQUEST_REPR_DIGEST="$(sha256_digest "$tmpfile")"
     fi
     ;;
 sha-256=*)
-    ACTUAL_CONTENT_DIGEST="$(sha256_digest "$tmpfile")"
-    if [ "$EXPECTED_CONTENT_DIGEST" != "$ACTUAL_CONTENT_DIGEST" ]; then
+    ACTUAL_REPR_DIGEST="$(sha256_digest "$tmpfile")"
+    if [ "$EXPECTED_REPR_DIGEST" != "$ACTUAL_REPR_DIGEST" ]; then
         digest_verification_failed
     fi
     ;;
@@ -144,7 +144,7 @@ esac
 # -----------------------------------------------------------------------------
 
 # Calculate content digest for integrity verification.
-RES_CONTENT_DIGEST="$(sha256_digest "$tmpfile")"
+RES_REPR_DIGEST="$(sha256_digest "$tmpfile")"
 
 # Compress the file content before sending.
 if printf '%s\n' "$HTTP_ACCEPT_ENCODING" | grep -qiE '(^|,)[[:space:]]*zstd[[:space:]]*(,|$)' && command -v zstd >/dev/null 2>&1; then
@@ -176,9 +176,9 @@ fi
 # Specify content length for improved communication reliability.
 echo "Content-Length: $(wc -c <"$resfile")"
 # Integrity verification data.
-echo "Content-Digest: $RES_CONTENT_DIGEST"
-if [ -n "${REQUEST_CONTENT_DIGEST-}" ]; then
-    echo "X-Request-Content-Digest: $REQUEST_CONTENT_DIGEST"
+echo "Repr-Digest: $RES_REPR_DIGEST"
+if [ -n "${REQUEST_REPR_DIGEST-}" ]; then
+    echo "X-Request-Repr-Digest: $REQUEST_REPR_DIGEST"
 fi
 
 echo

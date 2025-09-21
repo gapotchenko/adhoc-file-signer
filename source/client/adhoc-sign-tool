@@ -334,16 +334,16 @@ call_file_api() {
 
     compress_file "$file" |
         curl -sSL "$2" -D "$hdrfile" --compressed -X POST --data-binary @- \
-            -H "X-File-Extension: $ext" -H "Content-Encoding: $REQUEST_CONTENT_ENCODING" -H "Want-Content-Digest: sha-256=1" -H "Content-Digest: ${HTTP_CONTENT_DIGEST-}" \
+            -H "X-File-Extension: $ext" -H "Content-Encoding: $REQUEST_CONTENT_ENCODING" -H "Want-Repr-Digest: sha-256=1" -H "Repr-Digest: ${HTTP_REPR_DIGEST-}" \
             -H "$USER_AGENT_HTTP_HEADER" "$SERVER_URL/$call?apiKey=$API_KEY"
 }
 
-get_expected_content_digest() {
-    get_response_header "Content-Digest"
+get_expected_repr_digest() {
+    get_response_header "Repr-Digest"
 }
 
-get_expected_request_content_digest() {
-    get_response_header "X-Request-Content-Digest"
+get_expected_request_repr_digest() {
+    get_response_header "X-Request-Repr-Digest"
 }
 
 # -----------------------------------------------------------------------------
@@ -387,10 +387,10 @@ process_file() {
 
         # Verify request integrity.
         [ -n "$VERBOSE" ] && verbose "Validating server request digest..." || true
-        EXPECTED_REQUEST_CONTENT_DIGEST=$(get_expected_request_content_digest)
-        if [ -n "$EXPECTED_REQUEST_CONTENT_DIGEST" ]; then
-            ACTUAL_REQUEST_CONTENT_DIGEST=$(cat "$digestfile1")
-            if [ "$EXPECTED_REQUEST_CONTENT_DIGEST" != "$ACTUAL_REQUEST_CONTENT_DIGEST" ]; then
+        EXPECTED_REQUEST_REPR_DIGEST=$(get_expected_request_repr_digest)
+        if [ -n "$EXPECTED_REQUEST_REPR_DIGEST" ]; then
+            ACTUAL_REQUEST_REPR_DIGEST=$(cat "$digestfile1")
+            if [ "$EXPECTED_REQUEST_REPR_DIGEST" != "$ACTUAL_REQUEST_REPR_DIGEST" ]; then
                 [ -n "$VERBOSE" ] && verbose "Request digest mismatch." || true
                 digest_verification_failed
             fi
@@ -398,9 +398,9 @@ process_file() {
 
         # Verify response integrity.
         [ -n "$VERBOSE" ] && verbose "Validating server response digest..." || true
-        EXPECTED_CONTENT_DIGEST=$(get_expected_content_digest)
-        ACTUAL_CONTENT_DIGEST=$(cat "$digestfile2")
-        if [ "$EXPECTED_CONTENT_DIGEST" != "$ACTUAL_CONTENT_DIGEST" ]; then
+        EXPECTED_REPR_DIGEST=$(get_expected_repr_digest)
+        ACTUAL_REPR_DIGEST=$(cat "$digestfile2")
+        if [ "$EXPECTED_REPR_DIGEST" != "$ACTUAL_REPR_DIGEST" ]; then
             [ -n "$VERBOSE" ] && verbose "Response digest mismatch." || true
             digest_verification_failed
         fi
@@ -413,7 +413,7 @@ process_file() {
 
         # Calculate content digest for integrity verification.
         [ -n "$VERBOSE" ] && verbose "Calculating content digest..." || true
-        HTTP_CONTENT_DIGEST="$(sha256_digest "$FILE")"
+        HTTP_REPR_DIGEST="$(sha256_digest "$FILE")"
 
         [ -n "$VERBOSE" ] && verbose "Calling the server API..." || true
 
@@ -427,11 +427,11 @@ process_file() {
             exit "$status"
         fi
 
-        EXPECTED_CONTENT_DIGEST=$(get_expected_content_digest)
+        EXPECTED_REPR_DIGEST=$(get_expected_repr_digest)
 
         [ -n "$VERBOSE" ] && verbose "Validating server response digest..." || true
 
-        case $EXPECTED_CONTENT_DIGEST in
+        case $EXPECTED_REPR_DIGEST in
         "")
             # Digest is not specified. This means a broken HTTP response
             [ -n "$VERBOSE" ] && verbose "Digest not specified, assuming a broken response from the server." || true
@@ -439,8 +439,8 @@ process_file() {
             ;;
         sha-256=*)
             [ -n "$VERBOSE" ] && verbose "Using SHA-256 algorithm for digest validation." || true
-            ACTUAL_CONTENT_DIGEST="$(sha256_digest "$tmpfile")"
-            if [ "$EXPECTED_CONTENT_DIGEST" != "$ACTUAL_CONTENT_DIGEST" ]; then
+            ACTUAL_REPR_DIGEST="$(sha256_digest "$tmpfile")"
+            if [ "$EXPECTED_REPR_DIGEST" != "$ACTUAL_REPR_DIGEST" ]; then
                 [ -n "$VERBOSE" ] && verbose "Response digest mismatch." || true
                 digest_verification_failed
             fi
