@@ -218,7 +218,16 @@ trap 'on_exit "$?"' EXIT
 hdrfile=$(mktemp -t "$NAME.hdr.XXXXXX")
 
 get_response_header() {
-    sed -n "s/^$1:[[:space:]]*//Ip" "$hdrfile"
+    # GNU
+    # sed -n "s/^$1:[[:space:]]*//Ip" "$hdrfile"
+
+    # POSIX-portable
+    awk -v k="$1" '
+        BEGIN { lk = tolower(k) }
+        tolower($0) ~ "^" lk "[[:space:]]*:" {
+            sub(/^[^:]*:[[:space:]]*/, ""); print
+        }
+    ' "$hdrfile"
 }
 
 # -----------------------------------------------------------------------------
