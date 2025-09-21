@@ -304,7 +304,8 @@ sha256_digest() {
     echo "sha-256=$(sha256_b64 "$1")"
 }
 
-call_api() {
+call_file_api() {
+    local file=$1
     local call
 
     case "$COMMAND" in
@@ -320,7 +321,14 @@ call_api() {
         ;;
     esac
 
-    compress_file "$1" | curl -sSL "$2" -D "$hdrfile" --compressed -X POST --data-binary @- -H "Want-Content-Digest: sha-256=1" -H "Content-Encoding: $REQUEST_CONTENT_ENCODING" -H "Content-Digest: ${HTTP_CONTENT_DIGEST-}" -H "$USER_AGENT_HTTP_HEADER" "$SERVER_URL/$call?apiKey=$API_KEY"
+    # Extract an extension from the file name: input_file.msi -> .msi
+    # It may be used for selection of a file processing strategy on server.
+    ext=$(expr "$file" : '.*\.\([^.]*\)$')
+    if [ -n "$ext" ]; then
+        ext=".$ext"
+    fi
+
+    compress_file "$file" | curl -sSL "$2" -D "$hdrfile" --compressed -X POST --data-binary @- -H "X-File-Extension: $ext" -H "Want-Content-Digest: sha-256=1" -H "Content-Encoding: $REQUEST_CONTENT_ENCODING" -H "Content-Digest: ${HTTP_CONTENT_DIGEST-}" -H "$USER_AGENT_HTTP_HEADER" "$SERVER_URL/$call?apiKey=$API_KEY"
 }
 
 get_expected_content_digest() {
@@ -371,7 +379,7 @@ process_file() {
 
         # Sign the data using the API in streaming mode, calculate in/out digests
         # progressively while doing it.
-        tee >(sha256_digest - >"$digestfile1") | call_api - -f | tee >(sha256_digest - >"$digestfile2")
+        tee >(sha256_digest - >"$digestfile1") | call_file_api - -f | tee >(sha256_digest - >"$digestfile2")
 
         # Verify request integrity.
         [ -n "$VERBOSE" ] && verbose "Validating server request digest..." || true
@@ -409,7 +417,7 @@ process_file() {
         [ -n "$VERBOSE" ] && verbose "Calling the server API..." || true
 
         # Sign the input file and store result in the temporary file.
-        status=0 && call_api "$FILE" --fail-with-body >"$tmpfile" || status=$?
+        status=0 && call_file_api "$FILE" --fail-with-body >"$tmpfile" || status=$?
 
         if [ "$status" -ne 0 ]; then
             # Write the error to stderr
