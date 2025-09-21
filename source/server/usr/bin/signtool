@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# signtool - wrapper script that locates 'signtool.exe' and forwards all
+# arguments to it.
+
 set -eu
 
 get_program_files_x86_path() {
@@ -96,14 +99,14 @@ run_on_windows() {
     exec "$signtool" "$@"
 }
 
-os=$(uname -o)
+OS=$(uname -o)
 
 signtool_not_evailable() {
-    echo "signtool utility is not available in '$os' operating system." >&2
+    echo "signtool utility is not available in '$OS' operating system." >&2
     exit 127
 }
 
-case "$os" in
+case "$OS" in
 Cygwin | Msys | MS/Windows)
     run_on_windows "$@"
     ;;
