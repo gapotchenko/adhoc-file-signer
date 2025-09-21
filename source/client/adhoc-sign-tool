@@ -201,8 +201,8 @@ on_exit() {
         echo "$NAME: failed with status $1." >&2
     fi
     # Cleanup
-    [ -n "${hdrfile-}" ] && rm -f "$hdrfile"
-    [ -n "${tmpfile-}" ] && rm -f "$tmpfile"
+    [ -n "${hdrfile-}" ] && rm -f "$hdrfile" || true
+    [ -n "${tmpfile-}" ] && rm -f "$tmpfile" || true
     [ -n "${digestfile1-}" ] && rm -f "$digestfile1" || true
     [ -n "${digestfile2-}" ] && rm -f "$digestfile2" || true
     # Preserve the exit status.
@@ -216,7 +216,7 @@ trap 'on_exit "$?"' EXIT
 # -----------------------------------------------------------------------------
 
 # Create a temporary file for HTTP headers.
-hdrfile=$(mktemp -t $NAME.hdr.XXXXXX)
+hdrfile=$(mktemp -t "$NAME.hdr.XXXXXX")
 
 get_response_header() {
     sed -n "s/^$1:[[:space:]]*//Ip" "$hdrfile"
@@ -371,8 +371,8 @@ process_file() {
 
         [ -n "$VERBOSE" ] && verbose "Data exchange mode: streaming" || true
 
-        digestfile1=$(mktemp -t $NAME.digest1.XXXXXX)
-        digestfile2=$(mktemp -t $NAME.digest2.XXXXXX)
+        digestfile1=$(mktemp -t "$NAME.digest1.XXXXXX")
+        digestfile2=$(mktemp -t "$NAME.digest2.XXXXXX")
 
         [ "$COMMAND" = "echo" ] && [ -n "$VERBOSE" ] && verbose "ECHO mode is active." || true
         [ -n "$VERBOSE" ] && verbose "Streaming the data..." || true
@@ -412,7 +412,7 @@ process_file() {
         HTTP_CONTENT_DIGEST="$(sha256_digest "$FILE")"
 
         # Create a temporary file.
-        tmpfile=$(mktemp -t $NAME.XXXXXX)
+        tmpfile=$(mktemp -t "$NAME.XXXXXX")
 
         [ -n "$VERBOSE" ] && verbose "Calling the server API..." || true
 
