@@ -8,8 +8,8 @@ help() {
     echo "$NAME
 Copyright © Gapotchenko and Contributors
 
-Captures errors from CGI commands and, when possible, reports them back to the
-client in a user-friendly format.
+Captures an error from the CGI command and, when possible, reports it back to
+the client in a user-friendly response.
 
 Usage: $NAME -- <command> [args...]"
 }
@@ -73,11 +73,11 @@ cmd_status=${PIPESTATUS[0]}
 bytes_out=0
 if [ -s "$countfile" ]; then
     read -r bytes_out <"$countfile"
-    # some wc implementations prefix spaces; strip them
+    # some wc implementations produce prefix spaces; strip them
     bytes_out="${bytes_out#"${bytes_out%%[![:space:]]*}"}"
 fi
 
-# Synthesize CGI 500 if failed and no stdout
+# Synthesize a friendly CGI 500 response if command failed without stdout
 if [ "$cmd_status" -ne 0 ] && [ "$bytes_out" -eq 0 ]; then
     echo "$SERVER_PROTOCOL 500 Internal Server Error"
     echo 'Content-Type: text/plain; charset=utf-8'
