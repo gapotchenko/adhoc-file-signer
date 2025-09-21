@@ -150,7 +150,7 @@ if [ -n "$DRY" ]; then
     esac
 fi
 
-# Complete parsing the rest of positional arguments, if any.
+# Complete parsing the rest of positional arguments
 while [ $# -gt 0 ]; do
     add_file "$1"
     shift
