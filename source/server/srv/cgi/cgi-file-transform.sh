@@ -2,15 +2,17 @@
 
 set -eu
 
+NAME=cgi-file-transform.sh
+
 help() {
-    echo 'cgi-file-transform.sh
+    echo "$NAME
 Copyright © Gapotchenko and Contributors
 
 Receives a file, transforms it with the specified command, then sends the
 transformed file back. Supports over-the-wire compression and data integrity
 verification.
 
-Usage: cgi-file-transform.sh -- <command> [args...]'
+Usage: $NAME -- <command> [args...]"
 }
 
 # -----------------------------------------------------------------------------
@@ -175,7 +177,7 @@ if [ -n "$RESPONSE_CONTENT_ENCODING" ]; then
 fi
 # Specify content length for improved communication reliability.
 echo "Content-Length: $(wc -c <"$resfile")"
-# Integrity verification data.
+# Integrity verification information.
 echo "Repr-Digest: $RESPONSE_REPR_DIGEST"
 if [ -n "${REQUEST_REPR_DIGEST-}" ]; then
     echo "X-Request-Repr-Digest: $REQUEST_REPR_DIGEST"
