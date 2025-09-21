@@ -203,7 +203,6 @@ on_exit() {
     # Cleanup
     [ -n "${hdrfile-}" ] && rm -f "$hdrfile" || true
     [ -n "${tmpfile-}" ] && rm -f "$tmpfile" || true
-    [ -n "${digestfile1-}" ] && rm -f "$digestfile1" || true
     [ -n "${digestfile2-}" ] && rm -f "$digestfile2" || true
     # Preserve the exit status.
     exit "$1"
@@ -371,9 +370,6 @@ process_file() {
 
         [ -n "$VERBOSE" ] && verbose "Data exchange mode: streaming" || true
 
-        digestfile1=$(mktemp -t "$NAME.digest1.XXXXXX")
-        digestfile2=$(mktemp -t "$NAME.digest2.XXXXXX")
-
         [ "$COMMAND" = "echo" ] && [ -n "$VERBOSE" ] && verbose "ECHO mode is active." || true
         [ -n "$VERBOSE" ] && verbose "Streaming the data..." || true
 
@@ -410,9 +406,6 @@ process_file() {
         # Calculate content digest for integrity verification.
         [ -n "$VERBOSE" ] && verbose "Calculating content digest..." || true
         HTTP_CONTENT_DIGEST="$(sha256_digest "$FILE")"
-
-        # Create a temporary file.
-        tmpfile=$(mktemp -t "$NAME.XXXXXX")
 
         [ -n "$VERBOSE" ] && verbose "Calling the server API..." || true
 
@@ -464,7 +457,13 @@ process_file() {
     fi
 }
 
-# Save original stdin on FD 3
+# Create temporary files before entering any subshells, ensuring they can be
+# tracked and cleaned up on exit by a trap
+tmpfile=$(mktemp -t "$NAME.XXXXXX")
+digestfile1="$tmpfile"
+digestfile2=$(mktemp -t "$NAME.digest2.XXXXXX")
+
+# Preserve the original stdin on FD 3
 exec 3<&0
 
 echo "$FILES" | awk '!seen[$0]++' | while IFS= read -r file; do
@@ -472,7 +471,7 @@ echo "$FILES" | awk '!seen[$0]++' | while IFS= read -r file; do
     process_file "$file" <&3
 done
 
-# Close the extra FD when done
+# Close extra FD 3 when done
 exec 3<&-
 
 if [ "$COMMAND" = "echo" ]; then
