@@ -19,9 +19,8 @@ async function handleRequest(request: Request): Promise<Response> {
 
   const textEncoder = new TextEncoder();
 
-  // The app slug may serve as part of a secret.
-  // Use a timing-safe equality check to prevent leaking information through
-  // timing attacks.
+  // The app slug may serve as part of a secret thus using a timing-safe
+  // equality check to prevent leaking information through timing attacks.
   if (
     !timingSafeEqual(
       textEncoder.encode(app),
