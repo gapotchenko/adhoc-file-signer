@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# signtool - wrapper script that locates 'signtool.exe' and forwards all
+# signtool - wrapper script that locates 'signtool' utility and forwards all
 # arguments to it.
 
 set -eu
@@ -58,23 +58,26 @@ order_versioned_dirs() {
         done
 }
 
-get_signtool_path() {
+get_arch() {
     case "$(uname -m)" in
     i?86)
-        arch=x86
+        echo x86
         ;;
     x86_64)
-        arch=x64
+        echo x64
         ;;
     aarch64 | arm64)
-        arch=arm64
+        echo arm64
         ;;
     *)
         echo "Unable to determine machine architecture." >&2
         return 1
         ;;
     esac
+}
 
+get_signtool_path() {
+    arch=$(get_arch)
     path=$(translate_windows_path "$(get_program_files_x86_path)")
 
     signtool_path=$(order_versioned_dirs "$path/Windows Kits/10/bin" |
@@ -102,7 +105,7 @@ run_on_windows() {
 OS=$(uname -o)
 
 signtool_not_evailable() {
-    echo "signtool utility is not available in '$OS' operating system." >&2
+    echo "signtool utility is not available in $OS operating system." >&2
     exit 127
 }
 

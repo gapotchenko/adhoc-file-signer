@@ -63,9 +63,6 @@ if [ -n "${GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE-}" ] &&
     log
     initialize_hsm
     log
-
-    # Mark that HSM-provided key material is in use.
-    export GP_AFS_HSM_KEY=1
 fi
 
 log "Starting HTTP server..."
