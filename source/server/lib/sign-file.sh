@@ -3,15 +3,20 @@
 set -eu
 
 NAME=sign-file.sh
+VERSION=0.0.0
 
 help() {
-    echo "$NAME
+    echo "$NAME  Version $VERSION
 Copyright © Gapotchenko and Contributors
 
-Signs the specified file using configuration provided via environment
-variables.
+Signs the specified file using configuration parameters provided via
+environment variables.
 
 Usage: $NAME <file>
+
+Configuration (environment variables):
+  - GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE:
+    The path to a certificate file (.pfx, .p12, or .cer in DER format)
 
 Your feedback and contributions are welcome:
 https://github.com/gapotchenko/adhoc-file-signer"
@@ -84,10 +89,63 @@ BASE_DIR="$(dirname "$SCRIPT_DIR")"
 PATH="$PATH:$BASE_DIR/usr/bin"
 
 # -----------------------------------------------------------------------------
+# Auxilary Functions for NuGet
+# -----------------------------------------------------------------------------
+
+detect_nuget() {
+    # shellcheck disable=SC2034
+
+    if command -v nuget >/dev/null 2>&1; then
+        # NuGet as a standalone command
+        NUGET_PATH=nuget
+        NUGET_ARG_PROLOG=
+        # Argument names
+        NUGET_ARG_CERTIFICATE_FINGERPRINT=-CertificateFingerprint
+        NUGET_ARG_CERTIFICATE_PASSWORD=-CertificatePassword
+        NUGET_ARG_CERTIFICATE_PATH=-CertificatePath
+        NUGET_ARG_CERTIFICATE_STORE_LOCATION=-CertificateStoreLocation
+        NUGET_ARG_CERTIFICATE_STORE_NAME=-CertificateStoreName
+        NUGET_ARG_HASH_ALGORITHM=-HashAlgorithm
+        NUGET_ARG_NON_INTERACTIVE=-NonInteractive
+        NUGET_ARG_OVERWRITE=-Overwrite
+        NUGET_ARG_TIMESTAMPER=-Timestamper
+        NUGET_ARG_TIMESTAMP_HASH_ALGORITHM=-TimestampHashAlgorithm
+    elif command -v dotnet >/dev/null 2>&1; then
+        # NuGet as part of dotnet
+        NUGET_PATH=dotnet
+        NUGET_ARG_PROLOG=nuget
+        # Argument names
+        NUGET_ARG_CERTIFICATE_FINGERPRINT=--certificate-fingerprint
+        NUGET_ARG_CERTIFICATE_PASSWORD=--certificate-password
+        NUGET_ARG_CERTIFICATE_PATH=--certificate-path
+        NUGET_ARG_CERTIFICATE_STORE_LOCATION=--certificate-store-location
+        NUGET_ARG_CERTIFICATE_STORE_NAME=--certificate-store-name
+        NUGET_ARG_HASH_ALGORITHM=--hash-algorithm
+        NUGET_ARG_NON_INTERACTIVE=
+        NUGET_ARG_OVERWRITE=--overwrite
+        NUGET_ARG_TIMESTAMPER=--timestamper
+        NUGET_ARG_TIMESTAMP_HASH_ALGORITHM=--timestamp-hash-algorithm
+    else
+        echo "NuGet tool is not found." >&2
+        exit 1
+    fi
+}
+
+call_nuget() {
+    if [ -n "$NUGET_ARG_PROLOG" ]; then
+        "$NUGET_PATH" "$NUGET_ARG_PROLOG" "$@"
+    else
+        "$NUGET_PATH" "$@"
+    fi
+}
+
+# -----------------------------------------------------------------------------
 # Core Functionality
 # -----------------------------------------------------------------------------
 
-call_signtool() {
+signtool_sign() {
+    file=$1
+
     set -- # empty argv
 
     # Signing key parameters
@@ -113,23 +171,28 @@ call_signtool() {
     fi
 
     # Call signtool
-    signtool sign "$@" "$FILE"
+    signtool sign "$@" "$file"
 }
 
-call_nuget_sign() {
+nuget_sign() {
+    file=$1
+    detect_nuget
+
     echo "TODO NuGet" >&2
     exit 1
 }
+
+# -----------------------------------------------------------------------------
 
 run_on_windows() {
     file=$FILE
     fileext=$(expr "x$file" : '.*\.\([^.]*\)$' | tr '[:upper:]' '[:lower:]' || true)
     case "$fileext" in
     nupkg)
-        call_nuget_sign "$file"
+        nuget_sign "$file"
         ;;
     *)
-        call_signtool "$file"
+        signtool_sign "$file"
         ;;
     esac
 }
