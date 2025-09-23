@@ -88,9 +88,32 @@ PATH="$PATH:$BASE_DIR/usr/bin"
 # -----------------------------------------------------------------------------
 
 call_signtool() {
-    # TODO
+    set -- # empty argv
 
-    signtool sign -f "$GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE" -csp "$GP_ADHOC_FILE_SIGNER_CSP" -kc "$GP_ADHOC_FILE_SIGNER_KEY_CONTAINER" -fd "$GP_ADHOC_FILE_SIGNER_FILE_DIGEST" -tr "$GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER" -td "$GP_ADHOC_FILE_SIGNER_TIMESTAMP_DIGEST" "$1"
+    # Signing key parameters
+    if [ -n "${GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE-}" ]; then
+        set -- "$@" -f "$GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE"
+    fi
+    if [ -n "${GP_ADHOC_FILE_SIGNER_CSP-}" ]; then
+        set -- "$@" -csp "$GP_ADHOC_FILE_SIGNER_CSP"
+    fi
+    if [ -n "${GP_ADHOC_FILE_SIGNER_KEY_CONTAINER-}" ]; then
+        set -- "$@" -kc "$GP_ADHOC_FILE_SIGNER_KEY_CONTAINER"
+    fi
+    if [ -n "${GP_ADHOC_FILE_SIGNER_FILE_DIGEST-}" ]; then
+        set -- "$@" -fd "$GP_ADHOC_FILE_SIGNER_FILE_DIGEST"
+    fi
+
+    # Timestamping parameters
+    if [ -n "${GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER-}" ]; then
+        set -- "$@" -tr "$GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER"
+    fi
+    if [ -n "${GP_ADHOC_FILE_SIGNER_TIMESTAMP_DIGEST-}" ]; then
+        set -- "$@" -td "$GP_ADHOC_FILE_SIGNER_TIMESTAMP_DIGEST"
+    fi
+
+    # Call signtool
+    signtool sign "$@" "$FILE"
 }
 
 call_nuget_sign() {
