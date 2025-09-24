@@ -46,24 +46,24 @@ Try '$NAME --help' for more information." >&2
     exit 2
 fi
 
-COMMAND=
-SERVER_URL="${GP_ADHOC_FILE_SIGNER_SERVER-}"
-API_KEY="${GP_ADHOC_FILE_SIGNER_API_KEY-}"
-FILES=""
-DRY=""
-VERBOSE=""
+OPT_COMMAND=
+OPT_SERVER_URL="${GP_ADHOC_FILE_SIGNER_SERVER-}"
+OPT_API_KEY="${GP_ADHOC_FILE_SIGNER_API_KEY-}"
+OPT_FILES=""
+OPT_DRY=""
+OPT_VERBOSE=""
 
 HAS_STDIN_FILE=0
 
-add_file() {
+add_file_option() {
     if [ "$1" = "-" ]; then
         HAS_STDIN_FILE=1
     fi
 
-    if [ -z "$FILES" ]; then
-        FILES=$1
+    if [ -z "$OPT_FILES" ]; then
+        OPT_FILES=$1
     else
-        FILES="$FILES
+        OPT_FILES="$OPT_FILES
 $1"
     fi
 }
@@ -76,19 +76,19 @@ while [ $# -gt 0 ]; do
         exit
         ;;
     --server)
-        SERVER_URL="$2"
+        OPT_SERVER_URL="$2"
         shift 2
         ;;
     -k | --api-key)
-        API_KEY="$2"
+        OPT_API_KEY="$2"
         shift 2
         ;;
     --dry)
-        DRY=1
+        OPT_DRY=1
         shift
         ;;
     --verbose)
-        VERBOSE=1
+        OPT_VERBOSE=1
         shift
         ;;
     --)
@@ -96,7 +96,7 @@ while [ $# -gt 0 ]; do
         break
         ;;
     -)
-        add_file "$1"
+        add_file_option "$1"
         shift
         ;;
     -*)
@@ -105,10 +105,10 @@ while [ $# -gt 0 ]; do
         ;;
     *)
         # Positional arguments
-        if [ -z "$COMMAND" ]; then
+        if [ -z "$OPT_COMMAND" ]; then
             case "$1" in
             echo | ping | sign)
-                COMMAND=$1
+                OPT_COMMAND=$1
                 ;;
             *)
                 echo "$NAME: unknown command: $1" >&2
@@ -116,7 +116,7 @@ while [ $# -gt 0 ]; do
                 ;;
             esac
         else
-            add_file "$1"
+            add_file_option "$1"
         fi
         shift
         ;;
@@ -130,18 +130,18 @@ missing_option_error() {
     exit 2
 }
 
-if [ -z "$COMMAND" ]; then
+if [ -z "$OPT_COMMAND" ]; then
     missing_option_error 'command'
 fi
-if [ -z "$SERVER_URL" ]; then
+if [ -z "$OPT_SERVER_URL" ]; then
     missing_option_error 'server URL'
 fi
-if [ -z "$API_KEY" ]; then
+if [ -z "$OPT_API_KEY" ]; then
     missing_option_error 'API key'
 fi
 
-if [ -n "$DRY" ]; then
-    case "$COMMAND" in
+if [ -n "$OPT_DRY" ]; then
+    case "$OPT_COMMAND" in
     sign) ;;
     *)
         echo "$NAME: '--dry' option can only be used with 'sign' command." >&2
@@ -152,20 +152,20 @@ fi
 
 # Complete positional arguments
 while [ $# -gt 0 ]; do
-    add_file "$1"
+    add_file_option "$1"
     shift
 done
 
 # Validate positional options
-case "$COMMAND" in
+case "$OPT_COMMAND" in
 echo | sign)
-    if [ -z "$FILES" ]; then
+    if [ -z "$OPT_FILES" ]; then
         echo "$NAME: missing file argument." >&2
         exit 2
     fi
     ;;
 *)
-    if [ -n "$FILES" ]; then
+    if [ -n "$OPT_FILES" ]; then
         echo "$NAME: files can only be specified for 'echo' and 'sign' commands." >&2
         exit 2
     fi
@@ -174,11 +174,11 @@ esac
 
 # Options normalization
 
-normalize_server_url() {
-    SERVER_URL=${SERVER_URL%/}
+normalize_server_url_option() {
+    OPT_SERVER_URL=${OPT_SERVER_URL%/}
 }
 
-normalize_server_url
+normalize_server_url_option
 
 # -----------------------------------------------------------------------------
 # Auxilary Functions
@@ -194,6 +194,10 @@ log() {
 
 verbose() {
     echo "LOG: $1" >&2
+}
+
+get_file_extension() {
+    expr "x$1" : '.*\.\([^.]*\)$' | tr '[:upper:]' '[:lower:]' || true
 }
 
 on_exit() {
@@ -234,31 +238,31 @@ USER_AGENT_HTTP_HEADER="User-Agent: $NAME/$VERSION"
 
 log "Connecting to server..."
 
-[ -n "$VERBOSE" ] && verbose "Probing for server URL redirections..." || true
+[ -n "$OPT_VERBOSE" ] && verbose "Probing for server URL redirections..." || true
 
 # Probe the server URL for possible redirections.
-curl -fsSL -D "$hdrfile" --compressed -I -H "$USER_AGENT_HTTP_HEADER" "$SERVER_URL" >/dev/null
+curl -fsSL -D "$hdrfile" --compressed -I -H "$USER_AGENT_HTTP_HEADER" "$OPT_SERVER_URL" >/dev/null
 
 new_location="$(get_response_header Location | tail -n1)"
 if [ -n "$new_location" ]; then
-    SERVER_URL="$new_location"
-    normalize_server_url
-    [ -n "$VERBOSE" ] && verbose "Server URL is redirected to $SERVER_URL location." || true
+    OPT_SERVER_URL="$new_location"
+    normalize_server_url_option
+    [ -n "$OPT_VERBOSE" ] && verbose "Server URL is redirected to $OPT_SERVER_URL location." || true
 else
-    [ -n "$VERBOSE" ] && verbose "No server URL redirections found." || true
+    [ -n "$OPT_VERBOSE" ] && verbose "No server URL redirections found." || true
 fi
 
 # -----------------------------------------------------------------------------
 # Server Capabilities
 # -----------------------------------------------------------------------------
 
-[ -n "$VERBOSE" ] && verbose "Retrieving server capabilities..." || true
+[ -n "$OPT_VERBOSE" ] && verbose "Retrieving server capabilities..." || true
 
 # Retrieve server capabilities.
-curl -fsSL -D "$hdrfile" --compressed -I -H "$USER_AGENT_HTTP_HEADER" "$SERVER_URL/capabilities?apiKey=$API_KEY" >/dev/null
+curl -fsSL -D "$hdrfile" --compressed -I -H "$USER_AGENT_HTTP_HEADER" "$OPT_SERVER_URL/capabilities?apiKey=$OPT_API_KEY" >/dev/null
 
 CAPS_ACCEPT_ENCODING="$(get_response_header 'Accept-Encoding')"
-[ -n "$VERBOSE" ] && verbose "Encodings accepted by server: $CAPS_ACCEPT_ENCODING" || true
+[ -n "$OPT_VERBOSE" ] && verbose "Encodings accepted by server: $CAPS_ACCEPT_ENCODING" || true
 
 log "Server connection established."
 
@@ -275,7 +279,7 @@ else
     REQUEST_CONTENT_ENCODING=
 fi
 
-[ -n "$VERBOSE" ] && verbose "Negotiated request encoding: $REQUEST_CONTENT_ENCODING" || true
+[ -n "$OPT_VERBOSE" ] && verbose "Negotiated request encoding: $REQUEST_CONTENT_ENCODING" || true
 
 compress_file() {
     if [ -z "${REQUEST_CONTENT_ENCODING-}" ]; then
@@ -314,7 +318,7 @@ call_file_api() {
     local file=$1
     local call
 
-    case "$COMMAND" in
+    case "$OPT_COMMAND" in
     sign)
         call=sign-file
         ;;
@@ -322,20 +326,20 @@ call_file_api() {
         call=echo-file
         ;;
     *)
-        echo "$NAME: internal error: unhandled API call command '$COMMAND'." >&2
+        echo "$NAME: internal error: unhandled API call command '$OPT_COMMAND'." >&2
         exit 1
         ;;
     esac
 
-    # Extract an extension from the file name: input_file.msi -> .msi
-    # It may be used for selection of a file processing strategy on server.
-    local ext
-    ext=$(expr "x$file" : '.*\.\([^.]*\)$' || true)
+    # Extract a file extension from the input file name: "input_file.msi" -> "msi".
+    # It may be used for selection of a file processing strategy on the server.
+    local fileext
+    fileext=$(get_file_extension "$file")
 
     compress_file "$file" |
         curl -sSL "$2" -D "$hdrfile" --compressed -X POST --data-binary @- \
-            -H "X-File-Extension: $ext" -H "Content-Encoding: $REQUEST_CONTENT_ENCODING" -H "Want-Repr-Digest: sha-256=1" -H "Repr-Digest: ${HTTP_REPR_DIGEST-}" \
-            -H "$USER_AGENT_HTTP_HEADER" "$SERVER_URL/$call?apiKey=$API_KEY"
+            -H "X-File-Extension: $fileext" -H "Content-Encoding: $REQUEST_CONTENT_ENCODING" -H "Want-Repr-Digest: sha-256=1" -H "Repr-Digest: ${HTTP_REPR_DIGEST-}" \
+            -H "$USER_AGENT_HTTP_HEADER" "$OPT_SERVER_URL/$call?apiKey=$OPT_API_KEY"
 }
 
 get_expected_repr_digest() {
@@ -350,8 +354,8 @@ get_expected_request_repr_digest() {
 # Ping
 # -----------------------------------------------------------------------------
 
-if [ "$COMMAND" = "ping" ]; then
-    curl -sSL --fail-with-body -H "$USER_AGENT_HTTP_HEADER" "$SERVER_URL/ping?apiKey=$API_KEY"
+if [ "$OPT_COMMAND" = "ping" ]; then
+    curl -sSL --fail-with-body -H "$USER_AGENT_HTTP_HEADER" "$OPT_SERVER_URL/ping?apiKey=$OPT_API_KEY"
     exit
 fi
 
@@ -367,7 +371,7 @@ digest_verification_failed() {
 process_file() {
     local FILE=$1
 
-    if [ "$COMMAND" = "echo" ]; then
+    if [ "$OPT_COMMAND" = "echo" ]; then
         log "Transferring file '$FILE'..."
     else
         log "Signing file '$FILE'..."
@@ -376,46 +380,46 @@ process_file() {
     if [ "$FILE" = "-" ]; then
         # Streaming mode
 
-        [ -n "$VERBOSE" ] && verbose "Data exchange mode: streaming" || true
+        [ -n "$OPT_VERBOSE" ] && verbose "Data exchange mode: streaming" || true
 
-        [ "$COMMAND" = "echo" ] && [ -n "$VERBOSE" ] && verbose "ECHO mode is active." || true
-        [ -n "$VERBOSE" ] && verbose "Streaming the data..." || true
+        [ "$OPT_COMMAND" = "echo" ] && [ -n "$OPT_VERBOSE" ] && verbose "ECHO mode is active." || true
+        [ -n "$OPT_VERBOSE" ] && verbose "Streaming the data..." || true
 
         # Sign the data using the API in streaming mode, calculate in/out digests
         # progressively while doing it.
         tee >(sha256_digest - >"$digestfile1") | call_file_api - -f | tee >(sha256_digest - >"$digestfile2")
 
         # Verify request integrity.
-        [ -n "$VERBOSE" ] && verbose "Validating server request digest..." || true
+        [ -n "$OPT_VERBOSE" ] && verbose "Validating server request digest..." || true
         EXPECTED_REQUEST_REPR_DIGEST=$(get_expected_request_repr_digest)
         if [ -n "$EXPECTED_REQUEST_REPR_DIGEST" ]; then
             ACTUAL_REQUEST_REPR_DIGEST=$(cat "$digestfile1")
             if [ "$EXPECTED_REQUEST_REPR_DIGEST" != "$ACTUAL_REQUEST_REPR_DIGEST" ]; then
-                [ -n "$VERBOSE" ] && verbose "Request digest mismatch." || true
+                [ -n "$OPT_VERBOSE" ] && verbose "Request digest mismatch." || true
                 digest_verification_failed
             fi
         fi
 
         # Verify response integrity.
-        [ -n "$VERBOSE" ] && verbose "Validating server response digest..." || true
+        [ -n "$OPT_VERBOSE" ] && verbose "Validating server response digest..." || true
         EXPECTED_REPR_DIGEST=$(get_expected_repr_digest)
         ACTUAL_REPR_DIGEST=$(cat "$digestfile2")
         if [ "$EXPECTED_REPR_DIGEST" != "$ACTUAL_REPR_DIGEST" ]; then
-            [ -n "$VERBOSE" ] && verbose "Response digest mismatch." || true
+            [ -n "$OPT_VERBOSE" ] && verbose "Response digest mismatch." || true
             digest_verification_failed
         fi
 
-        [ -n "$VERBOSE" ] && verbose "The digests are validated." || true
+        [ -n "$OPT_VERBOSE" ] && verbose "The digests are validated." || true
     else
         # Batch mode
 
-        [ -n "$VERBOSE" ] && verbose "Data exchange mode: batch" || true
+        [ -n "$OPT_VERBOSE" ] && verbose "Data exchange mode: batch" || true
 
         # Calculate content digest for integrity verification.
-        [ -n "$VERBOSE" ] && verbose "Calculating content digest..." || true
+        [ -n "$OPT_VERBOSE" ] && verbose "Calculating content digest..." || true
         HTTP_REPR_DIGEST="$(sha256_digest "$FILE")"
 
-        [ -n "$VERBOSE" ] && verbose "Calling the server API..." || true
+        [ -n "$OPT_VERBOSE" ] && verbose "Calling the server API..." || true
 
         # Sign the input file and store result in the temporary file.
         status=0 && call_file_api "$FILE" --fail-with-body >"$tmpfile" || status=$?
@@ -429,38 +433,38 @@ process_file() {
 
         EXPECTED_REPR_DIGEST=$(get_expected_repr_digest)
 
-        [ -n "$VERBOSE" ] && verbose "Validating server response digest..." || true
+        [ -n "$OPT_VERBOSE" ] && verbose "Validating server response digest..." || true
 
         case $EXPECTED_REPR_DIGEST in
         "")
             # Digest is not specified. This means a broken HTTP response
-            [ -n "$VERBOSE" ] && verbose "Digest not specified, assuming a broken response from the server." || true
+            [ -n "$OPT_VERBOSE" ] && verbose "Digest not specified, assuming a broken response from the server." || true
             digest_verification_failed
             ;;
         sha-256=*)
-            [ -n "$VERBOSE" ] && verbose "Using SHA-256 algorithm for digest validation." || true
+            [ -n "$OPT_VERBOSE" ] && verbose "Using SHA-256 algorithm for digest validation." || true
             ACTUAL_REPR_DIGEST="$(sha256_digest "$tmpfile")"
             if [ "$EXPECTED_REPR_DIGEST" != "$ACTUAL_REPR_DIGEST" ]; then
-                [ -n "$VERBOSE" ] && verbose "Response digest mismatch." || true
+                [ -n "$OPT_VERBOSE" ] && verbose "Response digest mismatch." || true
                 digest_verification_failed
             fi
             ;;
         *)
             # Unsupported digest algorithm
-            [ -n "$VERBOSE" ] && verbose "Unsupported digest algorithm." || true
+            [ -n "$OPT_VERBOSE" ] && verbose "Unsupported digest algorithm." || true
             digest_verification_failed
             ;;
         esac
 
-        [ -n "$VERBOSE" ] && verbose "Response digest validated." || true
+        [ -n "$OPT_VERBOSE" ] && verbose "Response digest validated." || true
 
-        [ -n "$DRY" ] && [ -n "$VERBOSE" ] && verbose "DRY mode is active, not storing the result." || true
+        [ -n "$OPT_DRY" ] && [ -n "$OPT_VERBOSE" ] && verbose "DRY mode is active, not storing the result." || true
 
-        if [ -z "$DRY" ] && [ "$COMMAND" = "sign" ]; then
+        if [ -z "$OPT_DRY" ] && [ "$OPT_COMMAND" = "sign" ]; then
             # Atomically replace the destination file.
-            [ -n "$VERBOSE" ] && verbose "Atomically replacing the destination file..." || true
+            [ -n "$OPT_VERBOSE" ] && verbose "Atomically replacing the destination file..." || true
             mv -f "$tmpfile" "$FILE"
-            [ -n "$VERBOSE" ] && verbose "The file has been successfully replaced." || true
+            [ -n "$OPT_VERBOSE" ] && verbose "The file has been successfully replaced." || true
         fi
     fi
 }
@@ -474,7 +478,7 @@ digestfile2=$(mktemp -t "$NAME.digest2.XXXXXX")
 # Preserve the original stdin on FD 3
 exec 3<&0
 
-echo "$FILES" | awk '!seen[$0]++' | while IFS= read -r file; do
+echo "$OPT_FILES" | awk '!seen[$0]++' | while IFS= read -r file; do
     # Give process_file the real stdin, not the pipeline
     process_file "$file" <&3
 done
@@ -482,7 +486,7 @@ done
 # Close extra FD 3 when done
 exec 3<&-
 
-if [ "$COMMAND" = "echo" ]; then
+if [ "$OPT_COMMAND" = "echo" ]; then
     log "Files have been transferred successfully."
     log "Echo check passed."
 else
