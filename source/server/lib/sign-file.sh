@@ -364,8 +364,40 @@ nuget_sign() {
 
     hsm_logon
 
-    echo "TODO NuGet" >&2
-    exit 1
+    set -- # empty argv
+
+    # Certificate parameters
+    if [ -n "$certthumb" ]; then
+        set -- "$@" "$NUGET_ARG_CERTIFICATE_FINGERPRINT" "$certthumb"
+    else
+        if [ -n "$OPT_CERTIFICATE_FILE" ]; then
+            set -- "$@" "$NUGET_ARG_CERTIFICATE_PATH" "$OPT_CERTIFICATE_FILE"
+        fi
+        if [ -n "$OPT_CERTIFICATE_PASSWORD" ]; then
+            set -- "$@" "$NUGET_ARG_CERTIFICATE_PASSWORD" "$OPT_CERTIFICATE_PASSWORD"
+        fi
+    fi
+
+    # Signing parameters
+    if [ -n "$OPT_FILE_DIGEST" ]; then
+        set -- "$@" "$NUGET_ARG_HASH_ALGORITHM" "$OPT_FILE_DIGEST"
+    fi
+
+    # Timestamping parameters
+    if [ -n "$OPT_TIMESTAMP_SERVER" ]; then
+        set -- "$@" "$NUGET_ARG_TIMESTAMPER" "$OPT_TIMESTAMP_SERVER"
+    fi
+    if [ -n "$OPT_TIMESTAMP_DIGEST" ]; then
+        set -- "$@" "$NUGET_ARG_TIMESTAMP_HASH_ALGORITHM" "$OPT_TIMESTAMP_DIGEST"
+    fi
+
+    # Other
+    if [ -n "$NUGET_ARG_NON_INTERACTIVE" ]; then
+        set -- "$@" -f "$NUGET_ARG_NON_INTERACTIVE"
+    fi
+
+    # Call NuGet
+    call_nuget sign "$file" "$@" "$NUGET_ARG_OVERWRITE"
 }
 
 # -----------------------------------------------------------------------------
