@@ -4,14 +4,13 @@ set -eu
 
 SCRIPT_DIR=$(dirname "$(readlink -fn -- "$0")")
 BASE_DIR=$(dirname "$SCRIPT_DIR")
+TMP_DIR=${TMPDIR-$(dirname "$(mktemp -u)")}
 
 OS=$(uname -o)
 
 log() {
     echo "${1-}"
 }
-
-TMP_DIR=${TMPDIR-$(dirname "$(mktemp -u)")}
 
 initialize_host() {
     log "Host system: $OS"
