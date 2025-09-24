@@ -334,7 +334,7 @@ hsm_logon() {
             # Trigger HSM logon by signing a temporary specimen file with signtool
             tmpfile=$(mktemp -t "$NAME.specimen.XXXXXX.cab")
             cp "$BASE_DIR/share/sign-file.sh/specimen.cab" "$tmpfile"
-            # Signtool does the actual logon
+            # Signtool does the actual HSM logon as a useful side effect of signing
             OPT_TIMESTAMP_SERVER='' OPT_TIMESTAMP_DIGEST='' signtool_sign "$tmpfile" >/dev/null
             # Discard the signed file
             rm "$tmpfile"
