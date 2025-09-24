@@ -327,7 +327,7 @@ hsm_logon() {
             tmpfile=$(mktemp -t "$NAME.specimen.XXXXXX.cab")
             cp "$BASE_DIR/share/sign-file.sh/specimen.cab" "$tmpfile"
             # Signtool does the actual logon
-            signtool_sign "$tmpfile" >/dev/null
+            OPT_TIMESTAMP_SERVER='' OPT_TIMESTAMP_DIGEST='' signtool_sign "$tmpfile" >/dev/null
             # Discard the signed file
             rm "$tmpfile"
             unset tmpfile
