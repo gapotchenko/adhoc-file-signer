@@ -164,7 +164,7 @@ fi
 # Environment
 # -----------------------------------------------------------------------------
 
-SCRIPT_DIR=$(dirname "$(readlink -fn -- "$0")")
+SCRIPT_DIR=$(cd "$(dirname -- "$(readlink -fn -- "$0" || echo "$0")")" && pwd)
 BASE_DIR=$(dirname "$SCRIPT_DIR")
 TMP_DIR=${TMPDIR-$(dirname "$(mktemp -u)")}
 
@@ -174,6 +174,22 @@ PATH="$PATH:$BASE_DIR/usr/bin"
 # -----------------------------------------------------------------------------
 # Auxilary Functions
 # -----------------------------------------------------------------------------
+
+log() {
+    echo "$1" >&2
+}
+
+on_exit() {
+    if [ "$1" -ne 0 ]; then
+        echo "$NAME: failed with status $1." >&2
+    fi
+    # Cleanup
+    [ -n "${tmpfile-}" ] && rm -f "$tmpfile" || true
+    # Preserve the status
+    exit "$1"
+}
+
+trap 'on_exit "$?"' EXIT
 
 # -------------------------------------
 # HSM
@@ -305,11 +321,18 @@ hsm_logon() {
     if hsm_is_used; then
         # Perform HSM logon only once per session
         if ! [ -f "$HSM_LOGON_MARK_FILE" ]; then
-            # Trigger HSM logon by signing a temporary dummy file with signtool
-            local tmpfile
-            tmpfile=$(mktemp -t "$NAME.XXXXXX.dummy")
-            signtool_sign "$tmpfile" 2>/dev/null >/dev/null || true
-            rm -f "$tmpfile"
+            log "HSM: attempting logon"
+
+            # Trigger HSM logon by signing a temporary specimen file with signtool
+            tmpfile=$(mktemp -t "$NAME.specimen.XXXXXX.cab")
+            cp "$BASE_DIR/share/sign-file.sh/specimen.cab" "$tmpfile"
+            # Signtool does the actual logon
+            signtool_sign "$tmpfile" >/dev/null
+            # Discard the signed file
+            rm "$tmpfile"
+            unset tmpfile
+
+            log "HSM: logon has been completed successfully"
 
             # Mark that HSM logon has been completed for this session
             hsm_mark_logon
