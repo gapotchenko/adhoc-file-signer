@@ -10,7 +10,7 @@ MODE=run
 
 # Parse options
 while [ $# -gt 0 ]; do
-    case "$1" in
+    case $1 in
     --help)
         echo "Usage: run.sh [develop] [--host <host>] [--port <port>]"
         exit
@@ -40,7 +40,7 @@ done
 
 # -----------------------------------------------------------------------------
 
-SCRIPT_DIR="$(dirname "$(readlink -fn -- "$0")")"
+SCRIPT_DIR=$(dirname "$(readlink -fn -- "$0")")
 cd "$SCRIPT_DIR"
 
 export DENO_FUTURE=1
