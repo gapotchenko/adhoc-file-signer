@@ -106,7 +106,7 @@ sha256_digest() {
 
 digest_verification_failed() {
     echo "$SERVER_PROTOCOL 400 Bad Request"
-    echo "Content-Type: text/plain;charset=UTF-8"
+    echo "Content-Type: text/plain;charset=utf-8"
     echo "Want-Repr-Digest: sha-256=1"
     echo
     echo "Digest verification failed"

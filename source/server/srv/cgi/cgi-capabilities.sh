@@ -16,7 +16,7 @@ fi
 echo "$SERVER_PROTOCOL 200 OK"
 
 # Send HTTP headers.
-echo "Content-Type: text/plain;charset=UTF-8"
+echo "Content-Type: text/plain;charset=utf-8"
 echo "Content-Length: 0"
 
 if [ -n "$RESPONSE_ACCEPT_ENCODING" ]; then
