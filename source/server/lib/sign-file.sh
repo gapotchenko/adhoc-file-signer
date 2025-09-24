@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 set -eu
 
@@ -218,7 +218,7 @@ call_nuget() {
 # -----------------------------------------------------------------------------
 
 signtool_sign() {
-    file=$1
+    local file=$1
 
     set -- # empty argv
 
@@ -254,7 +254,7 @@ signtool_sign() {
 }
 
 nuget_sign() {
-    file=$1
+    local file=$1
     detect_nuget
 
     echo "TODO NuGet" >&2
@@ -264,8 +264,11 @@ nuget_sign() {
 # -----------------------------------------------------------------------------
 
 run_on_windows() {
-    file=$OPT_FILE
+    local file=$OPT_FILE
+
+    local fileext
     fileext=$(get_file_extension "$file")
+
     case "$fileext" in
     nupkg)
         nuget_sign "$file"
