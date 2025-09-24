@@ -136,17 +136,34 @@ fi
 # -----------------------------------------------------------------------------
 
 SCRIPT_DIR="$(dirname "$(readlink -fn -- "$0")")"
+BASE_DIR="$(dirname "$SCRIPT_DIR")"
 
-# If in adhoc file signer server context
-if [ -d "$SCRIPT_DIR/hsm" ]; then
-    BASE_DIR="$(dirname "$SCRIPT_DIR")"
-    # Ensure that the tools we depend on are in PATH.
-    PATH="$PATH:$BASE_DIR/usr/bin"
-fi
+# Ensure that the tools we depend on are in PATH.
+PATH="$PATH:$BASE_DIR/usr/bin"
 
 # -----------------------------------------------------------------------------
-# Auxilary Functions for NuGet
+# Auxilary Functions
 # -----------------------------------------------------------------------------
+
+get_file_extension() {
+    expr "x$1" : '.*\.\([^.]*\)$' | tr '[:upper:]' '[:lower:]' || true
+}
+
+# -------------------------------------
+# Windows
+# -------------------------------------
+
+translate_windows_path() {
+    if [ -n "${WSL_DISTRO_NAME-}" ]; then
+        wslpath "$1"
+    else
+        printf '%s' "$1" | tr "\\\\" '/'
+    fi
+}
+
+# -------------------------------------
+# NuGet
+# -------------------------------------
 
 detect_nuget() {
     # shellcheck disable=SC2034
@@ -247,7 +264,7 @@ nuget_sign() {
 
 run_on_windows() {
     file=$OPT_FILE
-    fileext=$(expr "x$file" : '.*\.\([^.]*\)$' | tr '[:upper:]' '[:lower:]' || true)
+    fileext=$(get_file_extension "$file")
     case "$fileext" in
     nupkg)
         nuget_sign "$file"
