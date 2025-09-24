@@ -41,6 +41,14 @@ https://github.com/gapotchenko/adhoc-file-signer"
 }
 
 # -----------------------------------------------------------------------------
+# Helpers
+# -----------------------------------------------------------------------------
+
+get_file_extension() {
+    expr "x$1" : '.*\.\([^.]*\)$' | tr '[:upper:]' '[:lower:]' || true
+}
+
+# -----------------------------------------------------------------------------
 # Options
 # -----------------------------------------------------------------------------
 
@@ -119,6 +127,27 @@ while [ $# -gt 0 ]; do
     esac
 done
 
+# Validate options
+
+if [ -n "$OPT_CERTIFICATE_FILE" ] && [ -z "$OPT_CERTIFICATE_PASSWORD" ]; then
+    case $(get_file_extension "$OPT_CERTIFICATE_FILE") in
+    pfx | p12)
+        echo "$NAME: a .pfx/.p12 certificate file is specified, but the certificate password is not provided." >&2
+        exit 2
+        ;;
+    esac
+fi
+
+if ! [ -n "$OPT_FILE_DIGEST" ]; then
+    echo "$NAME: file digest algorithm is not specified." >&2
+    exit 2
+fi
+
+if [ -n "$OPT_TIMESTAMP_SERVER" ] && [ -z "$OPT_TIMESTAMP_DIGEST" ]; then
+    echo "$NAME: timestamp server URL is specified, but timestamp digest algorithm is not provided." >&2
+    exit 2
+fi
+
 # Complete positional arguments
 while [ $# -gt 0 ]; do
     opt_add_file "$1"
@@ -145,10 +174,6 @@ PATH="$PATH:$BASE_DIR/usr/bin"
 # -----------------------------------------------------------------------------
 # Auxilary Functions
 # -----------------------------------------------------------------------------
-
-get_file_extension() {
-    expr "x$1" : '.*\.\([^.]*\)$' | tr '[:upper:]' '[:lower:]' || true
-}
 
 # -------------------------------------
 # Windows
@@ -259,12 +284,12 @@ nuget_sign() {
     detect_nuget
 
     local certthumb
-    if [ $(get_file_extension "$OPT_CERTIFICATE_FILE") = "cer" ]; then
-       # Public key certificate in DER format.
-       certthumb=$(sha256sum $(translate_windows_path "$OPT_CERTIFICATE_FILE") | awk '{print $1}')
+    if [ "$(get_file_extension "$OPT_CERTIFICATE_FILE")" = "cer" ]; then
+        # Public key certificate in DER format.
+        certthumb=$(sha256sum "$(translate_windows_path "$OPT_CERTIFICATE_FILE")" | awk '{print $1}')
     else
-       # Private key certificate in PKCS#12 container format.
-       certthumb=
+        # Private key certificate in PKCS#12 container format.
+        certthumb=
     fi
 
     echo "TODO NuGet" >&2
