@@ -5,7 +5,7 @@
 set -eu
 
 log() {
-    echo "${1-}"
+    echo "$@"
 }
 
 translate_windows_path() {
