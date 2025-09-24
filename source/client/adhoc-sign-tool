@@ -53,11 +53,11 @@ OPT_FILES=""
 OPT_DRY=""
 OPT_VERBOSE=""
 
-HAS_STDIN_FILE=0
+OPT_HAS_STDIN_FILE=0
 
 add_file_option() {
     if [ "$1" = "-" ]; then
-        HAS_STDIN_FILE=1
+        OPT_HAS_STDIN_FILE=1
     fi
 
     if [ -z "$OPT_FILES" ]; then
@@ -185,7 +185,7 @@ normalize_server_url_option
 # -----------------------------------------------------------------------------
 
 log() {
-    if [ $HAS_STDIN_FILE -eq 1 ]; then
+    if [ $OPT_HAS_STDIN_FILE -eq 1 ]; then
         echo "$1" >&2
     else
         echo "$1"
