@@ -2,8 +2,8 @@
 
 set -eu
 
-SCRIPT_DIR="$(dirname "$(readlink -fn -- "$0")")"
-BASE_DIR="$(dirname "$SCRIPT_DIR")"
+SCRIPT_DIR=$(dirname "$(readlink -fn -- "$0")")
+BASE_DIR=$(dirname "$SCRIPT_DIR")
 
 OS=$(uname -o)
 
@@ -11,10 +11,23 @@ log() {
     echo "${1-}"
 }
 
-log "Host system: $OS"
+initialize_host() {
+    log "Host system: $OS"
 
-# Clean up any leftover session-scoped temporary files from previous runs.
-rm -rf /var/tmp/adhoc-file-signer
+    if [ -z "${TMPDIR-}" ]; then
+        tmpfile=$(mktemp)
+        rm -f "$tmpfile"
+        TMPDIR=$(dirname "$tmpfile")
+    fi
+
+    TMPDIR="$TMPDIR/adhoc-file-signer"
+
+    # Clean up any leftover temporary files from previous runs.
+    rm -rf "$TMPDIR"
+
+    # Ensure temporary directory exists.
+    mkdir -p "$TMPDIR"
+}
 
 initialize_hsm() {
     log "HSM: initialization started..."
@@ -51,6 +64,8 @@ initialize_hsm() {
 
     log "HSM: initialization done."
 }
+
+initialize_host
 
 if [ -n "${GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE-}" ] &&
     [ -z "${GP_ADHOC_FILE_SIGNER_CERTIFICATE_PASSWORD-}" ]; then
