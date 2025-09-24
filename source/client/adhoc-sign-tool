@@ -125,19 +125,19 @@ done
 
 # Validate options
 
-missing_option_error() {
+opt_error_missing() {
     echo "$NAME: $1 is not specified." >&2
     exit 2
 }
 
 if [ -z "$OPT_COMMAND" ]; then
-    missing_option_error 'command'
+    opt_error_missing 'command'
 fi
 if [ -z "$OPT_SERVER_URL" ]; then
-    missing_option_error 'server URL'
+    opt_error_missing 'server URL'
 fi
 if [ -z "$OPT_API_KEY" ]; then
-    missing_option_error 'API key'
+    opt_error_missing 'API key'
 fi
 
 if [ -n "$OPT_DRY" ]; then
@@ -174,11 +174,11 @@ esac
 
 # Options normalization
 
-normalize_server_url_option() {
+opt_normalize_server_url() {
     OPT_SERVER_URL=${OPT_SERVER_URL%/}
 }
 
-normalize_server_url_option
+opt_normalize_server_url
 
 # -----------------------------------------------------------------------------
 # Auxilary Functions
@@ -246,7 +246,7 @@ curl -fsSL -D "$hdrfile" --compressed -I -H "$USER_AGENT_HTTP_HEADER" "$OPT_SERV
 new_location="$(get_response_header Location | tail -n1)"
 if [ -n "$new_location" ]; then
     OPT_SERVER_URL="$new_location"
-    normalize_server_url_option
+    opt_normalize_server_url
     [ -n "$OPT_VERBOSE" ] && verbose "Server URL is redirected to $OPT_SERVER_URL location." || true
 else
     [ -n "$OPT_VERBOSE" ] && verbose "No server URL redirections found." || true
@@ -478,6 +478,7 @@ digestfile2=$(mktemp -t "$NAME.digest2.XXXXXX")
 # Preserve the original stdin on FD 3
 exec 3<&0
 
+# Process files
 echo "$OPT_FILES" | awk '!seen[$0]++' | while IFS= read -r file; do
     # Give process_file the real stdin, not the pipeline
     process_file "$file" <&3
