@@ -4,9 +4,9 @@ set -eu
 
 # -----------------------------------------------------------------------------
 
-HOST=localhost
-PORT=3205
-MODE=run
+OPT_HOST=localhost
+OPT_PORT=3205
+OPT_MODE=run
 
 # Parse options
 while [ $# -gt 0 ]; do
@@ -16,15 +16,15 @@ while [ $# -gt 0 ]; do
         exit
         ;;
     develop)
-        MODE=develop
+        OPT_MODE=develop
         shift
         ;;
     --host)
-        HOST="$2"
+        OPT_HOST="$2"
         shift 2
         ;;
     --port)
-        PORT="$2"
+        OPT_PORT="$2"
         shift 2
         ;;
     --)
@@ -55,7 +55,7 @@ deno_config() {
 }
 
 deno_sandbox() {
-    deno_config serve --host "$HOST" --port "$PORT" --allow-net '--allow-run=/bin/sh,gnu-tk' '--allow-env=GP_ADHOC_FILE_SIGNER_*' "$@"
+    deno_config serve --host "$OPT_HOST" --port "$OPT_PORT" --allow-net '--allow-run=/bin/sh,gnu-tk' '--allow-env=GP_ADHOC_FILE_SIGNER_*' "$@"
 }
 
 deno_run() {
@@ -64,10 +64,10 @@ deno_run() {
 
 # -----------------------------------------------------------------------------
 
-if [ "$MODE" = "run" ]; then
+if [ "$OPT_MODE" = "run" ]; then
     # Run the app
     deno_run serve.ts
-elif [ "$MODE" = "develop" ]; then
+elif [ "$OPT_MODE" = "develop" ]; then
     # Development run
     deno_sandbox --watch serve.ts
 else
