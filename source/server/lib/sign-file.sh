@@ -278,6 +278,14 @@ signtool_sign() {
     signtool sign "$@" "$file"
 }
 
+hsm_logon() {
+    # Logon to HSM using signtool with a dummy file to sign
+    local tmpfile
+    tmpfile=$(mktemp -t "$NAME.XXXXXX.dummy")
+    signtool_sign "$tmpfile" 2>/dev/null >/dev/null || true
+    rm -f "$tmpfile"
+}
+
 nuget_sign() {
     local file=$1
 
@@ -291,6 +299,8 @@ nuget_sign() {
         # Private key certificate in PKCS#12 container format.
         certthumb=
     fi
+
+    hsm_logon
 
     echo "TODO NuGet" >&2
     exit 1
