@@ -176,6 +176,25 @@ PATH="$PATH:$BASE_DIR/usr/bin"
 # -----------------------------------------------------------------------------
 
 # -------------------------------------
+# HSM
+# -------------------------------------
+
+hsm_is_used() {
+    if [ -n "$OPT_CERTIFICATE_FILE" ] && [ -z "$OPT_CERTIFICATE_PASSWORD" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+HSM_LOGON_MARK_FILE="$TMP_DIR/adhoc-file-signer/run/hsm-logon-mark"
+
+hsm_mark_logon() {
+    mkdir -p "$(dirname "$HSM_LOGON_MARK_FILE")"
+    echo >"$HSM_LOGON_MARK_FILE"
+}
+
+# -------------------------------------
 # Windows
 # -------------------------------------
 
@@ -276,14 +295,26 @@ signtool_sign() {
 
     # Call signtool
     signtool sign "$@" "$file"
+
+    if hsm_is_used; then
+        hsm_mark_logon
+    fi
 }
 
 hsm_logon() {
-    # Logon to HSM using signtool with a dummy file to sign
-    local tmpfile
-    tmpfile=$(mktemp -t "$NAME.XXXXXX.dummy")
-    signtool_sign "$tmpfile" 2>/dev/null >/dev/null || true
-    rm -f "$tmpfile"
+    if hsm_is_used; then
+        # Perform HSM logon only once per session
+        if ! [ -f "$HSM_LOGON_MARK_FILE" ]; then
+            # Trigger HSM logon by signing a temporary dummy file with signtool
+            local tmpfile
+            tmpfile=$(mktemp -t "$NAME.XXXXXX.dummy")
+            signtool_sign "$tmpfile" 2>/dev/null >/dev/null || true
+            rm -f "$tmpfile"
+
+            # Mark that HSM logon has been completed for this session
+            hsm_mark_logon
+        fi
+    fi
 }
 
 nuget_sign() {
