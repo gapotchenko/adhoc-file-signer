@@ -181,7 +181,7 @@ log() {
 
 on_exit() {
     if [ "$1" -ne 0 ]; then
-        echo "$NAME: failed with status $1." >&2
+        log "$NAME: failed with status $1."
     fi
     # Cleanup
     [ -n "${tmpfile-}" ] && rm -f "$tmpfile" || true
@@ -190,25 +190,6 @@ on_exit() {
 }
 
 trap 'on_exit "$?"' EXIT
-
-# -------------------------------------
-# HSM
-# -------------------------------------
-
-hsm_is_used() {
-    if [ -n "$OPT_CERTIFICATE_FILE" ] && [ -z "$OPT_CERTIFICATE_PASSWORD" ]; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-HSM_LOGON_MARK_FILE="$TMP_DIR/adhoc-file-signer/run/hsm-logon-mark"
-
-hsm_mark_logon() {
-    mkdir -p "$(dirname "$HSM_LOGON_MARK_FILE")"
-    echo >"$HSM_LOGON_MARK_FILE"
-}
 
 # -------------------------------------
 # Windows
@@ -273,6 +254,33 @@ call_nuget() {
     fi
 }
 
+# -------------------------------------
+# HSM
+# -------------------------------------
+
+hsm_is_used() {
+    if [ -n "$OPT_CERTIFICATE_FILE" ] && [ -z "$OPT_CERTIFICATE_PASSWORD" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+HSM_LOGON_MARK_FILE="$TMP_DIR/adhoc-file-signer/run/hsm-logon-mark"
+
+hsm_mark_logon() {
+    mkdir -p "$(dirname "$HSM_LOGON_MARK_FILE")"
+    echo >"$HSM_LOGON_MARK_FILE"
+}
+
+hsm_logon_marked() {
+    if [ -f "$HSM_LOGON_MARK_FILE" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 # -----------------------------------------------------------------------------
 # Core Functionality
 # -----------------------------------------------------------------------------
@@ -320,7 +328,7 @@ signtool_sign() {
 hsm_logon() {
     if hsm_is_used; then
         # Perform HSM logon only once per session
-        if ! [ -f "$HSM_LOGON_MARK_FILE" ]; then
+        if ! hsm_logon_marked; then
             log "HSM: attempting logon"
 
             # Trigger HSM logon by signing a temporary specimen file with signtool
