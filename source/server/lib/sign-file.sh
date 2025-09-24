@@ -135,8 +135,9 @@ fi
 # Environment
 # -----------------------------------------------------------------------------
 
-SCRIPT_DIR="$(dirname "$(readlink -fn -- "$0")")"
-BASE_DIR="$(dirname "$SCRIPT_DIR")"
+SCRIPT_DIR=$(dirname "$(readlink -fn -- "$0")")
+BASE_DIR=$(dirname "$SCRIPT_DIR")
+TMP_DIR=${TMPDIR-$(dirname "$(mktemp -u)")}
 
 # Ensure that the tools we depend on are in PATH.
 PATH="$PATH:$BASE_DIR/usr/bin"
