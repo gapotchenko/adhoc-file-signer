@@ -255,7 +255,17 @@ signtool_sign() {
 
 nuget_sign() {
     local file=$1
+
     detect_nuget
+
+    local certthumb
+    if [ $(get_file_extension "$OPT_CERTIFICATE_FILE") = "cer" ]; then
+       # Public key certificate in DER format.
+       certthumb=$(sha256sum $(translate_windows_path "$OPT_CERTIFICATE_FILE") | awk '{print $1}')
+    else
+       # Private key certificate in PKCS#12 container format.
+       certthumb=
+    fi
 
     echo "TODO NuGet" >&2
     exit 1
