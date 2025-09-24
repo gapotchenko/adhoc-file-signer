@@ -150,13 +150,13 @@ if [ -n "$DRY" ]; then
     esac
 fi
 
-# Complete parsing the rest of positional arguments
+# Complete positional arguments
 while [ $# -gt 0 ]; do
     add_file "$1"
     shift
 done
 
-# Validate positional arguments
+# Validate positional options
 case "$COMMAND" in
 echo | sign)
     if [ -z "$FILES" ]; then
