@@ -55,7 +55,7 @@ OPT_VERBOSE=""
 
 OPT_HAS_STDIN_FILE=0
 
-add_file_option() {
+opt_add_file() {
     if [ "$1" = "-" ]; then
         OPT_HAS_STDIN_FILE=1
     fi
@@ -96,7 +96,7 @@ while [ $# -gt 0 ]; do
         break
         ;;
     -)
-        add_file_option "$1"
+        opt_add_file "$1"
         shift
         ;;
     -*)
@@ -116,7 +116,7 @@ while [ $# -gt 0 ]; do
                 ;;
             esac
         else
-            add_file_option "$1"
+            opt_add_file "$1"
         fi
         shift
         ;;
@@ -152,7 +152,7 @@ fi
 
 # Complete positional arguments
 while [ $# -gt 0 ]; do
-    add_file_option "$1"
+    opt_add_file "$1"
     shift
 done
 
