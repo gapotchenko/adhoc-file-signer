@@ -11,22 +11,13 @@ log() {
     echo "${1-}"
 }
 
+TMP_DIR=${TMPDIR-$(dirname "$(mktemp -u)")}
+
 initialize_host() {
     log "Host system: $OS"
 
-    if [ -z "${TMPDIR-}" ]; then
-        tmpfile=$(mktemp)
-        rm -f "$tmpfile"
-        TMPDIR=$(dirname "$tmpfile")
-    fi
-
-    TMPDIR="$TMPDIR/adhoc-file-signer"
-
-    # Clean up any leftover temporary files from previous runs.
-    rm -rf "$TMPDIR"
-
-    # Ensure temporary directory exists.
-    mkdir -p "$TMPDIR"
+    # Clean up any leftover session-scoped temporary files from previous runs.
+    rm -rf "$TMP_DIR/adhoc-file-signer/run"
 }
 
 initialize_hsm() {
