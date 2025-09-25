@@ -450,7 +450,8 @@ nuget_sign() {
         else
             # Failure
             if [ "$state" -eq 2 ]; then
-                # HSM logon has been retried but the operation failed
+                # HSM logon has been retried but the operation failed.
+                # Invalidate the logon to prevent future retries.
                 hsm_invalidate_logon
             fi
             return "$status"
