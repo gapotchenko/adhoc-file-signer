@@ -3,7 +3,7 @@
 The client tools provide functionality for interacting with the
 [Adhoc File Signer Server](https://github.com/gapotchenko/adhoc-file-signer/tree/main/source/server).
 
-## Download
+## Installation
 
 The client tools are available from the
 [project releases page](https://github.com/gapotchenko/adhoc-file-signer/releases).
@@ -12,6 +12,8 @@ They are distributed as a portable archive:
 ```
 adhoc-file-signer-X.Y.Z-client-portable.tar.gz
 ```
+
+Once the archive is unpacked, the tools are ready to use.
 
 ## Getting Started
 
