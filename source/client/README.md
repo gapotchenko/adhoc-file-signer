@@ -58,7 +58,7 @@ On Windows, you may need to install [GNU-TK](https://github.com/gapotchenko/gnu-
 
 ### adhoc-sign-tool
 
-`adhoc-sign-tool` command-line utility provides file-signing and diagnostic
+`adhoc-sign-tool` command-line utility provides file signing and diagnostic
 capabilities.
 
 #### Usage
