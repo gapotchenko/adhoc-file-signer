@@ -281,6 +281,10 @@ hsm_mark_logon() {
     echo >"$HSM_LOGON_MARK_FILE"
 }
 
+hsm_invalidate_logon() {
+    rm -f "$HSM_LOGON_MARK_FILE"
+}
+
 hsm_logon_marked() {
     if [ -f "$HSM_LOGON_MARK_FILE" ]; then
         return 0
@@ -342,8 +346,10 @@ hsm_logon() {
             # Trigger HSM logon by signing a temporary specimen file with signtool
             tmpfile=$(mktemp -t "$NAME.specimen.XXXXXX.cab")
             cp "$BASE_DIR/share/sign-file.sh/specimen.cab" "$tmpfile"
+
             # Signtool does the actual HSM logon as a useful side effect of signing
             OPT_TIMESTAMP_SERVER='' OPT_TIMESTAMP_DIGEST='' signtool_sign "$tmpfile" >/dev/null
+
             # Discard the signed file
             rm "$tmpfile"
             unset tmpfile
@@ -370,42 +376,78 @@ nuget_sign() {
         certthumb=
     fi
 
-    hsm_logon
-
-    set -- # empty argv
-
-    # Certificate parameters
-    if [ -n "$certthumb" ]; then
-        set -- "$@" "$NUGET_ARG_CERTIFICATE_FINGERPRINT" "$certthumb"
-    else
-        if [ -n "$OPT_CERTIFICATE_FILE" ]; then
-            set -- "$@" "$NUGET_ARG_CERTIFICATE_PATH" "$OPT_CERTIFICATE_FILE"
+    local state=0
+    while :; do
+        if [ "$state" -eq 0 ] && hsm_is_used && hsm_logon_marked; then
+            state=1 # HSM logon may be retried if it is expired
         fi
-        if [ -n "$OPT_CERTIFICATE_PASSWORD" ]; then
-            set -- "$@" "$NUGET_ARG_CERTIFICATE_PASSWORD" "$OPT_CERTIFICATE_PASSWORD"
+
+        hsm_logon
+
+        set -- # empty argv
+
+        # Certificate parameters
+        if [ -n "$certthumb" ]; then
+            set -- "$@" "$NUGET_ARG_CERTIFICATE_FINGERPRINT" "$certthumb"
+        else
+            if [ -n "$OPT_CERTIFICATE_FILE" ]; then
+                set -- "$@" "$NUGET_ARG_CERTIFICATE_PATH" "$OPT_CERTIFICATE_FILE"
+            fi
+            if [ -n "$OPT_CERTIFICATE_PASSWORD" ]; then
+                set -- "$@" "$NUGET_ARG_CERTIFICATE_PASSWORD" "$OPT_CERTIFICATE_PASSWORD"
+            fi
         fi
-    fi
 
-    # Signing parameters
-    if [ -n "$OPT_FILE_DIGEST" ]; then
-        set -- "$@" "$NUGET_ARG_HASH_ALGORITHM" "$OPT_FILE_DIGEST"
-    fi
+        # Signing parameters
+        if [ -n "$OPT_FILE_DIGEST" ]; then
+            set -- "$@" "$NUGET_ARG_HASH_ALGORITHM" "$OPT_FILE_DIGEST"
+        fi
 
-    # Timestamping parameters
-    if [ -n "$OPT_TIMESTAMP_SERVER" ]; then
-        set -- "$@" "$NUGET_ARG_TIMESTAMPER" "$OPT_TIMESTAMP_SERVER"
-    fi
-    if [ -n "$OPT_TIMESTAMP_DIGEST" ]; then
-        set -- "$@" "$NUGET_ARG_TIMESTAMP_HASH_ALGORITHM" "$OPT_TIMESTAMP_DIGEST"
-    fi
+        # Timestamping parameters
+        if [ -n "$OPT_TIMESTAMP_SERVER" ]; then
+            set -- "$@" "$NUGET_ARG_TIMESTAMPER" "$OPT_TIMESTAMP_SERVER"
+        fi
+        if [ -n "$OPT_TIMESTAMP_DIGEST" ]; then
+            set -- "$@" "$NUGET_ARG_TIMESTAMP_HASH_ALGORITHM" "$OPT_TIMESTAMP_DIGEST"
+        fi
 
-    # Other
-    if [ -n "$NUGET_ARG_NON_INTERACTIVE" ]; then
-        set -- "$@" -f "$NUGET_ARG_NON_INTERACTIVE"
-    fi
+        # Other
+        if [ -n "$NUGET_ARG_NON_INTERACTIVE" ]; then
+            set -- "$@" -f "$NUGET_ARG_NON_INTERACTIVE"
+        fi
 
-    # Call NuGet
-    call_nuget sign "$file" "$@" "$NUGET_ARG_OVERWRITE"
+        if [ "$state" -eq 1 ]; then
+            # Backup the file
+            tmpfile=$(mktemp -t "$NAME.nuget.XXXXXX.bak")
+            cp "$file" "$tmpfile"
+        fi
+
+        # Call NuGet
+        call_nuget sign "$file" "$@" "$NUGET_ARG_OVERWRITE" || true
+        local status=$?
+
+        if [ "$state" -eq 1 ]; then
+            if [ "$status" -eq 0 ]; then
+                # Success
+                rm "$tmpfile"
+                unset tmpfile
+                break
+            else
+                log "NuGet failure might be caused by an expired HSM logon."
+
+                # Restore the file just in case
+                mv -f "$tmpfile" "$file"
+                unset tmpfile
+
+                log "Retrying the operation with a fresh HSM logon."
+                hsm_invalidate_logon
+
+                state=2 # HSM logon is retried
+            fi
+        else
+            return "$status"
+        fi
+    done
 }
 
 # -----------------------------------------------------------------------------
