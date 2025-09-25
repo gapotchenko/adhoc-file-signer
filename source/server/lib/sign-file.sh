@@ -433,7 +433,7 @@ nuget_sign() {
                 unset tmpfile
                 break
             else
-                log "NuGet failure might be caused by an expired HSM logon."
+                log "NuGet operation failure might be caused by an expired HSM logon."
 
                 # Restore the file just in case
                 mv -f "$tmpfile" "$file"
