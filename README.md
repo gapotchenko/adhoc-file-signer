@@ -6,7 +6,7 @@ automated file signing. Despite its small footprint, it supports Authenticode
 good enough solution for CI/CD pipelines and secure build environments.
 
 The architecture of `adhoc-file-signer` follows the Unix philosophy by
-assembling small, reliable components into a configurable and extensible system.
+assembling small tunable components into a configurable and extensible system.
 
 The project consists of two main components:
 
