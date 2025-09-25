@@ -444,7 +444,15 @@ nuget_sign() {
 
                 state=2 # HSM logon is retried
             fi
+        elif [ "$status" -eq 0 ]; then
+            # Success
+            break
         else
+            # Failure
+            if [ "$state" -eq 2 ]; then
+                # HSM logon has been retried but the operation failed
+                hsm_invalidate_logon
+            fi
             return "$status"
         fi
     done
