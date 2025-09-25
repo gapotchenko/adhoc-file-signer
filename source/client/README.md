@@ -7,7 +7,7 @@ The client tools provide functionality for interacting with the
 
 The client tools are available from the
 [project releases page](https://github.com/gapotchenko/adhoc-file-signer/releases).
-They are distributed as an archive named:
+They are distributed as a portable archive:
 
 ```
 adhoc-file-signer-X.Y.Z-client.tar.gz
