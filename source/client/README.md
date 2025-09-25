@@ -10,7 +10,7 @@ The client tools are available from the
 They are distributed as a portable archive:
 
 ```
-adhoc-file-signer-X.Y.Z-client.tar.gz
+adhoc-file-signer-X.Y.Z-client-portable.tar.gz
 ```
 
 ## Getting Started
