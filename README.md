@@ -19,7 +19,7 @@ produced files without exposing sensitive cryptographic material.
 
 ## Getting Started
 
-TODO
+- [Guide for Windows](https://example.com/)
 
 ## Supported Platforms
 
