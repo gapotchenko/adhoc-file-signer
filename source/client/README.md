@@ -93,7 +93,7 @@ adhoc-sign-tool sign contoso-works.msi
 ```
 
 For the command to succeed, `adhoc-sign-tool` must know the server URL and API
-key. These can be passed as command-line options, or alternatively provided via
+key. These can be passed as `--server` and `--api-key` command-line options, or alternatively provided via
 the environment variables:
 
 - `GP_ADHOC_FILE_SIGNER_SERVER` — the server URL, e.g.
