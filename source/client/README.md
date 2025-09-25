@@ -15,6 +15,9 @@ adhoc-file-signer-X.Y.Z-client-portable.tar.gz
 
 Once the archive is unpacked, the tools are ready to use.
 
+The tools have no specific prerequisites as they are written using standard-compliant POSIX shell script.
+On Windows, you may need to install [GNU-TK](https://github.com/gapotchenko/gnu-tk) first to get seamless access to GNU/POSIX environment.
+
 ## Getting Started
 
 1. **Set up environment variables**:
@@ -25,7 +28,7 @@ Once the archive is unpacked, the tools are ready to use.
    ```
 
    If you prefer not to use environment variables, the corresponding parameters
-   must be provided in each command.
+   must be provided in each command via command-line arguments. See `adhoc-sign-tool --help` for details.
 
 2. **Verify connectivity** with the server:
 
