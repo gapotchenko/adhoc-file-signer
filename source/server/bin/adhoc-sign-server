@@ -6,11 +6,11 @@ set -eu
 # Help
 # -----------------------------------------------------------------------------
 
-NAME=run.sh
+NAME=adhoc-sign-server
 VERSION=0.0.0
 
 help() {
-    echo "adhoc-file-signer/server  Version $VERSION
+    echo "$NAME  Version $VERSION
 Copyright © Gapotchenko and Contributors
 
 Runs the 'adhoc-file-signer' server.
@@ -171,7 +171,7 @@ run_http() {
 
 # -----------------------------------------------------------------------------
 
-log "adhoc-file-signer/server  Version $VERSION"
+log "$NAME  Version $VERSION"
 
 validate_configuration
 initialize_host
