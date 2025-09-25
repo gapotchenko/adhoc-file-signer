@@ -15,8 +15,10 @@ adhoc-file-signer-X.Y.Z-client-portable.tar.gz
 
 Once the archive is unpacked, the tools are ready to use.
 
-The tools have no specific prerequisites as they are implemented in standard-compliant POSIX shell script.
-On Windows, you may need to install [GNU-TK](https://github.com/gapotchenko/gnu-tk) (which includes a minimal GNU/POSIX environment) to ensure seamless usage.
+The tools have no specific prerequisites as they are implemented in
+standard-compliant POSIX shell script. On Windows, you may need to install
+[GNU-TK](https://github.com/gapotchenko/gnu-tk) (which includes a minimal
+GNU/POSIX environment) to ensure seamless usage.
 
 ## Getting Started
 
@@ -28,7 +30,8 @@ On Windows, you may need to install [GNU-TK](https://github.com/gapotchenko/gnu-
    ```
 
    If you prefer not to use environment variables, the corresponding parameters
-   must be provided in each command via command-line arguments. See `adhoc-sign-tool --help` for details.
+   must be provided in each command via command-line arguments. See
+   `adhoc-sign-tool --help` for details.
 
 2. **Verify connectivity** with the server:
 
@@ -93,8 +96,8 @@ adhoc-sign-tool sign contoso-works.msi
 ```
 
 For the command to succeed, `adhoc-sign-tool` must know the server URL and API
-key. These can be passed as `--server` and `--api-key` command-line options, or alternatively provided via
-the environment variables:
+key. These can be passed as `--server` and `--api-key` command-line options, or
+alternatively provided via the environment variables:
 
 - `GP_ADHOC_FILE_SIGNER_SERVER` — the server URL, e.g.
   `https://your-machine.example.ts.net/adhoc-file-signer`
