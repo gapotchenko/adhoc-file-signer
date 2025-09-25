@@ -15,7 +15,7 @@ adhoc-file-signer-X.Y.Z-client-portable.tar.gz
 
 Once the archive is unpacked, the tools are ready to use.
 
-The tools have no specific prerequisites as they are implemented in standard-compliant POSIX shell scripts.
+The tools have no specific prerequisites as they are implemented in standard-compliant POSIX shell script.
 On Windows, you may need to install [GNU-TK](https://github.com/gapotchenko/gnu-tk) (which includes a minimal GNU/POSIX environment) to ensure seamless usage.
 
 ## Getting Started
