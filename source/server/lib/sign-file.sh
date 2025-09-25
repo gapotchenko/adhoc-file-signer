@@ -136,19 +136,19 @@ done
 if [ -z "$OPT_CERTIFICATE_PASSWORD" ]; then
     case $(get_file_extension "$OPT_CERTIFICATE_FILE") in
     pfx | p12)
-        echo "$NAME: a .pfx/.p12 certificate file is specified, but the certificate password is not provided." >&2
+        echo "$NAME: a .pfx/.p12 certificate file is configured, but the certificate password is missing." >&2
         exit 2
         ;;
     esac
 fi
 
 if [ -z "$OPT_FILE_DIGEST" ]; then
-    echo "$NAME: file digest algorithm is not specified." >&2
+    echo "$NAME: file digest algorithm is not configured." >&2
     exit 2
 fi
 
 if [ -n "$OPT_TIMESTAMP_SERVER" ] && [ -z "$OPT_TIMESTAMP_DIGEST" ]; then
-    echo "$NAME: timestamp server URL is specified, but timestamp digest algorithm is not provided." >&2
+    echo "$NAME: timestamp server URL is configured, but timestamp digest algorithm is missing." >&2
     exit 2
 fi
 
