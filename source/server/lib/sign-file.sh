@@ -2,6 +2,10 @@
 
 set -eu
 
+# -----------------------------------------------------------------------------
+# Help
+# -----------------------------------------------------------------------------
+
 NAME=sign-file.sh
 VERSION=0.0.0
 
@@ -41,7 +45,7 @@ https://github.com/gapotchenko/adhoc-file-signer"
 }
 
 # -----------------------------------------------------------------------------
-# Helpers
+# Functions
 # -----------------------------------------------------------------------------
 
 get_file_extension() {
@@ -129,7 +133,7 @@ done
 
 # Validate options
 
-if [ -n "$OPT_CERTIFICATE_FILE" ] && [ -z "$OPT_CERTIFICATE_PASSWORD" ]; then
+if [ -z "$OPT_CERTIFICATE_PASSWORD" ]; then
     case $(get_file_extension "$OPT_CERTIFICATE_FILE") in
     pfx | p12)
         echo "$NAME: a .pfx/.p12 certificate file is specified, but the certificate password is not provided." >&2
@@ -138,7 +142,7 @@ if [ -n "$OPT_CERTIFICATE_FILE" ] && [ -z "$OPT_CERTIFICATE_PASSWORD" ]; then
     esac
 fi
 
-if ! [ -n "$OPT_FILE_DIGEST" ]; then
+if [ -z "$OPT_FILE_DIGEST" ]; then
     echo "$NAME: file digest algorithm is not specified." >&2
     exit 2
 fi
@@ -179,9 +183,13 @@ log() {
     echo "$@" >&2
 }
 
+error() {
+    echo "$@" >&2
+}
+
 on_exit() {
     if [ "$1" -ne 0 ]; then
-        log "$NAME: failed with status $1."
+        error "$NAME: failed with status $1."
     fi
     # Cleanup
     [ -n "${tmpfile-}" ] && rm -f "$tmpfile" || true
@@ -241,7 +249,7 @@ detect_nuget() {
         NUGET_ARG_TIMESTAMPER=--timestamper
         NUGET_ARG_TIMESTAMP_HASH_ALGORITHM=--timestamp-hash-algorithm
     else
-        echo "NuGet tool is not found." >&2
+        error "NuGet tool is not found."
         exit 1
     fi
 }
