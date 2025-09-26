@@ -36,3 +36,25 @@ The server runs in a POSIX environment, which makes the implementation cross-pla
 On Unix-like systems, POSIX is available by default.
 On Windows, the server relies on [GNU-TK](https://github.com/gapotchenko/gnu-tk) to provide this environment.
 
+## Getting Started
+
+1. **Define server configuration** in environment variables:
+
+   ```sh
+   # Certificate parameters
+   export GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE="my-company.cer"
+   export GP_ADHOC_FILE_SIGNER_CERTIFICATE_PASSWORD="secret"
+
+   # Signing parameters
+   export GP_ADHOC_FILE_SIGNER_FILE_DIGEST="sha256"
+
+   # Timestamping parameters
+   export GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER="http://timestamp.digicert.com/"
+   export GP_ADHOC_FILE_SIGNER_TIMESTAMP_DIGEST="sha256"
+   ```
+
+2. **Run** the server:
+
+   ```sh
+   adhoc-sign-server
+   ```
