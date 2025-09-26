@@ -344,7 +344,7 @@ hsm_logon() {
             log "HSM: attempting logon"
 
             # Trigger HSM logon by signing a temporary specimen file with signtool
-            tmpfile=$(mktemp -t "$NAME.specimen.XXXXXX.cab")
+            tmpfile=$(mktemp -t "$NAME.specimen.cab.XXXXXX")
             cp "$BASE_DIR/share/sign-file.sh/specimen.cab" "$tmpfile"
 
             # Signtool does the actual HSM logon as a useful side effect of signing
@@ -418,7 +418,7 @@ nuget_sign() {
 
         if [ "$state" -eq 1 ]; then
             # Backup the file
-            tmpfile=$(mktemp -t "$NAME.nuget.XXXXXX.bak")
+            tmpfile=$(mktemp -t "$NAME.nuget.bak.XXXXXX")
             cp "$file" "$tmpfile"
         fi
 
