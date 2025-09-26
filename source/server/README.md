@@ -23,7 +23,7 @@ It is distributed as a portable archive:
 adhoc-file-signer-X.Y.Z-server-portable.tar.gz
 ```
 
-Once the archive is unpacked to a directory, the server is ready to use.
+Once the archive is unpacked to a dedicated directory, the server is ready to use.
 
 ## Requirements
 
