@@ -1,4 +1,4 @@
-# Adhoc File Signer Client
+# Adhoc File Signer Client Tools
 
 The client tools provide functionality for interacting with the
 [Adhoc File Signer Server](https://github.com/gapotchenko/adhoc-file-signer/tree/main/source/server).
