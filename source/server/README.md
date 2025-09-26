@@ -8,7 +8,7 @@ The HTTP frontend is implemented in Deno and executes CGI scripts to handle requ
 This design isolates the core logic in standalone scripts while ensuring secure interaction with clients through a controlled process model.
 
 Client authorization is implemented via a simple API key mechanism.
-For secure communication, the server is intended to run behind a TLS-terminating HTTP proxy which provides traffic encryption.
+For secure communication, the server is intended to run behind a TLS-terminating HTTP proxy, which provides traffic encryption.
 
 
 ## Installation
@@ -29,7 +29,7 @@ Adhoc File Signer Server requires the following tools to be available on the com
 2. [GNU-TK](https://github.com/gapotchenko/gnu-tk) (required only on Windows)
 3. [zstd](https://github.com/facebook/zstd) (optional; provides more efficient data compression when available)
 
-The server runs in a POSIX environment which makes the implementation cross-platform by design.
+The server runs in a POSIX environment, which makes the implementation cross-platform by design.
 On Unix-like systems, POSIX is available by default.
 On Windows, the server relies on GNU-TK to provide this environment.
 
