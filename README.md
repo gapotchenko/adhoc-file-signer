@@ -2,11 +2,11 @@
 
 **adhoc-file-signer** is a minimalistic, self-hosted system for distributed and
 automated file signing. Despite its small footprint, it supports Authenticode
-(for Windows binaries) and PKCS#11 (for hardware tokens and HSMs), making it a
+(for Windows binaries) and PKCS#11 (for hardware tokens / HSMs), making it a
 good enough solution for CI/CD pipelines and secure build environments.
 
 The architecture of `adhoc-file-signer` follows the Unix philosophy by
-assembling small, reliable components into a configurable and extensible system.
+assembling small tunable components into a configurable and extensible system.
 
 The project consists of two main components:
 
