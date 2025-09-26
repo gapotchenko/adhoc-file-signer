@@ -62,7 +62,7 @@ fileext="${HTTP_X_FILE_EXTENSION-}"
 # Validate the file extension.
 # Allow only letters, digits, underscores, or dashes.
 # ^...$ anchors the regex to the entire string.
-if ! expr "x$fileext" : '^x[A-Za-z0-9_-]\+$' >/dev/null; then
+if ! expr "x$fileext" : 'x[A-Za-z0-9_-]\+$' >/dev/null; then
     # Assign an explicit ".noext" extension to prevent downstream transforms
     # from accidentally interpreting a random part of the file name as an
     # extension.
