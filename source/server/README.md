@@ -51,6 +51,9 @@ On Windows, the server relies on [GNU-TK](https://github.com/gapotchenko/gnu-tk)
    # Timestamping parameters
    export GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER="http://timestamp.digicert.com/"
    export GP_ADHOC_FILE_SIGNER_TIMESTAMP_DIGEST="sha256"
+
+   # Access authorization
+   export GP_ADHOC_FILE_SIGNER_API_KEY="top-secret"
    ```
 
 2. **Run** the server:
