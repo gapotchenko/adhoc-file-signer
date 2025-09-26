@@ -72,11 +72,11 @@ tmpdir=$(mktemp -d -t "cgi-file-transform.XXXXXX")
 tmpfile="$tmpdir/tmp.$fileext"
 
 if [ "${HTTP_CONTENT_ENCODING-}" = "gzip" ]; then
-    # gzip compression
-    gzip -d >"$tmpfile" 2>/dev/null
+    # gzip decompression
+    gzip -d >"$tmpfile"
 elif [ "${HTTP_CONTENT_ENCODING-}" = "zstd" ]; then
-    # zstd compression
-    zstd -d -f -o "$tmpfile" 2>/dev/null
+    # zstd decompression
+    zstd -d -f -o "$tmpfile"
 else
     # No compression
     cat >"$tmpfile"
