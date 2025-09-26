@@ -148,26 +148,19 @@ esac
 # Calculate content digest for integrity verification.
 RESPONSE_REPR_DIGEST="$(sha256_digest "$tmpfile")"
 
-# Compress the file content before sending.
+# Choose response compression.
 if printf '%s\n' "$HTTP_ACCEPT_ENCODING" | grep -qiE '(^|,)[[:space:]]*zstd[[:space:]]*(,|$)' && command -v zstd >/dev/null 2>&1; then
     # zstd compression
     RESPONSE_CONTENT_ENCODING=zstd
-    resfile="$tmpdir/res.zst"
-    zstd "$tmpfile" -f -o "$resfile"
 elif printf '%s\n' "$HTTP_ACCEPT_ENCODING" | grep -qiE '(^|,)[[:space:]]*gzip[[:space:]]*(,|$)'; then
     # gzip compression
     RESPONSE_CONTENT_ENCODING=gzip
-    resfile="$tmpdir/res.gz"
-    gzip -c "$tmpfile" >"$resfile"
 else
     # No compression
     RESPONSE_CONTENT_ENCODING=
-    resfile="$tmpfile"
-    unset tmpfile
 fi
 
-# Start transmitting HTTP response at the very end so that a client can detect
-# errors that occured before this point.
+# Start transmitting HTTP response.
 echo "$SERVER_PROTOCOL 200 OK"
 
 # Send HTTP headers.
@@ -175,8 +168,6 @@ echo "Content-Type: application/octet-stream"
 if [ -n "$RESPONSE_CONTENT_ENCODING" ]; then
     echo "Content-Encoding: $RESPONSE_CONTENT_ENCODING"
 fi
-# Specify content length for improved communication reliability.
-echo "Content-Length: $(wc -c <"$resfile")"
 # Integrity verification information.
 echo "Repr-Digest: $RESPONSE_REPR_DIGEST"
 if [ -n "${REQUEST_REPR_DIGEST-}" ]; then
@@ -186,4 +177,10 @@ fi
 echo
 
 # Send the HTTP content.
-cat "$resfile"
+if [ "$RESPONSE_CONTENT_ENCODING" = "zstd" ]; then
+    zstd -c "$tmpfile"
+elif [ "$RESPONSE_CONTENT_ENCODING" = "gzip" ]; then
+    gzip -c "$tmpfile"
+else
+    cat "$tmpfile"
+fi
