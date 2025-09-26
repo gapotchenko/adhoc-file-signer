@@ -274,7 +274,7 @@ hsm_is_used() {
     fi
 }
 
-HSM_LOGON_MARK_FILE="$TMP_DIR/adhoc-file-signer/run/hsm-logon-mark"
+HSM_LOGON_MARK_FILE="$TMP_DIR/adhoc-file-signer/server/run/hsm-logon-mark"
 
 hsm_mark_logon() {
     mkdir -p "$(dirname "$HSM_LOGON_MARK_FILE")"

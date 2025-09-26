@@ -125,7 +125,7 @@ initialize_host() {
     log "Host system: $OS"
 
     # Clean up any leftover session-scoped temporary files from previous runs.
-    rm -rf "$TMP_DIR/adhoc-file-signer/run"
+    rm -rf "$TMP_DIR/adhoc-file-signer/server/run"
 }
 
 initialize_hsm() {
