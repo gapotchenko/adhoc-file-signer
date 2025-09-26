@@ -42,7 +42,7 @@ On Windows, the server relies on [GNU-TK](https://github.com/gapotchenko/gnu-tk)
 
    ```sh
    # Certificate parameters
-   export GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE="my-company.cer"
+   export GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE="my-company.p12"
    export GP_ADHOC_FILE_SIGNER_CERTIFICATE_PASSWORD="secret"
 
    # Signing parameters
