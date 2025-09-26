@@ -2,6 +2,8 @@
 
 The server provides a secure HTTP endpoint for file signing, supporting both hardware security modules (HSMs) and password-protected certificate files.
 
+Clients interact with the server using the [Adhoc File Signer Client Tools](https://github.com/gapotchenko/adhoc-file-signer/tree/main/source/client).
+
 ## Overview
 
 The HTTP frontend is implemented in Deno and executes CGI scripts to handle requests.
