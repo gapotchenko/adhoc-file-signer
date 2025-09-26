@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-set -u
+set -eu
+
+# -----------------------------------------------------------------------------
+# Help
+# -----------------------------------------------------------------------------
 
 NAME=cgi-error-trap.sh
 
@@ -14,6 +18,8 @@ back to the client in a user-friendly format.
 Usage: $NAME -- <command> [args...]"
 }
 
+# -----------------------------------------------------------------------------
+# Options
 # -----------------------------------------------------------------------------
 
 error=
@@ -50,10 +56,12 @@ if [ -n "$error" ]; then
 fi
 
 # -----------------------------------------------------------------------------
+# Core Functionality
+# -----------------------------------------------------------------------------
 
-countfile=$(mktemp -t "$NAME.count.XXXXXX") || exit 1
-errfile=$(mktemp -t "$NAME.err.XXXXXX") || exit 1
-stfile=$(mktemp -t "$NAME.st.XXXXXX") || exit 1
+countfile=$(mktemp -t "$NAME.count.XXXXXX")
+errfile=$(mktemp -t "$NAME.err.XXXXXX")
+stfile=$(mktemp -t "$NAME.st.XXXXXX")
 
 # shellcheck disable=SC2329
 on_exit() {
@@ -66,8 +74,8 @@ trap on_exit EXIT
 # - stdout: streamed to both client and wc -c
 # - stderr: captured and mirrored to stderr
 {
-    "$@"
-    echo $? >"$stfile"
+    cmd_status=0 && "$@" || cmd_status=$?
+    echo "$cmd_status" >"$stfile"
 } 2> >(tee "$errfile" >&2) |
     tee >(wc -c >"$countfile")
 
