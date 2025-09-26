@@ -1,6 +1,6 @@
 # Adhoc File Signer Server
 
-The server provides an HTTP endpoint for file signing, supporting both hardware security modules (HSMs) and password-protected certificate files.
+The server provides a secure HTTP endpoint for file signing, supporting both hardware security modules (HSMs) and password-protected certificate files.
 
 ## Overview
 
