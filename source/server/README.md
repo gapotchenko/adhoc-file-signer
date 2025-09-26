@@ -4,7 +4,7 @@ The server provides a secure HTTP endpoint for file signing, supporting both har
 
 ## Overview
 
-The HTTP API frontend is implemented in Deno and executes CGI scripts to handle requests.
+The HTTP frontend is implemented in Deno and executes CGI scripts to handle requests.
 This design isolates the core logic in standalone scripts while ensuring secure interaction with clients through a controlled process model.
 
 Client authorization is implemented via a simple API key mechanism.
