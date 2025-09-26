@@ -61,7 +61,8 @@ Follow the initial steps:
 2. **Run** the server:
 
    ```sh
-   adhoc-sign-server
+   cd bin
+   ./adhoc-sign-server
    ```
 
 If everything is ok, you will see the output like this:
