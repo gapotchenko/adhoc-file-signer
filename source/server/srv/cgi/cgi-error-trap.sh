@@ -53,10 +53,11 @@ fi
 
 countfile=$(mktemp -t "$NAME.count.XXXXXX") || exit 1
 errfile=$(mktemp -t "$NAME.err.XXXXXX") || exit 1
+stfile=$(mktemp -t "$NAME.st.XXXXXX") || exit 1
 
 # shellcheck disable=SC2329
 on_exit() {
-    rm -f "$countfile" "$errfile"
+    rm -f "$countfile" "$errfile" "$stfile"
 }
 
 trap on_exit EXIT
@@ -64,10 +65,13 @@ trap on_exit EXIT
 # Run the command:
 # - stdout: streamed to both client and wc -c
 # - stderr: captured and mirrored to stderr
-"$@" 2> >(tee "$errfile" >&2) |
+{
+    "$@"
+    echo $? >"$stfile"
+} 2> >(tee "$errfile" >&2) |
     tee >(wc -c >"$countfile")
 
-cmd_status=${PIPESTATUS[0]}
+read -r cmd_status <"$stfile" || cmd_status=127
 
 # Read byte count
 bytes_out=0
