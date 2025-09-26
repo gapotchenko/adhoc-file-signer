@@ -423,8 +423,8 @@ nuget_sign() {
         fi
 
         # Call NuGet
-        call_nuget sign "$file" "$@" "$NUGET_ARG_OVERWRITE" || true
-        local status=$?
+        local status
+        status=0 && call_nuget sign "$file" "$@" "$NUGET_ARG_OVERWRITE" || status=$?
 
         if [ "$state" -eq 1 ]; then
             if [ "$status" -eq 0 ]; then
