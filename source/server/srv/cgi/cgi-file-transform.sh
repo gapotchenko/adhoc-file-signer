@@ -76,7 +76,7 @@ if [ "${HTTP_CONTENT_ENCODING-}" = "gzip" ]; then
     gzip -d >"$tmpfile"
 elif [ "${HTTP_CONTENT_ENCODING-}" = "zstd" ]; then
     # zstd decompression
-    zstd -d -f -o "$tmpfile"
+    zstd -d >"$tmpfile"
 else
     # No compression
     cat >"$tmpfile"
@@ -178,7 +178,7 @@ echo
 
 # Send the HTTP content.
 if [ "$RESPONSE_CONTENT_ENCODING" = "zstd" ]; then
-    zstd -c "$tmpfile"
+    cat "$tmpfile" | zstd -c
 elif [ "$RESPONSE_CONTENT_ENCODING" = "gzip" ]; then
     gzip -c "$tmpfile"
 else
