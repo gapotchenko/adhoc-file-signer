@@ -38,6 +38,8 @@ On Windows, the server relies on [GNU-TK](https://github.com/gapotchenko/gnu-tk)
 
 ## Getting Started
 
+Follow the initial steps:
+
 1. **Define server configuration** in environment variables:
 
    ```sh
@@ -61,3 +63,15 @@ On Windows, the server relies on [GNU-TK](https://github.com/gapotchenko/gnu-tk)
    ```sh
    adhoc-sign-server
    ```
+
+If everything is ok, you will see the output like this:
+
+```
+adhoc-sign-server  Version X.Y.Z
+Validating configuration...
+Host environment: MS/Windows
+Starting HTTP server...
+deno serve: Listening on http://[::1]:3205/
+```
+
+Now you can connect to the server with the [client tools](https://github.com/gapotchenko/adhoc-file-signer/tree/main/source/client).
