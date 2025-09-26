@@ -289,7 +289,7 @@ compress_file() {
     elif [ "$REQUEST_CONTENT_ENCODING" = "gzip" ]; then
         gzip -c -f "$1"
     elif [ "$REQUEST_CONTENT_ENCODING" = "zstd" ]; then
-        zstd -c -f "$1"
+        cat "$1" | zstd -c
     else
         echo "$NAME: internal error: unsupported REQUEST_CONTENT_ENCODING." >&2
         exit 1
