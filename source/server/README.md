@@ -25,6 +25,8 @@ adhoc-file-signer-X.Y.Z-server-portable.tar.gz
 
 Once the archive is unpacked to a directory, the server is ready to use.
 
+## Requirements
+
 Adhoc File Signer Server requires the following tools to be available on the command line:
 
 1. [Deno](https://deno.com/) 2.5+
