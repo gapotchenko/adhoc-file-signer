@@ -47,8 +47,7 @@ fi
 #LOG_FILE="$SCRIPT_DIR/log.txt"
 
 on_exit() {
-    [ -n "${tmpfile-}" ] && rm -f "$tmpfile"
-    [ -n "${resfile-}" ] && rm -f "$resfile"
+    [ -n "${tmpdir-}" ] && rm -rf "$tmpdir" || true
 }
 
 trap 'on_exit' EXIT
@@ -69,7 +68,8 @@ if ! expr "x$fileext" : 'x[A-Za-z0-9_-]\+$' >/dev/null; then
     fileext=noext
 fi
 
-tmpfile=$(mktemp -t "cgi-file-transform.XXXXXX.$fileext")
+tmpdir=$(mktemp -d -t "cgi-file-transform.XXXXXX")
+tmpfile="$tmpdir/tmp.$fileext"
 
 if [ "${HTTP_CONTENT_ENCODING-}" = "gzip" ]; then
     # gzip compression
@@ -111,7 +111,7 @@ digest_verification_failed() {
     echo
     echo "Digest verification failed"
 
-    echo "Data integrity verification failed." >&2
+    echo "Data integrity verification failed on the server side." >&2
     exit 1
 }
 
@@ -152,12 +152,12 @@ RESPONSE_REPR_DIGEST="$(sha256_digest "$tmpfile")"
 if printf '%s\n' "$HTTP_ACCEPT_ENCODING" | grep -qiE '(^|,)[[:space:]]*zstd[[:space:]]*(,|$)' && command -v zstd >/dev/null 2>&1; then
     # zstd compression
     RESPONSE_CONTENT_ENCODING=zstd
-    resfile="$(mktemp -t cgi-file-transform.zstd.XXXXXX)"
+    resfile="$tmpdir/res.zst"
     zstd "$tmpfile" -f -o "$resfile"
 elif printf '%s\n' "$HTTP_ACCEPT_ENCODING" | grep -qiE '(^|,)[[:space:]]*gzip[[:space:]]*(,|$)'; then
     # gzip compression
     RESPONSE_CONTENT_ENCODING=gzip
-    resfile="$(mktemp -t cgi-file-transform.gzip.XXXXXX)"
+    resfile="$tmpdir/res.gz"
     gzip -c "$tmpfile" >"$resfile"
 else
     # No compression
