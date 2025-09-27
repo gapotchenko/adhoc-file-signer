@@ -81,4 +81,12 @@ Now you can connect to the server with the [client tools](https://github.com/gap
 
 ### Certificate Parameters
 
-TODO
+The certificate parameters define which certificate is used for digital signing.
+Two types of certificates are supported:
+
+- **Certificates with both public and private keys**\
+  These are self-contained certificates, typically stored as `.p12`/`.pfx` files and protected by a password.
+- **Certificates with only a public key**\
+  These are represented as .cer files in DER format. Since the private key is not included, its functionality must be provided separately - commonly by an HSM.
+
+  
