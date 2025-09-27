@@ -91,14 +91,21 @@ Two types of certificates are supported:
 
 The certificate and related information are provided by your certification authority.
 
-#### PKCS#12 Certificate (Public + Private Keys)
+#### Option 1. PKCS#12 Certificate (Public + Private Keys)
 
 To configure a PKCS#12 certificate, the following environment variables should be set:
 
 - `GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE` — path to the `.p12`/`.pfx` certificate file
 - `GP_ADHOC_FILE_SIGNER_CERTIFICATE_PASSWORD` — password protecting the certificate
 
-#### Public Certificate (Public Key Only)
+#### Option 2. Public Certificate (Public Key Only)
 
-The usage of a public key certificate signifies that the system has other means of providing the private key functionality.
+To configure a public certificate, the following environment variables should be set:
+
+- `GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE` — path to the `.cer` certificate file in DER format
+
+When using a public certificate, the private key functionality must be provided by another component (for example, an HSM).
+Certificate parameteres should point to that component in one way or another:
   
+- `GP_ADHOC_FILE_SIGNER_CSP` — configuration service provider providing a private key container
+- `GP_ADHOC_FILE_SIGNER_KEY_CONTAINER` — key container name of the private key
