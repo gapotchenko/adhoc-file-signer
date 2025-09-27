@@ -22,6 +22,8 @@ GNU/POSIX environment) to ensure seamless usage.
 
 ## Getting Started
 
+Follow the initial steps:
+
 1. **Set up environment variables**:
 
    ```sh
@@ -45,11 +47,11 @@ GNU/POSIX environment) to ensure seamless usage.
    adhoc-sign-tool echo example.exe
    ```
 
-4. **Sign your file**:
+Now you can sign your files:
 
-   ```sh
-   adhoc-sign-tool sign example.exe
-   ```
+```sh
+adhoc-sign-tool sign example.exe
+```
 
 ## Supported Platforms
 
