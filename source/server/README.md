@@ -155,6 +155,7 @@ signing certificate has expired.
 ### Access Parameters
 
 The server authorizes client access using a predefined API key.
+Access parameters can be configured with the following environment variables:
 
 - `GP_ADHOC_FILE_SIGNER_API_KEY` — API key to use for authorization
 - `GP_ADHOC_FILE_SIGNER_SERVER_HTTP_SLUG` — base path in server URI. If omitted, the default value `adhoc-file-signer` is used
