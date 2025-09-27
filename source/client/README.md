@@ -15,10 +15,17 @@ adhoc-file-signer-X.Y.Z-client-portable.tar.gz
 
 Once the archive is unpacked, the tools are ready to use.
 
-The tools have no specific prerequisites as they are implemented in
-standard-compliant POSIX shell script. On Windows, you may need to install
-[GNU-TK](https://github.com/gapotchenko/gnu-tk) (which includes a minimal
-GNU/POSIX environment) to ensure seamless usage.
+## Prerequisites
+
+The client tools require the following utilities to be available on the
+command line:
+
+1. [curl](https://curl.se/)
+2. [zstd](https://github.com/facebook/zstd) (optional; provides more efficient
+   data compression when available)
+
+The client tools are implemented in standard-compliant POSIX shell script.
+On Windows, you may need to install [GNU-TK](https://github.com/gapotchenko/gnu-tk) (which includes a minimal GNU/POSIX environment) to ensure seamless usage.
 
 ## Getting Started
 
@@ -27,7 +34,7 @@ Follow the initial steps:
 1. **Set up environment variables**:
 
    ```sh
-   export GP_ADHOC_FILE_SIGNER_SERVER="https://your-machine.example.ts.net/adhoc-file-signer"
+   export GP_ADHOC_FILE_SIGNER_SERVER="https://server.example.com/adhoc-file-signer"
    export GP_ADHOC_FILE_SIGNER_API_KEY="your-api-key"
    ```
 
