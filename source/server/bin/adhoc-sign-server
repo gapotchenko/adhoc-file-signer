@@ -93,6 +93,26 @@ TMP_DIR=${TMPDIR-$(dirname "$(mktemp -u)")}
 
 OS=$(uname -o)
 
+check_prerequisites() {
+    log "Checking prerequisites..."
+
+    if ! command -v deno >/dev/null 2>&1; then
+        error "Deno version 2.5 or higher is not available. More information: https://deno.com/"
+        return 1
+    fi
+
+    case "$OS" in
+    Cygwin | Msys | MS/Windows)
+        # Windows
+        if ! command -v gnu-tk >/dev/null 2>&1; then
+            error "GNU-TK is not available. More information: https://github.com/gapotchenko/gnu-tk"
+            return 1
+        fi
+        ;;
+    *) ;;
+    esac
+}
+
 validate_configuration() {
     log "Validating configuration..."
 
@@ -122,7 +142,7 @@ validate_configuration() {
 }
 
 initialize_host() {
-    log "Host system: $OS"
+    log "Host environment: $OS"
 
     # Clean up any leftover session-scoped temporary files from previous runs.
     rm -rf "$TMP_DIR/adhoc-file-signer/server/run"
@@ -173,6 +193,7 @@ run_http() {
 
 log "$NAME  Version $VERSION"
 
+check_prerequisites
 validate_configuration
 initialize_host
 
