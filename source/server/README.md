@@ -45,7 +45,7 @@ Follow the initial steps:
    ```sh
    # Certificate parameters
    export GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE="my-company.p12"
-   export GP_ADHOC_FILE_SIGNER_CERTIFICATE_PASSWORD="secret"
+   export GP_ADHOC_FILE_SIGNER_CERTIFICATE_PASSWORD="cert-secret"
 
    # Signing parameters
    export GP_ADHOC_FILE_SIGNER_FILE_DIGEST="sha256"
@@ -95,7 +95,7 @@ The certificate and related information are provided by your certification autho
 
 To configure a PKCS#12 certificate, the following environment variables should be set:
 
-- `GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE` — path to the `.p12`/`.pfx` certificate file
+- `GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE` — path to the `.p12`/`.pfx` certificate file in PKCS#12 format
 - `GP_ADHOC_FILE_SIGNER_CERTIFICATE_PASSWORD` — password protecting the certificate
 
 #### Option 2. Public Certificate (Public Key Only)
@@ -109,3 +109,19 @@ Certificate parameteres should point to that component in one way or another:
   
 - `GP_ADHOC_FILE_SIGNER_CSP` — configuration service provider providing a private key container
 - `GP_ADHOC_FILE_SIGNER_KEY_CONTAINER` — key container name of the private key
+
+### Signing Parameters
+
+To configure digital signing, the following environment variables should be set:
+
+- `GP_ADHOC_FILE_SIGNER_FILE_DIGEST` — digest algorithm to use for creating file signatures (for example: `sha256`, `sha384`)
+
+### Timestamping Parameters
+
+Digital timestamping can be configured using the following environment variables:
+
+- `GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER` — RFC 3161 timestamp server URL; if omitted, signed files will not be timestamped
+- `GP_ADHOC_FILE_SIGNER_TIMESTAMP_DIGEST` — digest algorithm to use for timestamps
+
+Timestamps provide cryptographic proof that a signature was applied at a specific point in time.
+They ensure that signatures remain valid even after the signing certificate has expired.
