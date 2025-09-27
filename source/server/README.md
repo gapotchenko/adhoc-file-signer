@@ -152,6 +152,10 @@ Timestamps provide cryptographic proof that a signature was applied at a
 specific point in time. They ensure that signatures remain valid even after the
 signing certificate has expired.
 
+### Access Parameters
+
+TODO
+
 ## Quick Reference
 
 ### adhoc-sign-server
