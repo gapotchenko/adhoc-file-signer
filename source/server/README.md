@@ -98,7 +98,7 @@ To configure a PKCS#12 certificate, the following environment variables should b
 - `GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE` — path to the `.p12`/`.pfx` certificate file
 - `GP_ADHOC_FILE_SIGNER_CERTIFICATE_PASSWORD` — password protecting the certificate
 
-P12 and PFX is the same file format (PKCS#12) with just different file extensions.
+`.p12` and `.pfx` file extensions represent the same file format (PKCS#12).
 
 #### Option 2. Public Certificate (Public Key Only)
 
@@ -143,3 +143,9 @@ Options:
   --host  The server host to bind to. Defaults to 'localhost'.
   --port  The server port to listen at. Defaults to 3205.
 ```
+
+### Environment Variables Used for Configuration
+
+| Name | Description |
+| :--- | :--- |
+| GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE | TODO |
