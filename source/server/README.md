@@ -29,7 +29,7 @@ adhoc-file-signer-X.Y.Z-server-portable.tar.gz
 Once the archive is unpacked to a dedicated directory, the server is ready to
 use.
 
-## Requirements
+## Prerequisites
 
 Adhoc File Signer Server requires the following tools to be available on the
 command line:
