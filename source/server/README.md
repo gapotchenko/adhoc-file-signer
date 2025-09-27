@@ -95,8 +95,10 @@ The certificate and related information are provided by your certification autho
 
 To configure a PKCS#12 certificate, the following environment variables should be set:
 
-- `GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE` — path to the `.p12`/`.pfx` certificate file in PKCS#12 format
+- `GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE` — path to the `.p12`/`.pfx` certificate file
 - `GP_ADHOC_FILE_SIGNER_CERTIFICATE_PASSWORD` — password protecting the certificate
+
+P12 and PFX is the same file format (PKCS#12) with just different file extensions.
 
 #### Option 2. Public Certificate (Public Key Only)
 
@@ -125,3 +127,19 @@ Digital timestamping can be configured using the following environment variables
 
 Timestamps provide cryptographic proof that a signature was applied at a specific point in time.
 They ensure that signatures remain valid even after the signing certificate has expired.
+
+## Quick Reference
+
+### adhoc-sign-server
+
+`adhoc-sign-server` command-line utility runs the Adhoc File Signer server.
+
+#### Usage
+
+```
+  adhoc-sign-server [--host <server-host>] [--port <server-port>]
+
+Options:
+  --host  The server host to bind to. Defaults to 'localhost'.
+  --port  The server port to listen at. Defaults to 3205.
+```
