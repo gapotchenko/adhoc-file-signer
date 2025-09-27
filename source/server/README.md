@@ -84,9 +84,21 @@ Now you can connect to the server with the [client tools](https://github.com/gap
 The certificate parameters define which certificate is used for digital signing.
 Two types of certificates are supported:
 
-- **Certificates with both public and private keys**\
+- **Certificates with both public and private keys (PKCS#12 certificates)**\
   These are self-contained certificates, typically stored as `.p12`/`.pfx` files and protected by a password.
-- **Certificates with only a public key**\
-  These are represented as .cer files in DER format. Since the private key is not included, its functionality must be provided separately - commonly by an HSM.
+- **Certificates with only a public key (public certificates)**\
+  These are represented as `.cer` files in DER format. Since the private key is not included, its functionality must be provided separately - commonly by an HSM.
 
+The certificate and related information are provided by your certification authority.
+
+#### PKCS#12 Certificate (Public + Private Keys)
+
+To configure a PKCS#12 certificate, the following environment variables should be set:
+
+- `GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE` — path to the `.p12`/`.pfx` certificate file
+- `GP_ADHOC_FILE_SIGNER_CERTIFICATE_PASSWORD` — password protecting the certificate
+
+#### Public Certificate (Public Key Only)
+
+The usage of a public key certificate signifies that the system has other means of providing the private key functionality.
   
