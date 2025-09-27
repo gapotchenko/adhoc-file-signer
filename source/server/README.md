@@ -89,7 +89,7 @@ Two types of certificates are supported:
 - **Certificates with only a public key (public certificates)**\
   These are represented as `.cer` files in DER format. Since the private key is not included, its functionality must be provided separately — commonly by an HSM.
 
-The certificate and related information are provided by your certification authority.
+The certificate, together with the related information, is provided by your certification authority.
 
 #### Option 1. PKCS#12 Certificate (Public + Private Keys)
 
@@ -153,7 +153,5 @@ Options:
 | GP_ADHOC_FILE_SIGNER_CSP | The configuration service provider offering a private key container. Optional. Typically used for HSMs on Windows. |
 | GP_ADHOC_FILE_SIGNER_KEY_CONTAINER | The private key container name. Optional. Typically used for HSMs on Windows. |
 | GP_ADHOC_FILE_SIGNER_FILE_DIGEST | The digest algorithm to use for creating file signatures. Required. Examples: `sha256`, `sha384`. |
-| GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER | The RFC 3161 timestamp server URL. Optional. If omitted, signed files will not be timestamped. Examples: `http://timestamp.digicert.com/` |
-
-
+| GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER | The RFC 3161 timestamp server URL. Optional. If omitted, signed files will not be timestamped. Examples: <ul><li>`http://timestamp.digicert.com/`</li><li>`http://timestamp.sectigo.com/`</li></ul> |
 
