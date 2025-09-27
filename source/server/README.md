@@ -154,4 +154,6 @@ Options:
 | GP_ADHOC_FILE_SIGNER_KEY_CONTAINER | The private key container name. Optional. Typically used for HSMs on Windows. |
 | GP_ADHOC_FILE_SIGNER_FILE_DIGEST | The digest algorithm to use for creating file signatures. Required. Examples: `sha256`, `sha384`. |
 | GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER | The RFC 3161 timestamp server URL. Optional. If omitted, signed files will not be timestamped. Examples: <ul><li>`http://timestamp.digicert.com/`</li><li>`http://timestamp.sectigo.com/`</li></ul> |
+| GP_ADHOC_FILE_SIGNER_TIMESTAMP_DIGEST | The digest algorithm to use for timestamps. Optional; required if `GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER` is set. Examples: `sha256`, `sha384`. |
+
 
