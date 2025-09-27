@@ -17,15 +17,16 @@ Once the archive is unpacked, the tools are ready to use.
 
 ## Prerequisites
 
-The client tools require the following utilities to be available on the
-command line:
+The client tools require the following utilities to be available on the command
+line:
 
 1. [curl](https://curl.se/)
 2. [zstd](https://github.com/facebook/zstd) (optional; provides more efficient
    data compression when available)
 
-The client tools are implemented in standard-compliant POSIX shell script.
-On Windows, you may need to install [GNU-TK](https://github.com/gapotchenko/gnu-tk) (which includes a minimal GNU/POSIX environment) to ensure seamless usage.
+The client tools are implemented in standard-compliant POSIX shell script. On
+Windows, you may need to install [GNU-TK](https://github.com/gapotchenko/gnu-tk)
+(which includes a minimal GNU/POSIX environment) to ensure seamless usage.
 
 ## Getting Started
 
