@@ -114,9 +114,9 @@ administration.
 Now, let's create an initial structure of the newly created directory according to
 POSIX conventions:
 
-- `C:\Server\bin` — contains control scripts
-- `C:\Server\opt` — contains actual app service(s)
-- `C:\Server\usr\bin` — contains optional 3rd party tools
+- `C:\Server\bin` — contains executable files (control scripts in our case)
+- `C:\Server\opt` — contains installable components
+- `C:\Server\usr\bin` — contains 3rd party executable files
 
 After that, we can extract the contents of
 `adhoc-file-signer-X.Y.Z-server-portable.tar.gz` into
