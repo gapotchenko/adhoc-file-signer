@@ -142,7 +142,7 @@ export PATH="$PATH:$BASE_DIR/usr/bin"
 opt/adhoc-file-signer/bin/adhoc-sign-server --host 127.0.0.1 2>&1
 ```
 
-For now, everything this script does is configures the process environment and
+For now, all this script does is configures the process environment and
 passes control to `adhoc-sign-server` demanding it to bind to the IPv4 local
 network interface `127.0.0.1`.
 
