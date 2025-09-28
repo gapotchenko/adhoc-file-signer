@@ -9,7 +9,7 @@ Adhoc File Signer on Windows.
 
 Recently, the code signing industry has shifted toward the exclusive use of HSMs
 for storing sensitive cryptographic material. If you obtain a code signing
-certificate in 2025, it will likely be issued with an HSM device similar to the
+certificate after 2022, it will likely be issued with an HSM device similar to the
 one shown below:
 
 ![SafeNet 5110 HSM with USB interface](../assets/safenet-5110-hsm.webp)
