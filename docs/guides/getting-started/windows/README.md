@@ -159,3 +159,14 @@ seamlessly executing its POSIX counterpart `C:\Server\bin\run.sh`:
 rem https://github.com/gapotchenko/gnu-tk
 gnu-tk -i -x "%~dpn0.sh" %*
 ```
+
+If we run `C:\Server\bin\run.bat` script now, we should get the following output:
+
+```
+adhoc-sign-server  Version X.Y.Z
+Checking prerequisites...
+Validating configuration...
+adhoc-sign-server: GP_ADHOC_FILE_SIGNER_API environment variable is not set.
+```
+
+This happens because `adhoc-sign-server` configuration is yet to be provided.
