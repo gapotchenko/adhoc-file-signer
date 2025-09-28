@@ -67,22 +67,22 @@ Let's prepare the directory.
 We start with a root directory that will contain our app service(s):
 
 ```
-C:\AppServer
+C:\Server
 ```
 
-We assign the `AppServer` user as the owner of the `C:\AppServer` directory.
+We assign the `AppServer` user as the owner of the `C:\Server` directory.
 We also can add other users and groups with corresponding permissions to ease the administration.
 
 Now, let's create an initial structure in a newly created directory according to Unix conventions:
 
-- `C:\AppServer\bin` — contains control scripts
-- `C:\AppServer\opt` — contains actual app service(s)
-- `C:\AppServer\usr\bin` — contains optional 3rd party tools
+- `C:\Server\bin` — contains control scripts
+- `C:\Server\opt` — contains actual app service(s)
+- `C:\Server\usr\bin` — contains optional 3rd party tools
 
-After that, we can extract the contents of `adhoc-file-signer-X.Y.Z-server-portable.tar.gz` into `C:\AppServer\opt\adhoc-file-signer` directory.
+After that, we can extract the contents of `adhoc-file-signer-X.Y.Z-server-portable.tar.gz` into `C:\Server\opt\adhoc-file-signer` directory.
 
 Now let's create a control script which orchestrates the app service(s).
-Create `C:\AppServer\bin\run.sh` file with the following content (important: use `LF` character as a new line separator in `.sh` files, not `CRLF`):
+Create `C:\Server\bin\run.sh` file with the following content (important: use `LF` character as a new line separator in `.sh` files, not `CRLF`):
 
 ```sh
 #!/bin/sh
@@ -107,7 +107,7 @@ The reason we are doing so is to have a single codebase on all supported operati
 To rectify the mismatch between Windows and POSIX environments,
 we rely on [GNU-TK](https://github.com/gapotchenko/gnu-tk).
 
-Let's create a bridge script file `C:\AppServer\bin\run.bat` that will be seamlessly executing its POSIX counterpart `C:\AppServer\bin\run.sh`:
+Let's create a bridge script file `C:\Server\bin\run.bat` that will be seamlessly executing its POSIX counterpart `C:\Server\bin\run.sh`:
 
 ```bat
 @echo off
