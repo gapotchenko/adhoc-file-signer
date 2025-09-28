@@ -169,4 +169,4 @@ Validating configuration...
 adhoc-sign-server: GP_ADHOC_FILE_SIGNER_API environment variable is not set.
 ```
 
-This happens because `adhoc-sign-server` configuration is yet to be provided.
+This happens because the configuration for `adhoc-sign-server` is yet to be provided.
