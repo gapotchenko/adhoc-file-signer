@@ -73,7 +73,7 @@ unattended services.
 
 The following software packages should be installed first using an account with administrative privileges:
 
-- [Deno](https://deno.com/) — provides secure JavaScript runtime (installed per user, i.e. using `AppServer` account).
+- [Deno](https://deno.com/) — provides secure JavaScript runtime
 - [GNU-TK](https://github.com/gapotchenko/gnu-tk) — provides seamless POSIX environment needed by the server. Use MSI installation method to install GNU-TK on the server machine.
 - [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) — provides `signtool` utility which is neccessary for signing files with Authenticode signature.
   This is the only SDK component that is required, other components are not needed by the server and thus are optional.
@@ -84,7 +84,7 @@ The following software packages should be installed first using an account with 
   There are three ways to install NuGet:
      - It comes as integral part of [.NET SDK](https://dotnet.microsoft.com/en-us/download/dotnet)
      - Standalone executable file `nuget.exe` can be separately [downloaded](https://www.nuget.org/downloads) and placed at `C:\Server\usr\bin` directory (see below)
-     - Via [winget](https://winget.run/pkg/Microsoft/NuGet) (installed per user, i.e. using `AppServer` account)
+     - Via [winget](https://winget.run/pkg/Microsoft/NuGet)
 - [zstd](https://github.com/facebook/zstd) — provides more efficient data compression optimizing both speed and size.
   `zstd.exe` file can be placed at `C:\Server\usr\bin` directory.
   
