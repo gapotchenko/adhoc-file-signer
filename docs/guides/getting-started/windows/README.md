@@ -16,7 +16,7 @@ one shown below:
 
 Figure 1. SafeNet 5110 HSM with USB 2.0 interface
 
-Each HSM is accompanied by client software. Once installed on Windows, this
+Each HSM type is accompanied by client software. Once installed on Windows, this
 software makes the corresponding code signing certificate available in the
 **User Certificate Store**, which is managed by the operating system.
 
