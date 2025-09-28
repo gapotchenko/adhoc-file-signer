@@ -244,7 +244,7 @@ In our setup, these environment variables should be set for `AppServer` user.
 
 ## Test Run
 
-Once the server installed and configured, we can now try to run
+Once the server is installed and configured, we can now try to run
 `C:\Server\bin\run.bat` script as `AppServer` user. This time, it should enter
 the running state:
 
@@ -277,3 +277,8 @@ Server connection established.
 Signing file 'example.exe'...
 Files have been signed successfully.
 ```
+
+## Making the Server Globally Available
+
+TODO
+
