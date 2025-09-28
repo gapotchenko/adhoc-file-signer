@@ -73,15 +73,18 @@ unattended services.
 
 The following software packages should be installed using an account with administrative privileges:
 
+- [GNU-TK](https://github.com/gapotchenko/gnu-tk) — provides seamless POSIX environment needed by the server. Use MSI installation method.
 - [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) — provides `signtool` utility which is neccessary for signing files with Authenticode signature.
   This is the only SDK component that is required to be installed, other components are not needed by the server and thus are optional.
+
+### Optional Prerequisites
+
 - [NuGet](https://www.nuget.org/) — provides functionality for signing NuGet packages which are represented by `.nupkg` files.
   There are three ways to install NuGet:
      - As part of [.NET SDK](https://dotnet.microsoft.com/en-us/download/dotnet)
-     - Standalone executable file `nuget.exe` that can be placed at `C:\Server\usr\bin` directory (see below)
+     - Standalone executable file `nuget.exe` can be separately [downloaded](https://www.nuget.org/downloads) and placed at `C:\Server\usr\bin` directory (see below)
      - Via [winget](https://winget.run/pkg/Microsoft/NuGet) (installed per user, i.e. using `AppServer` account)
-- [GNU-TK](https://github.com/gapotchenko/gnu-tk) — provides seamless POSIX environment needed by the server. Use MSI installer installation method.
-- [zstd](https://github.com/facebook/zstd) (optional) — provides better data compression when available.
+- [zstd](https://github.com/facebook/zstd) — provides more energy efficient and better data compression.
   `zstd.exe` file can be placed at `C:\Server\usr\bin` directory.
   
 ## Adhoc File Signer Server Installation
