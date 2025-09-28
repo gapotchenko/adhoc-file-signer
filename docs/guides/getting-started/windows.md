@@ -82,7 +82,7 @@ Now, let's create an initial structure in a newly created directory according to
 After that, we can extract the contents of `adhoc-file-signer-X.Y.Z-server-portable.tar.gz` into `C:\AppServer\opt\adhoc-file-signer` directory.
 
 Now let's create a control script which orchestrates the app service(s).
-Create `C:\AppServer\bin\run.sh` file with the following content:
+Create `C:\AppServer\bin\run.sh` file with the following content (important: use `LF` characters for new lines in `.sh` files):
 
 ```sh
 #!/bin/sh
@@ -103,7 +103,7 @@ opt/adhoc-file-signer/bin/adhoc-sign-server --host 127.0.0.1 2>&1
 For now, everything this script does is configures the process environment and passes control to `adhoc-sign-server` demanding it to bind to the IPv4 local network interface `127.0.0.1`.
 
 You may notice that we use a POSIX shell script in Windows which, at first, may throw you into a loop.
-The reason we are doing so is to use a single codebase on all supported operating systems.
+The reason we are doing so is to have a single codebase on all supported operating systems.
 To rectify the mismatch between Windows and POSIX environments,
 we rely on [GNU-TK](https://github.com/gapotchenko/gnu-tk).
 
