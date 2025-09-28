@@ -32,4 +32,10 @@ However, support for USB and HSM passthrough in virtualized environments is limi
 For this reason, we recommend hosting Adhoc File Signer Server on physical hardware.
 The software stack has modest requirements — a system with at least 2 CPU cores and 4 GB of RAM is sufficient.
 
-In this particular guide, we will use **Dell OptiPlex Micro 3050** with 2C/4T CPU cores at 3.5 GHz and 8 GB of RAM.
+In this guide, we will use a Dell microcomputer equipped with a 2C/4T 3.5 GHz CPU and 8 GB of RAM:
+
+![Dell OptiPlex Micro 3050](assets/dell-optiplex-3050-micro.webp)
+
+Figure 2. Dell OptiPlex Micro 3050
+
+This model also includes a built-in TPM 2.0 module, which will be used to enable drive encryption after the operating system installation, enhancing overall system security.
