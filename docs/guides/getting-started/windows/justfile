@@ -1,0 +1,9 @@
+set windows-shell := ["gnu-tk", "-i", "-c"]
+
+@help:
+    just --list
+
+# Format source code
+[group("development")]
+format:
+    deno fmt *.md

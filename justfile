@@ -10,6 +10,7 @@ set unstable := true
 format:
     deno fmt *.md
     cd source; just format
+    cd docs; just format
 
 # Check source code
 [group("development")]
