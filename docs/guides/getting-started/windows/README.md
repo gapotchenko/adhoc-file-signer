@@ -112,7 +112,7 @@ also can add other users and groups with corresponding permissions to ease the
 administration.
 
 Now, let's create an initial structure of the newly created directory according to
-common Unix conventions:
+POSIX conventions:
 
 - `C:\Server\bin` — contains control scripts
 - `C:\Server\opt` — contains actual app service(s)
