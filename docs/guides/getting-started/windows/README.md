@@ -74,7 +74,7 @@ unattended services.
 The following software packages should be installed first using an account with administrative privileges:
 
 - [Deno](https://deno.com/) — provides secure JavaScript runtime
-- [GNU-TK](https://github.com/gapotchenko/gnu-tk) — provides seamless POSIX environment needed by the server. Use MSI installation method to install GNU-TK on the server machine.
+- [GNU-TK](https://github.com/gapotchenko/gnu-tk) — provides POSIX environment needed by the server. Use MSI installation method to install GNU-TK on the server machine.
 - [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) — provides `signtool` utility which is neccessary for signing files with Authenticode signature.
   This is the only SDK component that is required, other components are not needed by the server and thus are optional.
 
@@ -190,8 +190,9 @@ In our setup, this is the `AppServer` account.
 Then, try to sign a file using `signtool` utility. Typically, you will be asked for a password by HSM software running in the system.
 This step is known as **HSM logon**. Without a successful logon, cryptographic operations provided by the HSM are unavailable.
 
-Be cautious when entering the password: the number of failed logon attempts is limited, typically between 3 and 15.
-If this limit is exceeded, the HSM will lock itself and will require intervention from the certification authority to restore access.
+> [!CAUTION]
+> Be cautious when entering the password: the number of failed logon attempts is limited, typically between 3 and 15.
+> If this limit is exceeded, the HSM will lock itself and will require intervention from the certification authority to restore access.
 
 Once you confirm that HSM you have is working, you can start gathering its configuration parameters.
 The HSM parameters needed by `adhoc-sign-server` are:
@@ -200,3 +201,57 @@ The HSM parameters needed by `adhoc-sign-server` are:
 2. `GP_ADHOC_FILE_SIGNER_CSP` — CSP offering the private key container
 3. `GP_ADHOC_FILE_SIGNER_KEY_CONTAINER` — the private key container name
 
+The configuration parameters can typically be found and extracted using HSM software and **User Certificate Store** in Windows.
+The exact procedure depends on a particular HSM type.
+
+- **SafeNet HSM:** https://stackoverflow.com/a/54439759
+
+## Configuration of Adhoc File Signer Server
+
+Once you have the HSM configuration at hand, it is time to define a complete configuration for `adhoc-sign-server`:
+
+| Name | Value |
+| :--- | :--- |
+| GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE | Retrieved at the previous step. |
+| GP_ADHOC_FILE_SIGNER_CSP | Retrieved at the previous step. |
+| GP_ADHOC_FILE_SIGNER_KEY_CONTAINER | Retrieved at the previous step. |
+| GP_ADHOC_FILE_SIGNER_FILE_DIGEST | `sha256` |
+| GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER | `http://timestamp.digicert.com/` |
+| GP_ADHOC_FILE_SIGNER_TIMESTAMP_DIGEST | `sha256` |
+| GP_ADHOC_FILE_SIGNER_API_KEY | `your-secret-api-key` |
+
+In our setup, these environment variables should be set for `AppServer` user.
+
+## Test Run
+
+Once the server installed and configured, we can now try to run `C:\Server\bin\run.bat` script as `AppServer` user.
+This time, it should enter the running state:
+
+```
+adhoc-sign-server  Version X.Y.Z
+Checking prerequisites...
+Validating configuration...
+Host environment: MS/Windows
+HSM: initialization started...
+HSM: SafeNet Authentication Client (SAC) is installed at 'C:\Program Files\SafeNet\Authentication\SAC'.
+HSM: launching SAC Monitor to propagate HSM certificates to a certificate store.
+HSM: initialization done.
+Starting HTTP server...
+deno serve: Listening on http://127.0.0.1:3205/
+```
+
+You can then use [client tools](https://github.com/gapotchenko/adhoc-file-signer/tree/main/source/client) to interact with the locally running server.
+For example, to sign a file:
+
+```sh
+adhoc-sign-tool sign --server http://127.0.0.1:3205/adhoc-file-signer example.exe
+```
+
+If everything is ok, you will get the following output from `adhoc-sign-tool`:
+
+```
+Connecting to server...
+Server connection established.
+Signing file 'example.exe'...
+Files have been signed successfully.
+```
