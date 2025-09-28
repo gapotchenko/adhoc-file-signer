@@ -116,6 +116,11 @@ check_prerequisites() {
 validate_configuration() {
     log "Validating configuration..."
 
+    if [ -z "${GP_ADHOC_FILE_SIGNER_API-}" ]; then
+        error "$NAME: GP_ADHOC_FILE_SIGNER_API environment variable is not set."
+        exit 2
+    fi
+
     if [ -z "${GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE-}" ]; then
         error "$NAME: GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE environment variable is not set."
         exit 2
