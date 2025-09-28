@@ -69,7 +69,7 @@ process which will be discussed later. We create a new user account named
 `AppServer`, with no administrative privileges, intended primarily for running
 unattended services.
 
-## Prerequisites
+## Software Prerequisites
 
 The following software packages should be installed using an account with administrative privileges:
 
