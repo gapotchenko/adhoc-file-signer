@@ -9,8 +9,8 @@ Adhoc File Signer on Windows.
 
 Recently, the code signing industry has shifted toward the exclusive use of HSMs
 for storing sensitive cryptographic material. If you obtain a code signing
-certificate after 2022, it will likely be issued with an HSM device similar to the
-one shown below:
+certificate after 2022, it will likely be issued with an HSM device similar to
+the one shown below:
 
 ![SafeNet 5110 HSM with USB interface](../assets/safenet-5110-hsm.webp)
 
@@ -44,8 +44,8 @@ For this reason, we recommend hosting Adhoc File Signer Server on physical
 hardware. The software stack has modest requirements — a system with at least 2
 CPU cores and 4 GB of RAM is sufficient.
 
-In this guide, we will use a Dell computer equipped with a 2C/4T 3.5 GHz
-CPU and 8 GB of RAM:
+In this guide, we will use a Dell computer equipped with a 2C/4T 3.5 GHz CPU and
+8 GB of RAM:
 
 ![Dell OptiPlex Micro 3050](../assets/dell-optiplex-3050-micro.webp)
 
@@ -71,23 +71,33 @@ unattended services.
 
 ## Software Prerequisites
 
-The following software packages should be installed first using an account with administrative privileges:
+The following software packages should be installed first using an account with
+administrative privileges:
 
 - [Deno](https://deno.com/) — provides secure JavaScript runtime
-- [GNU-TK](https://github.com/gapotchenko/gnu-tk) — provides POSIX environment needed by the server. Use MSI installation method to install GNU-TK on the server machine.
-- [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) — provides `signtool` utility which is neccessary for signing files with Authenticode signature.
-  This is the only SDK component that is required, other components are not needed by the server and thus are optional.
+- [GNU-TK](https://github.com/gapotchenko/gnu-tk) — provides POSIX environment
+  needed by the server. Use MSI installation method to install GNU-TK on the
+  server machine.
+- [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)
+  — provides `signtool` utility which is neccessary for signing files with
+  Authenticode signature. This is the only SDK component that is required, other
+  components are not needed by the server and thus are optional.
 
 ### Optional Components
 
-- [NuGet](https://www.nuget.org/) — provides functionality for signing NuGet packages which are represented by `.nupkg` files.
-  There are three ways to install NuGet:
-     - It comes as integral part of [.NET SDK](https://dotnet.microsoft.com/en-us/download/dotnet)
-     - Standalone executable file `nuget.exe` can be separately [downloaded](https://www.nuget.org/downloads) and placed at `C:\Server\usr\bin` directory (see below)
-     - Via [winget](https://winget.run/pkg/Microsoft/NuGet)
-- [zstd](https://github.com/facebook/zstd) — provides more efficient data compression optimizing both speed and size.
-  `zstd.exe` file can be placed at `C:\Server\usr\bin` directory.
-  
+- [NuGet](https://www.nuget.org/) — provides functionality for signing NuGet
+  packages which are represented by `.nupkg` files. There are three ways to
+  install NuGet:
+  - It comes as integral part of
+    [.NET SDK](https://dotnet.microsoft.com/en-us/download/dotnet)
+  - Standalone executable file `nuget.exe` can be separately
+    [downloaded](https://www.nuget.org/downloads) and placed at
+    `C:\Server\usr\bin` directory (see below)
+  - Via [winget](https://winget.run/pkg/Microsoft/NuGet)
+- [zstd](https://github.com/facebook/zstd) — provides more efficient data
+  compression optimizing both speed and size. `zstd.exe` file can be placed at
+  `C:\Server\usr\bin` directory.
+
 ## Adhoc File Signer Server Installation
 
 The server software is available from the
@@ -112,8 +122,8 @@ We assign the `AppServer` user as the owner of the `C:\Server` directory. We
 also can add other users and groups with corresponding permissions to ease the
 administration.
 
-Now, let's create an initial structure of the newly created directory according to
-POSIX conventions:
+Now, let's create an initial structure of the newly created directory according
+to POSIX conventions:
 
 - `C:\Server\bin` — contains executable files (control scripts in our case)
 - `C:\Server\opt` — contains installable components
@@ -143,9 +153,9 @@ export PATH="$PATH:$BASE_DIR/usr/bin"
 opt/adhoc-file-signer/bin/adhoc-sign-server --host 127.0.0.1 2>&1
 ```
 
-For now, all this script does is configures the process environment and
-passes control to `adhoc-sign-server` demanding it to bind to the IPv4 local
-network interface `127.0.0.1`.
+For now, all this script does is configures the process environment and passes
+control to `adhoc-sign-server` demanding it to bind to the IPv4 local network
+interface `127.0.0.1`.
 
 You may notice that we use a POSIX shell script in Windows which, at first, may
 throw you into a loop. The reason we are doing so is to have a single codebase
@@ -161,7 +171,8 @@ rem https://github.com/gapotchenko/gnu-tk
 gnu-tk -i -x "%~dpn0.sh" %*
 ```
 
-If we run `C:\Server\bin\run.bat` script now, we should get the following output:
+If we run `C:\Server\bin\run.bat` script now, we should get the following
+output:
 
 ```
 adhoc-sign-server  Version X.Y.Z
@@ -170,62 +181,72 @@ Validating configuration...
 adhoc-sign-server: GP_ADHOC_FILE_SIGNER_API environment variable is not set.
 ```
 
-This happens because the configuration for `adhoc-sign-server` is yet to be provided.
+This happens because the configuration for `adhoc-sign-server` is yet to be
+provided.
 
 ## HSM Configuration
 
 HSMs are typically preconfigured by the certification authority.
 
-Before using an HSM with Adhoc File Signer Server, you should first verify that it is functioning correctly.
-Log in to the machine with the user account that will regularly access the HSM.
-In our setup, this is the `AppServer` account.
+Before using an HSM with Adhoc File Signer Server, you should first verify that
+it is functioning correctly. Log in to the machine with the user account that
+will regularly access the HSM. In our setup, this is the `AppServer` account.
 
 > [!NOTE]
-> HSMs connected directly to a remote machine cannot be accessed over a Remote Desktop session.
-> You must have physical access to the system with a locally attached display and keyboard.
+> HSMs connected directly to a remote machine cannot be accessed over a Remote
+> Desktop session. You must have physical access to the system with a locally
+> attached display and keyboard.
 >
-> One possible workaround is to connect the HSM to the client machine initiating the Remote Desktop session.
-> In this case, the locally attached HSM can be redirected and made available on the remote system.
+> One possible workaround is to connect the HSM to the client machine initiating
+> the Remote Desktop session. In this case, the locally attached HSM can be
+> redirected and made available on the remote system.
 
-Then, try to sign a file using `signtool` utility. Typically, you will be asked for a password by HSM software running in the system.
-This step is known as **HSM logon**. Without a successful logon, cryptographic operations provided by the HSM are unavailable.
+Then, try to sign a file using `signtool` utility. Typically, you will be asked
+for a password by HSM software running in the system. This step is known as
+**HSM logon**. Without a successful logon, cryptographic operations provided by
+the HSM are unavailable.
 
 > [!CAUTION]
-> Be cautious when entering the password: the number of failed logon attempts is limited, typically between 3 and 15.
-> If this limit is exceeded, the HSM will lock itself and will require intervention from the certification authority to restore access.
+> Be cautious when entering the password: the number of failed logon attempts is
+> limited, typically between 3 and 15. If this limit is exceeded, the HSM will
+> lock itself and will require intervention from the certification authority to
+> restore access.
 
-Once you confirm that the HSM you have is working, you can start gathering its configuration parameters.
-The HSM parameters needed by `adhoc-sign-server` are:
+Once you confirm that the HSM you have is working, you can start gathering its
+configuration parameters. The HSM parameters needed by `adhoc-sign-server` are:
 
 1. `GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE` — public certificate file
 2. `GP_ADHOC_FILE_SIGNER_CSP` — CSP offering the private key container
 3. `GP_ADHOC_FILE_SIGNER_KEY_CONTAINER` — the private key container name
 
-The configuration parameters can typically be found and extracted using HSM software and **User Certificate Store** in Windows.
-The exact procedure depends on a particular HSM type.
+The configuration parameters can typically be found and extracted using HSM
+software and **User Certificate Store** in Windows. The exact procedure depends
+on a particular HSM type.
 
 - **SafeNet HSM:** https://stackoverflow.com/a/54439759
 
 ## Configuration of Adhoc File Signer Server
 
-Once you have the HSM configuration at hand, it is time to define a complete configuration for `adhoc-sign-server`:
+Once you have the HSM configuration at hand, it is time to define a complete
+configuration for `adhoc-sign-server`:
 
-| Name | Value |
-| :--- | :--- |
-| GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE | Retrieved at the previous step. |
-| GP_ADHOC_FILE_SIGNER_CSP | Retrieved at the previous step. |
-| GP_ADHOC_FILE_SIGNER_KEY_CONTAINER | Retrieved at the previous step. |
-| GP_ADHOC_FILE_SIGNER_FILE_DIGEST | `sha256` |
+| Name                                  | Value                            |
+| :------------------------------------ | :------------------------------- |
+| GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE | Retrieved at the previous step.  |
+| GP_ADHOC_FILE_SIGNER_CSP              | Retrieved at the previous step.  |
+| GP_ADHOC_FILE_SIGNER_KEY_CONTAINER    | Retrieved at the previous step.  |
+| GP_ADHOC_FILE_SIGNER_FILE_DIGEST      | `sha256`                         |
 | GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER | `http://timestamp.digicert.com/` |
-| GP_ADHOC_FILE_SIGNER_TIMESTAMP_DIGEST | `sha256` |
-| GP_ADHOC_FILE_SIGNER_API_KEY | `your-secret-api-key` |
+| GP_ADHOC_FILE_SIGNER_TIMESTAMP_DIGEST | `sha256`                         |
+| GP_ADHOC_FILE_SIGNER_API_KEY          | `your-secret-api-key`            |
 
 In our setup, these environment variables should be set for `AppServer` user.
 
 ## Test Run
 
-Once the server installed and configured, we can now try to run `C:\Server\bin\run.bat` script as `AppServer` user.
-This time, it should enter the running state:
+Once the server installed and configured, we can now try to run
+`C:\Server\bin\run.bat` script as `AppServer` user. This time, it should enter
+the running state:
 
 ```
 adhoc-sign-server  Version X.Y.Z
@@ -240,8 +261,9 @@ Starting HTTP server...
 deno serve: Listening on http://127.0.0.1:3205/
 ```
 
-You can then use [client tools](https://github.com/gapotchenko/adhoc-file-signer/tree/main/source/client) to interact with the locally running server.
-For example, to sign a file:
+You can then use
+[client tools](https://github.com/gapotchenko/adhoc-file-signer/tree/main/source/client)
+to interact with the locally running server. For example, to sign a file:
 
 ```sh
 adhoc-sign-tool sign --server http://127.0.0.1:3205/adhoc-file-signer example.exe
