@@ -176,14 +176,20 @@ This happens because the configuration for `adhoc-sign-server` is yet to be prov
 
 HSMs are typically preconfigured by the certification authority.
 
-Before using an HSM with Adhoc File Signer Server, you should first verify that it works correctly.
+Before using an HSM with Adhoc File Signer Server, you should first verify that it is functioning correctly.
 Log in to the machine with the user account that will regularly access the HSM.
 In our setup, this is the `AppServer` account.
 
 > [!NOTE]
-> HSMs attached to a remote machine cannot be accessed over a Remote Desktop connection.
-> You must have physical access to the machine with a directly connected display and keyboard.
+> HSMs connected directly to a remote machine cannot be accessed over a Remote Desktop session.
+> You must have physical access to the system with a locally attached display and keyboard.
 >
-> One possible way to overcome the restriction is to connect HSM to a machine which is used to initiate a Remote Desktop connection.
-> In this case, the locally connected HSM will be visibile on the remote machine.
+> One possible workaround is to connect the HSM to the client machine initiating the Remote Desktop session.
+> In this case, the locally attached HSM can be redirected and made available on the remote system.
+
+Then, try to sign a file using `signtool` utility. Typically, you will be asked for a password by HSM software running in the system.
+This step is known as **HSM logon**. Without a successful logon, cryptographic operations provided by the HSM are unavailable.
+
+Be cautious when entering the password: the number of failed logon attempts is limited, typically between 3 and 15.
+If this limit is exceeded, the HSM will lock itself and will require intervention from the certification authority to restore access.
 
