@@ -79,8 +79,11 @@ The following software packages should be installed using an account with admini
   There are three ways to install NuGet:
      - As part of [.NET SDK](https://dotnet.microsoft.com/en-us/download/dotnet)
      - Standalone executable file `nuget.exe` that can be placed at `C:\Server\usr\bin` directory (see below)
-     - Via [winget](https://winget.run/pkg/Microsoft/NuGet) (installed per user)
-
+     - Via [winget](https://winget.run/pkg/Microsoft/NuGet) (installed per user, i.e. using `AppServer` account)
+- [GNU-TK](https://github.com/gapotchenko/gnu-tk) — provides seamless POSIX environment needed by the server. Use MSI installer installation method.
+- [zstd](https://github.com/facebook/zstd) (optional) — provides better data compression when available.
+  `zstd.exe` file can be placed at `C:\Server\usr\bin` directory.
+  
 ## Adhoc File Signer Server Installation
 
 The server software is available from the
@@ -116,7 +119,7 @@ After that, we can extract the contents of
 `adhoc-file-signer-X.Y.Z-server-portable.tar.gz` into
 `C:\Server\opt\adhoc-file-signer` directory.
 
-Now let's create a control script which orchestrates the app service(s). Create
+Now let's create a control script which orchestrates the app services. Create
 `C:\Server\bin\run.sh` file with the following content (important: use `LF`
 character as a new line separator in `.sh` files, not `CRLF`):
 
