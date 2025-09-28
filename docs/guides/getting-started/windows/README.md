@@ -73,7 +73,7 @@ unattended services.
 
 The following software packages should be installed using an account with administrative privileges:
 
-- [GNU-TK](https://github.com/gapotchenko/gnu-tk) — provides seamless POSIX environment needed by the server. Use MSI installation method.
+- [GNU-TK](https://github.com/gapotchenko/gnu-tk) — provides seamless POSIX environment needed by the server. Use MSI installation method to install GNU-TK on the server machine.
 - [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) — provides `signtool` utility which is neccessary for signing files with Authenticode signature.
   This is the only SDK component that is required to be installed, other components are not needed by the server and thus are optional.
 
