@@ -22,3 +22,14 @@ They all need access to the code signing certificate — yet the certificate is 
 
 To solve this challenge, you need software that securely exposes the signing capability to authorized remote clients.
 This is exactly what **Adhoc File Signer Server** does: it uses the locally available certificate to process client signing requests in a secure manner.
+
+## Choosing a Host Machine
+
+The HSM must be connected to a machine that will run Adhoc File Signer Server.
+A convenient option might be to use a virtual machine.
+However, support for USB and HSM passthrough in virtualized environments is limited, and even when available, it is often considered experimental without guarantees of actually working.
+
+For this reason, we recommend hosting Adhoc File Signer Server on physical hardware.
+The software stack has modest requirements — a system with at least 2 CPU cores and 4 GB of RAM is sufficient.
+
+In this particular guide, we will use **Dell OptiPlex Micro 3050** with 2C/4T CPU cores at 3.5 GHz and 8 GB of RAM.
