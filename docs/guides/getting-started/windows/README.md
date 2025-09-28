@@ -194,7 +194,7 @@ This step is known as **HSM logon**. Without a successful logon, cryptographic o
 > Be cautious when entering the password: the number of failed logon attempts is limited, typically between 3 and 15.
 > If this limit is exceeded, the HSM will lock itself and will require intervention from the certification authority to restore access.
 
-Once you confirm that HSM you have is working, you can start gathering its configuration parameters.
+Once you confirm that the HSM you have is working, you can start gathering its configuration parameters.
 The HSM parameters needed by `adhoc-sign-server` are:
 
 1. `GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE` — public certificate file
