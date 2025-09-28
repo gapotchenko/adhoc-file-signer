@@ -148,7 +148,7 @@ network interface `127.0.0.1`.
 
 You may notice that we use a POSIX shell script in Windows which, at first, may
 throw you into a loop. The reason we are doing so is to have a single codebase
-on all supported operating systems. To rectify the mismatch between Windows and
+for all supported operating systems. To rectify the mismatch between Windows and
 POSIX environments, we rely on [GNU-TK](https://github.com/gapotchenko/gnu-tk).
 
 Let's create a bridge script file `C:\Server\bin\run.bat` that will be
