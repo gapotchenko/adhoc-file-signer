@@ -69,6 +69,18 @@ process which will be discussed later. We create a new user account named
 `AppServer`, with no administrative privileges, intended primarily for running
 unattended services.
 
+## Prerequisites
+
+The following software packages should be installed using an account with administrative privileges:
+
+- [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) — provides `signtool` utility which is neccessary for signing files with Authenticode signature.
+  This is the only SDK component that is required to be installed, other components are not needed by the server and thus are optional.
+- [NuGet](https://www.nuget.org/) — provides functionality for signing NuGet packages which are represented by `.nupkg` files.
+  There are three ways to install NuGet:
+     - As part of [.NET SDK](https://dotnet.microsoft.com/en-us/download/dotnet)
+     - Standalone executable file `nuget.exe` that can be placed at `C:\Server\usr\bin` directory (see below)
+     - Via [winget](https://winget.run/pkg/Microsoft/NuGet) (installed per user)
+
 ## Adhoc File Signer Server Installation
 
 The server software is available from the
