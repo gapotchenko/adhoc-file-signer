@@ -107,7 +107,7 @@ The reason we are doing so is to use a single codebase on all supported operatin
 To rectify the mismatch between Windows and POSIX environments,
 we rely on [GNU-TK](https://github.com/gapotchenko/gnu-tk).
 
-Let's create a bridge script file `C:\AppServer\bin\run.bat` that will be seamlessly launching its POSIX counterpart:
+Let's create a bridge script file `C:\AppServer\bin\run.bat` that will be seamlessly executing its POSIX counterpart `C:\AppServer\bin\run.sh`:
 
 ```bat
 @echo off
