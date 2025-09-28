@@ -19,7 +19,7 @@ produced files without exposing sensitive cryptographic material.
 
 ## Getting Started
 
-- [Guide for Windows](docs/guides/getting-started/windows.md)
+- [Guide for Windows](docs/guides/getting-started/windows)
 
 ## Supported Platforms
 
