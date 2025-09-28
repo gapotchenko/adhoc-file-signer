@@ -71,7 +71,7 @@ unattended services.
 
 ## Software Prerequisites
 
-The following software packages should be installed using an account with administrative privileges:
+The following software packages should be installed first using an account with administrative privileges:
 
 - [Deno](https://deno.com/) — provides secure JavaScript runtime (installed per user, i.e. using `AppServer` account).
 - [GNU-TK](https://github.com/gapotchenko/gnu-tk) — provides seamless POSIX environment needed by the server. Use MSI installation method to install GNU-TK on the server machine.
