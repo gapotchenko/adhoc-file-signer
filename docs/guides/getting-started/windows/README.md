@@ -171,3 +171,19 @@ adhoc-sign-server: GP_ADHOC_FILE_SIGNER_API environment variable is not set.
 ```
 
 This happens because the configuration for `adhoc-sign-server` is yet to be provided.
+
+## HSM Configuration
+
+HSMs are typically preconfigured by the certification authority.
+
+Before using an HSM with Adhoc File Signer Server, you should first verify that it works correctly.
+Log in to the machine with the user account that will regularly access the HSM.
+In our setup, this is the `AppServer` account.
+
+> [!NOTE]
+> HSMs attached to a remote machine cannot be accessed over a Remote Desktop connection.
+> You must have physical access to the machine with a directly connected display and keyboard.
+>
+> One possible way to overcome the restriction is to connect HSM to a machine which is used to initiate a Remote Desktop connection.
+> In this case, the locally connected HSM will be visibile on the remote machine.
+
