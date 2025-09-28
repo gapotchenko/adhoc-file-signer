@@ -51,4 +51,69 @@ To run Adhoc File Signer Server, it is stromgly recommended to use a dedicated u
 This minimizes the risk of interference with the HSM auto-logon process which will be discussed later.
 We create a new user account named `AppServer`, with no administrative privileges, intended primarily for running unattended services.
 
+## Adhoc File Signer Server Installation
+
+The server software is available from the
+[project releases page](https://github.com/gapotchenko/adhoc-file-signer/releases).
+It is distributed as a portable archive:
+
+```
+adhoc-file-signer-X.Y.Z-server-portable.tar.gz
+```
+
+Once archive is downloaded, its contents should be unpacked to a dedicated directory on the file system.
+
+Let's prepare the directory.
+We start with a root directory that will contain our app service(s):
+
+```
+C:\AppServer
+```
+
+We assign the `AppServer` user as the owner of the `C:\AppServer` directory.
+We also can add other users and groups with corresponding permissions to ease the administration.
+
+Now, let's create an initial structure in a newly created directory according to Unix conventions:
+
+- `C:\AppServer\bin` — contains control scripts
+- `C:\AppServer\opt` — contains actual app service(s)
+- `C:\AppServer\usr\bin` — contains optional 3rd party tools
+
+After that, we can extract the contents of `adhoc-file-signer-X.Y.Z-server-portable.tar.gz` into `C:\AppServer\opt\adhoc-file-signer` directory.
+
+Now let's create a control script which orchestrates the app service(s).
+Create `C:\AppServer\bin\run.sh` file with the following content:
+
+```sh
+#!/bin/sh
+
+set -eu
+
+SCRIPT_DIR="$(dirname "$(readlink -fn -- "$0")")"
+BASE_DIR="$(dirname "$SCRIPT_DIR")"
+cd "$BASE_DIR"
+
+export TERM=dumb
+export NO_COLOR=true
+export PATH="$PATH:$BASE_DIR/usr/bin"
+
+opt/adhoc-file-signer/bin/adhoc-sign-server --host 127.0.0.1 2>&1
+```
+
+For now, everything this script does is configures the process environment and passes control to `adhoc-sign-server` demanding it to bind to the IPv4 local network interface `127.0.0.1`.
+
+You may notice that we use a POSIX shell script in Windows which, at first, may throw you into a loop.
+The reason we are doing so is to use a single codebase on all supported operating systems.
+To rectify the mismatch between Windows and POSIX environments,
+we rely on [GNU-TK](https://github.com/gapotchenko/gnu-tk).
+
+Let's create a bridge script file `C:\AppServer\bin\run.bat` that will be seamlessly launching its POSIX counterpart:
+
+```bat
+@echo off
+rem https://github.com/gapotchenko/gnu-tk
+gnu-tk -i -x "%~dpn0.sh" %*
+```
+
+
 
