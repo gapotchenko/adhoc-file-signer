@@ -77,7 +77,7 @@ The following software packages should be installed using an account with admini
 - [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) — provides `signtool` utility which is neccessary for signing files with Authenticode signature.
   This is the only SDK component that is required to be installed, other components are not needed by the server and thus are optional.
 
-### Optional Prerequisites
+### Optional Components
 
 - [NuGet](https://www.nuget.org/) — provides functionality for signing NuGet packages which are represented by `.nupkg` files.
   There are three ways to install NuGet:
