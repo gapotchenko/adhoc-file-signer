@@ -119,7 +119,7 @@ POSIX conventions:
 - `C:\Server\usr\bin` — contains 3rd party executable files
 
 After that, we can extract the contents of
-`adhoc-file-signer-X.Y.Z-server-portable.tar.gz` into
+`adhoc-file-signer-X.Y.Z-server-portable.tar.gz` archive into
 `C:\Server\opt\adhoc-file-signer` directory.
 
 Now let's create a control script which orchestrates the app services. Create
