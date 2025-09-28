@@ -82,7 +82,7 @@ Now, let's create an initial structure in a newly created directory according to
 After that, we can extract the contents of `adhoc-file-signer-X.Y.Z-server-portable.tar.gz` into `C:\AppServer\opt\adhoc-file-signer` directory.
 
 Now let's create a control script which orchestrates the app service(s).
-Create `C:\AppServer\bin\run.sh` file with the following content (important: use `LF` characters for new lines in `.sh` files):
+Create `C:\AppServer\bin\run.sh` file with the following content (important: use `LF` character as a new line separator in `.sh` files, not `CRLF`):
 
 ```sh
 #!/bin/sh
