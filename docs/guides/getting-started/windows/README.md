@@ -111,7 +111,7 @@ We assign the `AppServer` user as the owner of the `C:\Server` directory. We
 also can add other users and groups with corresponding permissions to ease the
 administration.
 
-Now, let's create an initial structure in a newly created directory according to
+Now, let's create an initial structure of the newly created directory according to
 common Unix conventions:
 
 - `C:\Server\bin` — contains control scripts
