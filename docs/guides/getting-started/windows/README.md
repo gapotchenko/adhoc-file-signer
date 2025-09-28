@@ -29,7 +29,7 @@ only usable on the local machine where the HSM is physically connected.
 
 To solve this challenge, you need software that securely exposes the signing
 capability to authorized remote clients. This is exactly what **Adhoc File
-Signer Server** does: it uses the locally available certificate to process
+Signer Server** does: it uses the locally available certificate to fulfill
 client signing requests in a secure manner.
 
 ## Choosing a Host Machine
