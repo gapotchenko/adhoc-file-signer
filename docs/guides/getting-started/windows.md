@@ -39,3 +39,16 @@ In this guide, we will use a Dell microcomputer equipped with a 2C/4T 3.5 GHz CP
 Figure 2. Dell OptiPlex Micro 3050
 
 This model also includes a built-in TPM 2.0 module, which will be used to enable drive encryption after the operating system installation, enhancing overall system security.
+
+## Operating System Configuration
+
+We will use **Windows Server 2025** as the operating system for this setup.
+
+After installation, BitLocker drive encryption should be enabled on the system drive (`C:\`) to protect data at rest.
+This step is essential to prevent unauthorized reuse of the HSM in the event of device theft.
+
+To run Adhoc File Signer Server, it is stromgly recommended to use a dedicated user account.
+This minimizes the risk of interference with the HSM auto-logon process which will be discussed later.
+We create a new user account named `AppServer`, with no administrative privileges, intended primarily for running unattended services.
+
+
