@@ -49,7 +49,7 @@ CPU and 8 GB of RAM:
 
 ![Dell OptiPlex Micro 3050](../assets/dell-optiplex-3050-micro.webp)
 
-Figure 2. Dell OptiPlex Micro 3050
+Figure 2. Dell OptiPlex Micro 3050 computer
 
 This model also includes a built-in TPM 2.0 module, which will be used to enable
 drive encryption after the operating system installation, enhancing overall
