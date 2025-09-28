@@ -1,6 +1,6 @@
 # Getting Started with Adhoc File Signer on Windows
 
-This document will guide you through the basic installation and configuration of
+This tutorial will guide you through the basic installation and configuration of
 Adhoc File Signer on Windows.
 
 ## HSM
