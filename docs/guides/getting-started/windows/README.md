@@ -151,9 +151,9 @@ export PATH="$PATH:$BASE_DIR/usr/bin"
 opt/adhoc-file-signer/bin/adhoc-sign-server --host 127.0.0.1 2>&1
 ```
 
-For now, all this script does is configures the process environment and passes
-control to `adhoc-sign-server` demanding it to bind to the IPv4 local network
-interface `127.0.0.1`.
+For now, this script simply configures the process environment and launches
+`adhoc-sign-server`, instructing it to bind to the IPv4 loopback interface
+`127.0.0.1`.
 
 You may notice that we use a POSIX shell script in Windows which, at first, may
 throw you into a loop. The reason we are doing so is to have a single codebase
