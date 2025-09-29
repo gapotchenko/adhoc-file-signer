@@ -3,6 +3,8 @@
 *~
 .env
 .vscode
+.bin
+.obj
 
 # Project
 /source/client/test
