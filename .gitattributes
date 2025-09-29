@@ -18,8 +18,8 @@
 *.cmd text eol=crlf
 
 # Text
-*.txt text=auto
-*.md text=auto
+**/*.txt text=auto
+**/*.md text=auto
 **/ABOUT text=auto
 **/LICENSE text=auto
            
