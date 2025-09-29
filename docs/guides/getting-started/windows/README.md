@@ -238,15 +238,15 @@ on a particular HSM type.
 Once you have the HSM configuration at hand, it is time to define a complete
 configuration for `adhoc-sign-server`:
 
-| Name                                  | Value                            |
-| :------------------------------------ | :------------------------------- |
-| GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE | Retrieved at the previous step.  |
-| GP_ADHOC_FILE_SIGNER_CSP              | Retrieved at the previous step.  |
-| GP_ADHOC_FILE_SIGNER_KEY_CONTAINER    | Retrieved at the previous step.  |
-| GP_ADHOC_FILE_SIGNER_FILE_DIGEST      | `sha256`                         |
-| GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER | `http://timestamp.digicert.com/` |
-| GP_ADHOC_FILE_SIGNER_TIMESTAMP_DIGEST | `sha256`                         |
-| GP_ADHOC_FILE_SIGNER_API_KEY          | `your-secret-api-key`            |
+| Name                                  | Value                            | Example |
+| :------------------------------------ | :------------------------------- | :--- |
+| GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE | Retrieved at the previous step.  | `C:\Users\AppServer\Documents\HSM\Certificate.cer` |
+| GP_ADHOC_FILE_SIGNER_CSP              | Retrieved at the previous step.  | `eToken Base Cryptographic Provider` |
+| GP_ADHOC_FILE_SIGNER_KEY_CONTAINER    | Retrieved at the previous step.  | `[{{XXXXXX}}]=Sectigo_YYYYMMDDnnnnnn` |
+| GP_ADHOC_FILE_SIGNER_FILE_DIGEST      | `sha256`                         | |
+| GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER | `http://timestamp.digicert.com/` | |
+| GP_ADHOC_FILE_SIGNER_TIMESTAMP_DIGEST | `sha256`                         | |
+| GP_ADHOC_FILE_SIGNER_API_KEY          | `your-secret-api-key`            | |
 
 In our setup, these environment variables should be set for `AppServer` user.
 
