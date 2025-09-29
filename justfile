@@ -22,3 +22,11 @@ check:
 [group("development")]
 lint:
     cd source; just lint
+
+[group("build")]
+pack:
+    cd source; just pack
+
+[group("build")]
+clean:
+    cd source; just clean

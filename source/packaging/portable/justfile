@@ -1,0 +1,13 @@
+set fallback := true
+set windows-shell := ["gnu-tk", "-i", "-c"]
+
+# Show the help for this justfile
+@help:
+    just --list
+
+pack: clean
+    mkdir .bin .obj
+    cd build; chmod +x *.sh; ./pack.sh
+
+clean:
+    rm -rf .bin .obj

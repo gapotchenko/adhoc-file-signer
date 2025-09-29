@@ -10,14 +10,24 @@ set unstable := true
 format:
     cd client; just format
     cd server; just format
+    cd packaging; just format
 
 # Check source code
 [group("development")]
 check:
     cd client; just check
     cd server; just check
+    cd packaging; just check
 
 # Lint source code
 [group("development")]
 lint:
     cd server; just lint
+
+[group("build")]
+pack:
+    cd packaging; just pack
+
+[group("build")]
+clean:
+    cd packaging; just clean

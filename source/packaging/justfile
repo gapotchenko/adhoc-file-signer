@@ -1,0 +1,37 @@
+set windows-shell := ["gnu-tk", "-i", "-c"]
+set script-interpreter := ["gnu-tk", "-i", "-l", "sh", "-eu"]
+set unstable := true
+
+# Show the help for this justfile
+@help:
+    just --list
+
+# Format source code
+[group("development")]
+[script]
+format:
+    echo 'Formatting **/*.sh...'
+    find . -type d -name '.?*' -prune -o -type f -name '*file' -prune -o -type f \( ! -name '*.*' -o -name '*.sh' \) -exec shfmt -l -w "{}" \;
+    echo 'Formatting **/justfile...'
+    find . -type d -name '.?*' -prune -o -type f -name justfile -exec just --unstable --fmt --justfile "{}" \;
+
+# Check source code
+[group("development")]
+[script]
+check:
+    echo 'Checking **/*.sh...'
+    find . -type d -name '.?*' -prune -o -type f -name '*file' -prune -o -type f \( ! -name '*.*' -o -name '*.sh' \) -exec shellcheck "{}" \;
+
+[group("build")]
+[parallel]
+pack: (_component-pack "portable")
+
+[group("build")]
+[parallel]
+clean: (_component-clean "portable")
+
+_component-pack name:
+    cd "{{ name }}"; just pack
+
+_component-clean name:
+    cd "{{ name }}"; just clean
