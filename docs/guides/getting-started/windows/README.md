@@ -249,7 +249,7 @@ In our setup, these environment variables should be set for `AppServer` user.
 
 ## Test Run
 
-Once the server is installed and configured, we can now try to run
+Once the server is installed and configured, you can now try to run
 `C:\Server\bin\run.bat` script as `AppServer` user. This time, it should enter
 the running state:
 
