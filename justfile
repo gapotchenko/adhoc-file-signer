@@ -16,6 +16,7 @@ format:
 [group("development")]
 check:
     cd source; just check
+    cd docs; just check
 
 # Lint source code
 [group("development")]

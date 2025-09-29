@@ -7,3 +7,8 @@ set windows-shell := ["gnu-tk", "-i", "-c"]
 [group("development")]
 format:
     cd guides/getting-started/windows; just format
+
+# Check source code
+[group("development")]
+check:
+    cd guides/getting-started/windows; just check

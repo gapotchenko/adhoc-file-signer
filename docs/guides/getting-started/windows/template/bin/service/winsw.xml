@@ -1,0 +1,20 @@
+<!--
+
+This file is used by the winsw.exe executable, which must be downloaded
+separately and placed in this directory.
+
+WinSW project: https://github.com/winsw/winsw
+
+-->
+<service>
+  <id>CustomAppServer</id>
+  <name>Custom App Server</name>
+  <description>Runs a custom application server.</description>
+  <executable>gnu-tk</executable>
+  <arguments>-x ../run.sh</arguments>
+  <log mode="roll-by-size">
+    <logpath>C:\Server\var\log\winsw</logpath>
+    <sizeThreshold>10240</sizeThreshold>
+    <keepFiles>3</keepFiles>
+  </log>
+</service>

@@ -145,7 +145,7 @@ BASE_DIR="$(dirname "$SCRIPT_DIR")"
 cd "$BASE_DIR"
 
 export TERM=dumb
-export NO_COLOR=true
+export NO_COLOR=1
 export PATH="$PATH:$BASE_DIR/usr/bin"
 
 opt/adhoc-file-signer/bin/adhoc-sign-server --host 127.0.0.1 2>&1
@@ -354,7 +354,7 @@ BASE_DIR="$(dirname "$SCRIPT_DIR")"
 cd "$BASE_DIR"
 
 export TERM=dumb
-export NO_COLOR=true
+export NO_COLOR=1
 export PATH="$PATH:$BASE_DIR/usr/bin"
 
 # Run Tailscale funnel in the background.
