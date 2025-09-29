@@ -35,7 +35,7 @@ introduces several constraints:
 - **File transmission:** Each file must be sent in full to the server for
   signing which is a brute-force approach. A more advanced design would allow
   signing to happen locally, with the server acting only as a remote HSM. This
-  would reduce client-server traffic by several orders of magnitude making it ~5000× less.
+  would reduce client-server traffic by several orders of magnitude making it ~10,000× less.
 
 - **Authentication:** Currently, authorization is limited to a basic API key
   mechanism.
