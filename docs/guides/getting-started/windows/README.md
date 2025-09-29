@@ -298,9 +298,8 @@ providing a publicly accessible HTTPS endpoint that can be used to reach the
 Adhoc File Signer Server from anywhere.
 
 After installing and configuring Tailscale on your server, `tailscale` CLI
-utility can be used to establish a funnel for the local
-port 3205 (the port where `adhoc-sign-server` listens for incoming HTTP
-requests):
+utility can be used to establish a funnel for the local port 3205 (the port
+where `adhoc-sign-server` listens for incoming HTTP requests):
 
 ```sh
 tailscale funnel 3205
@@ -370,8 +369,8 @@ service wrapper such as [WinSW](https://github.com/winsw/winsw).
 
 ## Template
 
-To aid with server configuration, the guide provides a [template](template)
-that you can use as a reference.
+To aid with server configuration, the guide provides a [template](template) that
+you can use as a reference.
 
 ## Epilogue
 
@@ -382,5 +381,5 @@ requiring no manual intervention.
 
 ![Sample server](../assets/sample-server.webp)
 
-Figure 3. Fully operational Adhoc File Signer Server sitting on a desk before being put into the
-rack
+Figure 3. Fully operational Adhoc File Signer Server sitting on a desk before
+being put into the rack
