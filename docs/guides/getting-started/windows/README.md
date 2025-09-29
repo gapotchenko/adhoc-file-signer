@@ -50,7 +50,7 @@ In this guide, we will use a Dell computer equipped with a 2C/4T 3.5 GHz CPU and
 
 Figure 2. Dell OptiPlex Micro 3050 computer
 
-This model also includes a built-in TPM 2.0 module, which will be used to enable
+This model features a built-in TPM 2.0 module, which will be used to enable
 drive encryption after the operating system installation, enhancing overall
 system security.
 
