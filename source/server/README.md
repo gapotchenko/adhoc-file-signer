@@ -86,7 +86,7 @@ deno serve: Listening on http://[::1]:3205/
 Now you can connect to the server with the
 [client tools](https://github.com/gapotchenko/adhoc-file-signer/tree/main/source/client).
 
-More detailed instructions:
+More details:
 
 - [Getting Started Guide for Windows](https://github.com/gapotchenko/adhoc-file-signer/tree/main/docs/guides/getting-started/windows)
 

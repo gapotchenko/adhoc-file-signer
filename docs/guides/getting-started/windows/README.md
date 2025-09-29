@@ -36,8 +36,7 @@ client signing requests in a secure manner.
 The HSM must be connected to a machine that will run Adhoc File Signer Server. A
 convenient option might be to use a virtual machine. However, support for USB
 and HSM passthrough in virtualized environments is limited, and even when
-available, it is often considered experimental without guarantees of actually
-working.
+available, it often has experimental status without guarantees.
 
 For this reason, we recommend hosting Adhoc File Signer Server on physical
 hardware. The software stack has modest requirements — a system with at least 2
@@ -62,11 +61,10 @@ After installation, BitLocker drive encryption should be enabled on the system
 drive (`C:\`) to protect data at rest. This step is essential to prevent
 unauthorized reuse of the HSM in the event of device theft.
 
-To run Adhoc File Signer Server, it is strongly recommended to use a dedicated
-user account. This minimizes the risk of interference with the HSM auto-logon
-process which will be discussed later. We create a new user account named
-`AppServer`, with no administrative privileges, intended primarily for running
-unattended services.
+To run the Adhoc File Signer Server, it is strongly recommended to use a dedicated
+user account. This reduces the risk of conflicts with the HSM auto-logon process
+(explained later). For this purpose, create a non-administrative account named
+`AppServer`, intended specifically for running unattended services.
 
 ## Software Prerequisites
 
@@ -381,5 +379,4 @@ requiring no manual intervention.
 
 ![Sample server](../assets/sample-server.webp)
 
-Figure 3. Fully operational Adhoc File Signer Server sitting on a desk before
-being put into the rack
+Figure 3. A fully operational Adhoc File Signer Server placed on a desk prior to rack mounting
