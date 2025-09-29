@@ -185,7 +185,8 @@ provided.
 
 ## HSM Configuration
 
-HSMs are typically preconfigured by the certification authority.
+HSMs are typically preconfigured by the certification authority, which also
+provides the initial setup instructions.
 
 Before using an HSM with Adhoc File Signer Server, you should first verify that
 it is functioning correctly. Log in to the machine with the user account that
