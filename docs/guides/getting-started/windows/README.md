@@ -36,8 +36,7 @@ client signing requests in a secure manner.
 The HSM must be connected to a machine that will run Adhoc File Signer Server. A
 convenient option might be to use a virtual machine. However, support for USB
 and HSM passthrough in virtualized environments is limited, and even when
-available, it often has experimental status without guarantees of actually
-working.
+available, it often has experimental status without guarantees.
 
 For this reason, we recommend hosting Adhoc File Signer Server on physical
 hardware. The software stack has modest requirements — a system with at least 2
