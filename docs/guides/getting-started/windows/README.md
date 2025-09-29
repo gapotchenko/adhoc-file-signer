@@ -358,7 +358,7 @@ This can be accomplished using a service wrapper such as [WinSW](https://github.
 
 ## Template
 
-To help with server configuration, this guide provides a [template](template) that you can use as a reference.
+To aid with server configuration, this guide provides a [template](template) that you can use as a reference.
 
 ## Epilogue
 
