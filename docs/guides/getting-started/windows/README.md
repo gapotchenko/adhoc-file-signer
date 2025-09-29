@@ -212,6 +212,14 @@ the HSM are unavailable.
 > lock itself and will require intervention from the certification authority to
 > restore access.
 
+By default, an HSM logon is required for each cryptographic operation.
+In a server context, however, it is necessary to perform the logon automatically and persist it for longer.
+This behavior can be configured using specific HSM parameters.
+
+For example, many HSMs allow logon persistence to be adjusted through their management software.
+Some models also support specifying the logon password programmatically using a specially crafted configuration parameter, though the exact method
+depends on the HSM vendor and model.
+
 Once you confirm that the HSM you have is working, you can start gathering its
 configuration parameters. The HSM parameters needed by `adhoc-sign-server` are:
 
@@ -220,7 +228,7 @@ configuration parameters. The HSM parameters needed by `adhoc-sign-server` are:
 3. `GP_ADHOC_FILE_SIGNER_KEY_CONTAINER` — the private key container name
 
 The configuration parameters can typically be found and extracted using HSM
-software and **User Certificate Store** in Windows. The exact procedure depends
+management software and **User Certificate Store** in Windows. The exact procedure depends
 on a particular HSM type.
 
 - **SafeNet HSM:** https://stackoverflow.com/a/54439759
