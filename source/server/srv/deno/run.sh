@@ -46,12 +46,7 @@ cd "$SCRIPT_DIR"
 export DENO_FUTURE=1
 
 deno_config() {
-    if [ "$(uname)" = "Linux" ]; then
-        # https://github.com/denoland/deno/issues/30559
-        TMPDIR=/var/tmp deno "$@"
-    else
-        deno "$@"
-    fi
+    deno "$@"
 }
 
 deno_sandbox() {

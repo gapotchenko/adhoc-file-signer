@@ -6,17 +6,11 @@
   },
   "compilerOptions": {
     "strict": true,
-    // Best practices
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noPropertyAccessFromIndexSignature": true
-  },
-  "lint": {
-    "rules": {
-      /*"exclude": ["no-import-prefix", "no-unversioned-import"]*/
-    }
   },
   "fmt": {
     "exclude": [".vscode"]
