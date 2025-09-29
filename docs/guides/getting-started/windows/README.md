@@ -3,9 +3,7 @@
 This tutorial will guide you through the basic installation and configuration of
 [Adhoc File Signer](https://github.com/gapotchenko/adhoc-file-signer) on Windows.
 
-## HSM
-
-**HSM** abbreviation stands for _Hardware Security Module_.
+## Hardware Security Module (HSM)
 
 Recently, the code signing industry has shifted toward the exclusive use of HSMs
 for storing sensitive cryptographic material. If you obtain a code signing
