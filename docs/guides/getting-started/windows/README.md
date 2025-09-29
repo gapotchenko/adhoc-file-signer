@@ -364,4 +364,7 @@ To aid with server configuration, this guide provides a [template](template) tha
 By the end of this guide, you should have a fully operational Adhoc File Signer Server that runs unattended, survives reboots, and provides signing capabilities to authorized clients.
 HSM logon should also be fully automated at this point, requiring no manual intervention.
 
+![Sample server](../assets/sample-server.webp)
+
+Figure 3. Fully operational server sitting on the author's desk before putting it into the rack
 
