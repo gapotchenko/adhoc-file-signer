@@ -64,7 +64,7 @@ unauthorized reuse of the HSM in the event of device theft.
 
 To run Adhoc File Signer Server, it is strongly recommended to use a dedicated
 user account. This minimizes the risk of interference with the HSM auto-logon
-process which will be discussed later. We create a new user account named
+process which will be discussed later. For this purpose, we create a new user account named
 `AppServer`, with no administrative privileges, intended primarily for running
 unattended services.
 
