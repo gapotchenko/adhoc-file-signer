@@ -292,7 +292,7 @@ A convenient way to achieve this is by using [Tailscale VPN](https://tailscale.c
 Funnel creates a secure tunnel between you local server and the internet, providing a publicly accessible HTTPS endpoint that can be used to reach the Adhoc File Signer Server from anywhere.
 
 After installing and configuring Tailscale on your server, `tailscale` CLI utility becomes available.
-You can use it for establishing a funnel for the local port 3205 (the port where `adhoc-sign-server` listens for incoming HTTP requests):
+You can use it to establish a funnel for the local port 3205 (the port where `adhoc-sign-server` listens for incoming HTTP requests):
 
 ```sh
 tailscale funnel 3205
@@ -327,6 +327,8 @@ Connecting to server...
 Server connection established.
 PING OK
 ```
+
+Note that the funnel is active as long as `tailscale funnel` command is running.
 
 ## Stitching the App Services Together
 
