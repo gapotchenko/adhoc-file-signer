@@ -202,7 +202,7 @@ will regularly access the HSM. In our setup, this is the `AppServer` account.
 > redirected and made available on the remote system.
 
 Then, try to sign a file using `signtool` utility. Typically, you will be asked
-for a password by the HSM software running in the system. This step is known as
+for a password by HSM software running in the system. This step is known as
 **HSM logon**. Without a successful logon, cryptographic operations provided by
 the HSM are unavailable.
 
