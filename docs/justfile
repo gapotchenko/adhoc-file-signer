@@ -6,6 +6,7 @@ set windows-shell := ["gnu-tk", "-i", "-c"]
 # Format source code
 [group("development")]
 format:
+    deno fmt *.md
     cd guides/getting-started/windows; just format
 
 # Check source code
