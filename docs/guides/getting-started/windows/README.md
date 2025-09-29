@@ -62,11 +62,10 @@ After installation, BitLocker drive encryption should be enabled on the system
 drive (`C:\`) to protect data at rest. This step is essential to prevent
 unauthorized reuse of the HSM in the event of device theft.
 
-To run Adhoc File Signer Server, it is strongly recommended to use a dedicated
-user account. This minimizes the risk of interference with the HSM auto-logon
-process which will be discussed later. For this purpose, we create a new user account named
-`AppServer`, with no administrative privileges, intended primarily for running
-unattended services.
+To run the Adhoc File Signer Server, it is strongly recommended to use a dedicated
+user account. This reduces the risk of conflicts with the HSM auto-logon process
+(explained later). For this purpose, create a non-administrative account named
+`AppServer`, intended specifically for running unattended services.
 
 ## Software Prerequisites
 
