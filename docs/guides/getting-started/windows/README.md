@@ -298,7 +298,7 @@ providing a publicly accessible HTTPS endpoint that can be used to reach the
 Adhoc File Signer Server from anywhere.
 
 After installing and configuring Tailscale on your server, `tailscale` CLI
-utility becomes available. You can use it to establish a funnel for the local
+utility can be used to establish a funnel for the local
 port 3205 (the port where `adhoc-sign-server` listens for incoming HTTP
 requests):
 
