@@ -40,7 +40,7 @@ working.
 
 For this reason, we recommend hosting Adhoc File Signer Server on physical
 hardware. The software stack has modest requirements — a system with at least 2
-CPU cores and 4 GB of RAM is sufficient.
+CPU cores and 4 GB of RAM is more than sufficient.
 
 In this guide, we will use a Dell computer equipped with a 2C/4T 3.5 GHz CPU and
 8 GB of RAM:
