@@ -101,7 +101,7 @@ The server software is available from the
 It is distributed as a portable archive:
 
 ```
-adhoc-file-signer-X.Y.Z-server-portable.tar.gz
+adhoc-file-signer-X.Y.Z-server.tar.gz
 ```
 
 Once archive is downloaded, its contents should be unpacked to a dedicated
@@ -126,7 +126,7 @@ to POSIX conventions:
 - `C:\Server\usr\bin` — contains 3rd party executable files
 
 After that, we can extract the contents of
-`adhoc-file-signer-X.Y.Z-server-portable.tar.gz` archive into
+`adhoc-file-signer-X.Y.Z-server.tar.gz` archive into
 `C:\Server\opt\adhoc-file-signer` directory.
 
 Now let's create a control script which orchestrates the app services. Create

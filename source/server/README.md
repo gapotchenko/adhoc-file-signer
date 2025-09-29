@@ -23,7 +23,7 @@ The server is available from the
 It is distributed as a portable archive:
 
 ```
-adhoc-file-signer-X.Y.Z-server-portable.tar.gz
+adhoc-file-signer-X.Y.Z-server.tar.gz
 ```
 
 Once the archive is unpacked to a dedicated directory, the server is ready to
