@@ -108,6 +108,7 @@ check_prerequisites() {
             error "GNU-TK is not available. More information: https://github.com/gapotchenko/gnu-tk"
             return 1
         fi
+        gnu-tk -i -q check >/dev/null
         ;;
     *) ;;
     esac
@@ -183,7 +184,7 @@ initialize_hsm() {
     *) ;;
     esac
 
-    # Initialize particular HSMs
+    # Initialize particular HSM models
     "$BASE_DIR/lib/hsm/safenet/initialize.sh"
 
     log "HSM: initialization done."
