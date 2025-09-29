@@ -288,5 +288,81 @@ Files have been signed successfully.
 
 ## Making the Server Globally Available
 
-TODO
+Once the server is running locally, you may want to expose it to the internet for global access.
+A convenient way to achieve this is by using [Tailscale VPN](https://tailscale.com/) and its [Funnel](https://tailscale.com/kb/1223/funnel) feature.
+
+Funnel creates a secure tunnel between you local server and the internet, providing a publicly accessible HTTPS endpoint that can be used to reach the Adhoc File Signer Server from anywhere.
+
+After installing and configuring Tailscale on your server, `tailscale` CLI utility becomes available.
+You can use it for establishing a funnel for the local port 3205 (the port where `adhoc-sign-server` listens for incoming HTTP requests):
+
+```sh
+tailscale funnel 3205
+```
+
+`tailscale` should produce the output similar to:
+
+```
+Available on the internet:
+
+https://NNNNNN.tailXXXXXX.ts.net/
+|-- proxy http://127.0.0.1:3205
+```
+
+Write down that `https://NNNNNN.tailXXXXXX.ts.net/` funnel address produced by `tailscale` tool.
+This is the part of URL you will be using for accessing the Adhoc File Signer Server globally:
+
+```
+https://NNNNNN.tailXXXXXX.ts.net/adhoc-file-signer
+```
+
+Once the funnel is running, you can test server connectivity from anywhere in the world:
+
+```sh
+adhoc-sign-tool ping --server https://NNNNNN.tailXXXXXX.ts.net/adhoc-file-signer --api-key your-secret-api-key
+```
+
+It should produce the following output:
+
+```
+Connecting to server...
+Server connection established.
+PING OK
+```
+
+## Stitching the App Services Together
+
+Next, let's update the `C:\Server\bin\run.sh` script so that a Tailscale funnel is automatically established each time the server starts:
+
+```sh
+#!/bin/sh
+
+set -eu
+
+SCRIPT_DIR="$(dirname "$(readlink -fn -- "$0")")"
+BASE_DIR="$(dirname "$SCRIPT_DIR")"
+cd "$BASE_DIR"
+
+export TERM=dumb
+export NO_COLOR=true
+export PATH="$PATH:$BASE_DIR/usr/bin"
+
+# Run Tailscale funnel in the background.
+tailscale funnel 3205 &
+
+opt/adhoc-file-signer/bin/adhoc-sign-server --host 127.0.0.1 2>&1
+```
+
+With this script in place, the server can be registered as a Windows service running under the `AppServer` user account.
+This can be accomplished using a service wrapper such as [WinSW](https://github.com/winsw/winsw).
+
+## Template
+
+To help with server configuration, this guide provides a [template](template) that you can use as a reference.
+
+## Epilogue
+
+By the end of this guide, you should have a fully operational Adhoc File Signer Server that runs unattended, survives reboots, and provides signing capabilities to authorized clients.
+HSM logon should also be fully automated at this point, requiring no manual intervention.
+
 
