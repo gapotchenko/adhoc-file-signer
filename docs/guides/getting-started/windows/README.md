@@ -207,10 +207,8 @@ for a password by the HSM software running in the system. This step is known as
 the HSM are unavailable.
 
 > [!CAUTION]
-> Be cautious when entering the password: the number of failed logon attempts is
-> limited, typically between 3 and 15. If this limit is exceeded, the HSM will
-> lock itself up and will require intervention from the certification authority to
-> restore access.
+> Be careful when entering the password: most HSMs allow only a limited number of consecutive failed logon attempts (typically 3–15).
+> Exceeding this limit will lock the device, requiring intervention from the certification authority to restore access.
 
 By default, an HSM logon is required for each cryptographic operation.
 In a server context, however, it is necessary to perform the logon automatically and persist it for longer.
