@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Initializes a SafeNet HSM.
+# Initializes a SafeNet HSM if it is present.
 
 set -eu
 
@@ -43,7 +43,7 @@ run_on_windows() {
         tr -d '\r' |
         awk -F'    ' '/Path/ {print $NF}')
     if [ -z "$AUTH_INSTALL_DIR" ]; then
-        return
+        return 0
     fi
 
     SAC_INSTALL_DIR="$(trim_dir_end_char "$(translate_windows_path "$AUTH_INSTALL_DIR")")/SAC"
