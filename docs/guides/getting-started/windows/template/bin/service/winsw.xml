@@ -7,9 +7,9 @@ WinSW project: https://github.com/winsw/winsw
 
 -->
 <service>
-  <id>CustomAppServer</id>
-  <name>Custom App Server</name>
-  <description>Runs a custom application server.</description>
+  <id>LocalAppServer</id>
+  <name>Local App Server</name>
+  <description>Runs a local application server.</description>
   <executable>gnu-tk</executable>
   <arguments>-x ../run.sh</arguments>
   <log mode="roll-by-size">
