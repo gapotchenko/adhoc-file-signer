@@ -1,7 +1,8 @@
 # Getting Started with Adhoc File Signer on Windows
 
 This tutorial will guide you through the basic installation and configuration of
-[Adhoc File Signer](https://github.com/gapotchenko/adhoc-file-signer) on Windows.
+[Adhoc File Signer](https://github.com/gapotchenko/adhoc-file-signer) on
+Windows.
 
 ## Hardware Security Module (HSM)
 
@@ -205,15 +206,19 @@ for a password by HSM software running in the system. This step is known as
 the HSM are unavailable.
 
 > [!CAUTION]
-> Be careful when entering the password: most HSMs allow only a limited number of consecutive failed logon attempts (typically 3–15).
-> Exceeding this limit will lock the device, requiring intervention from the certification authority to restore access.
+> Be careful when entering the password: most HSMs allow only a limited number
+> of consecutive failed logon attempts (typically 3–15). Exceeding this limit
+> will lock the device, requiring intervention from the certification authority
+> to restore access.
 
-By default, an HSM logon is required for each cryptographic operation.
-In a server context, however, it is necessary to perform the logon automatically and persist it for longer.
-This behavior can be configured using specific HSM parameters.
+By default, an HSM logon is required for each cryptographic operation. In a
+server context, however, it is necessary to perform the logon automatically and
+persist it for longer. This behavior can be configured using specific HSM
+parameters.
 
-For example, many HSMs allow logon persistence to be adjusted through their management software.
-Some models also support specifying the HSM logon password programmatically using specifically crafted configuration parameters.
+For example, many HSMs allow logon persistence to be adjusted through their
+management software. Some models also support specifying the HSM logon password
+programmatically using specifically crafted configuration parameters.
 
 Once you confirm that the HSM you have is working, you can start gathering its
 configuration parameters. The HSM parameters needed by `adhoc-sign-server` are:
@@ -223,8 +228,8 @@ configuration parameters. The HSM parameters needed by `adhoc-sign-server` are:
 3. `GP_ADHOC_FILE_SIGNER_KEY_CONTAINER` — the private key container name
 
 The configuration parameters can typically be found and extracted using HSM
-management software and **User Certificate Store** in Windows. The exact procedure depends
-on a particular HSM type.
+management software and **User Certificate Store** in Windows. The exact
+procedure depends on a particular HSM type.
 
 - **SafeNet HSM:** https://stackoverflow.com/a/54439759
 
@@ -233,15 +238,15 @@ on a particular HSM type.
 Once you have the HSM configuration at hand, it is time to define a complete
 configuration for `adhoc-sign-server`:
 
-| Name                                  | Value                            | Example |
-| :------------------------------------ | :------------------------------- | :--- |
+| Name                                  | Value                            | Example                                            |
+| :------------------------------------ | :------------------------------- | :------------------------------------------------- |
 | GP_ADHOC_FILE_SIGNER_CERTIFICATE_FILE | Retrieved at the previous step.  | `C:\Users\AppServer\Documents\HSM\Certificate.cer` |
-| GP_ADHOC_FILE_SIGNER_CSP              | Retrieved at the previous step.  | `eToken Base Cryptographic Provider` |
-| GP_ADHOC_FILE_SIGNER_KEY_CONTAINER    | Retrieved at the previous step.  | `[{{your-hsm-password}}]=Sectigo_YYYYMMDDnnnnnn` |
-| GP_ADHOC_FILE_SIGNER_FILE_DIGEST      | `sha256`                         | |
-| GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER | `http://timestamp.digicert.com/` | |
-| GP_ADHOC_FILE_SIGNER_TIMESTAMP_DIGEST | `sha256`                         | |
-| GP_ADHOC_FILE_SIGNER_API_KEY          | `your-secret-api-key`            | |
+| GP_ADHOC_FILE_SIGNER_CSP              | Retrieved at the previous step.  | `eToken Base Cryptographic Provider`               |
+| GP_ADHOC_FILE_SIGNER_KEY_CONTAINER    | Retrieved at the previous step.  | `[{{your-hsm-password}}]=Sectigo_YYYYMMDDnnnnnn`   |
+| GP_ADHOC_FILE_SIGNER_FILE_DIGEST      | `sha256`                         |                                                    |
+| GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER | `http://timestamp.digicert.com/` |                                                    |
+| GP_ADHOC_FILE_SIGNER_TIMESTAMP_DIGEST | `sha256`                         |                                                    |
+| GP_ADHOC_FILE_SIGNER_API_KEY          | `your-secret-api-key`            |                                                    |
 
 In our setup, these environment variables should be set for `AppServer` user.
 
@@ -283,13 +288,19 @@ Files have been signed successfully.
 
 ## Making the Server Globally Available
 
-Once the server is running locally, you may want to expose it to the internet for global access.
-A convenient way to achieve this is by using [Tailscale VPN](https://tailscale.com/) and its [Funnel](https://tailscale.com/kb/1223/funnel) feature.
+Once the server is running locally, you may want to expose it to the internet
+for global access. A convenient way to achieve this is by using
+[Tailscale VPN](https://tailscale.com/) and its
+[Funnel](https://tailscale.com/kb/1223/funnel) feature.
 
-Funnel creates a secure tunnel between you local server and the internet, providing a publicly accessible HTTPS endpoint that can be used to reach the Adhoc File Signer Server from anywhere.
+Funnel creates a secure tunnel between you local server and the internet,
+providing a publicly accessible HTTPS endpoint that can be used to reach the
+Adhoc File Signer Server from anywhere.
 
-After installing and configuring Tailscale on your server, `tailscale` CLI utility becomes available.
-You can use it to establish a funnel for the local port 3205 (the port where `adhoc-sign-server` listens for incoming HTTP requests):
+After installing and configuring Tailscale on your server, `tailscale` CLI
+utility becomes available. You can use it to establish a funnel for the local
+port 3205 (the port where `adhoc-sign-server` listens for incoming HTTP
+requests):
 
 ```sh
 tailscale funnel 3205
@@ -304,14 +315,16 @@ https://NNNNNN.tailXXXXXX.ts.net/
 |-- proxy http://127.0.0.1:3205
 ```
 
-Write down that `https://NNNNNN.tailXXXXXX.ts.net/` funnel address produced by `tailscale` tool.
-This is the part of URL you will be using for accessing the Adhoc File Signer Server globally:
+Write down that `https://NNNNNN.tailXXXXXX.ts.net/` funnel address produced by
+`tailscale` tool. This is the part of URL you will be using for accessing the
+Adhoc File Signer Server globally:
 
 ```
 https://NNNNNN.tailXXXXXX.ts.net/adhoc-file-signer
 ```
 
-Once the funnel is running, you can test server connectivity from anywhere in the world:
+Once the funnel is running, you can test server connectivity from anywhere in
+the world:
 
 ```sh
 adhoc-sign-tool ping --server https://NNNNNN.tailXXXXXX.ts.net/adhoc-file-signer --api-key your-secret-api-key
@@ -329,7 +342,8 @@ Note that the funnel is active as long as `tailscale funnel` command is running.
 
 ## Stitching the App Services Together
 
-Next, let's update the `C:\Server\bin\run.sh` script so that a Tailscale funnel is automatically established each time the server starts:
+Next, let's update the `C:\Server\bin\run.sh` script so that a Tailscale funnel
+is automatically established each time the server starts:
 
 ```sh
 #!/bin/sh
@@ -350,19 +364,23 @@ tailscale funnel 3205 &
 opt/adhoc-file-signer/bin/adhoc-sign-server --host 127.0.0.1 2>&1
 ```
 
-With this script in place, the server can be registered as a Windows service running under the `AppServer` user account.
-This can be accomplished using a service wrapper such as [WinSW](https://github.com/winsw/winsw).
+With this script in place, the server can be registered as a Windows service
+running under the `AppServer` user account. This can be accomplished using a
+service wrapper such as [WinSW](https://github.com/winsw/winsw).
 
 ## Template
 
-To aid with server configuration, this guide provides a [template](template) that you can use as a reference.
+To aid with server configuration, this guide provides a [template](template)
+that you can use as a reference.
 
 ## Epilogue
 
-By the end of this guide, you should have a fully operational Adhoc File Signer Server that runs unattended, survives reboots, and provides signing capabilities to authorized clients.
-HSM logon should also be fully automated at this point, requiring no manual intervention.
+By the end of this guide, you should have a fully operational Adhoc File Signer
+Server that runs unattended, survives reboots, and provides signing capabilities
+to authorized clients. HSM logon should also be fully automated at this point,
+requiring no manual intervention.
 
 ![Sample server](../assets/sample-server.webp)
 
-Figure 3. Fully operational server sitting on a desk before putting it into the rack
-
+Figure 3. Fully operational server sitting on a desk before putting it into the
+rack
