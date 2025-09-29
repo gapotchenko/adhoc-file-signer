@@ -364,5 +364,5 @@ HSM logon should also be fully automated at this point, requiring no manual inte
 
 ![Sample server](../assets/sample-server.webp)
 
-Figure 3. Fully operational server sitting on the author's desk before putting it into the rack
+Figure 3. Fully operational server sitting on a desk before putting it into the rack
 
