@@ -370,7 +370,7 @@ service wrapper such as [WinSW](https://github.com/winsw/winsw).
 
 ## Template
 
-To aid with server configuration, this guide provides a [template](template)
+To aid with server configuration, the guide provides a [template](template)
 that you can use as a reference.
 
 ## Epilogue
