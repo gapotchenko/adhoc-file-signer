@@ -382,5 +382,5 @@ requiring no manual intervention.
 
 ![Sample server](../assets/sample-server.webp)
 
-Figure 3. Fully operational server sitting on a desk before putting it into the
+Figure 3. Fully operational Adhoc File Signer Server sitting on a desk before putting it into the
 rack
