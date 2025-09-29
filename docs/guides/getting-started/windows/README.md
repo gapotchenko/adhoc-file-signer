@@ -215,8 +215,7 @@ In a server context, however, it is necessary to perform the logon automatically
 This behavior can be configured using specific HSM parameters.
 
 For example, many HSMs allow logon persistence to be adjusted through their management software.
-Some models also support specifying the logon password programmatically using specifically crafted configuration parameters, though the exact method
-depends on the HSM vendor and model.
+Some models also support specifying the logon password programmatically using specifically crafted configuration parameters.
 
 Once you confirm that the HSM you have is working, you can start gathering its
 configuration parameters. The HSM parameters needed by `adhoc-sign-server` are:
