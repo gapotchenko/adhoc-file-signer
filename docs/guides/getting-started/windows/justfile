@@ -10,6 +10,7 @@ set unstable := true
 [script]
 format:
     echo 'Formatting **/*.md...'
+    deno fmt *.md
     deno fmt **/*.md
     echo 'Formatting **/*.sh...'
     find . -type d -name '.?*' -prune -o -type f -name '*file' -prune -o -type f \( ! -name '*.*' -o -name '*.sh' \) -exec shfmt -l -w "{}" \;
