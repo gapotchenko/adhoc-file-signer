@@ -209,7 +209,7 @@ the HSM are unavailable.
 > [!CAUTION]
 > Be cautious when entering the password: the number of failed logon attempts is
 > limited, typically between 3 and 15. If this limit is exceeded, the HSM will
-> lock itself and will require intervention from the certification authority to
+> lock itself up and will require intervention from the certification authority to
 > restore access.
 
 By default, an HSM logon is required for each cryptographic operation.
