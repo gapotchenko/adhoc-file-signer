@@ -382,4 +382,4 @@ requiring no manual intervention.
 ![Sample server](../assets/sample-server.webp)
 
 Figure 3. Fully operational Adhoc File Signer Server sitting on a desk before
-being put into the rack
+installation into the rack
