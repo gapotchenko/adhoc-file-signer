@@ -71,8 +71,7 @@ unattended services.
 
 ## Software Prerequisites
 
-The following software packages should be installed first using an account with
-administrative privileges:
+The following software packages should be installed first:
 
 - [Deno](https://deno.com/) — provides secure JavaScript runtime
 - [GNU-TK](https://github.com/gapotchenko/gnu-tk) — provides POSIX environment
