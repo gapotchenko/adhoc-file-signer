@@ -9,20 +9,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup just
-        uses: extractions/setup-just@v3
+      - uses: actions/checkout@v5
 
       # Avoid wasting type on updating man pages which are not used anyway
       - run: sudo rm -f /var/lib/man-db/auto-update
+
+      - name: Setup just
+        uses: extractions/setup-just@v3
 
       - run: sudo apt-get install -y moreutils
 
       - name: Pack artifacts
         run: just pack
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: adhoc-file-signer-artifacts-publish
           path: |
