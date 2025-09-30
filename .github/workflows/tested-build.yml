@@ -24,6 +24,6 @@ jobs:
           name: adhoc-file-signer-artifacts-publish
           path: |
             docs/CHANGELOG.md
-            source/packaging/**/.bin/*.tar.gz
-            source/packaging/**/.bin/*SUMS
+            source/packaging/**/output/*.tar.gz
+            source/packaging/**/output/*SUMS
           if-no-files-found: error

@@ -3,8 +3,8 @@
 *~
 .env
 .vscode
-.bin
 .obj
+output
 
 # Project
 /source/client/test

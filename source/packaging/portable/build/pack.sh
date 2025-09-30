@@ -38,7 +38,7 @@ pack_client() {
 
     echo "$output_file_name:"
     cd .obj/client
-    tar czvf "../../.bin/$output_file_name" -- * | sed 's_^_  adding: _'
+    tar czvf "../../output/$output_file_name" -- * | sed 's_^_  adding: _'
     cd ../..
 }
 
@@ -60,7 +60,7 @@ pack_server() {
 
     echo "$output_file_name:"
     cd .obj/server
-    tar czvf "../../.bin/$output_file_name" -- * | sed 's_^_  adding: _'
+    tar czvf "../../output/$output_file_name" -- * | sed 's_^_  adding: _'
     cd ../..
 }
 
@@ -71,7 +71,7 @@ pack_server
 
 # -----------------------------------------------------------------------------
 
-cd .bin
+cd output
 
 echo "Calculating checksums..."
 sha256sum -b -- * | tr '*' ' ' >SHA256SUMS

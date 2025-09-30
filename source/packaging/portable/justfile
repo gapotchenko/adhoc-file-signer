@@ -6,8 +6,8 @@ set windows-shell := ["gnu-tk", "-i", "-c"]
     just --list
 
 pack: clean
-    mkdir .bin .obj
+    mkdir output .obj
     cd build; chmod +x *.sh; ./pack.sh
 
 clean:
-    rm -rf .bin .obj
+    rm -rf output .obj
