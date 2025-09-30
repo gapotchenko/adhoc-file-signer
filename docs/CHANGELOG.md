@@ -2,6 +2,6 @@
 
 ## 1.0.0
 
-Release date: not released yet
+Release date: September 30, 2025
 
 - Initial release
