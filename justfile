@@ -9,6 +9,7 @@ set unstable := true
 [group("development")]
 format:
     deno fmt *.md
+    cd .github; deno fmt **/*.yml
     cd source; just format
     cd docs; just format
 

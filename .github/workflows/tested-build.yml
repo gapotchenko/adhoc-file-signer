@@ -1,0 +1,27 @@
+name: Tested Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup just
+        uses: extractions/setup-just@v3
+
+      - name: Pack artifacts
+        run: just pack
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: adhoc-file-signer-artifacts-publish
+          path: |
+            docs/CHANGELOG.md
+            source/packaging/**/.bin/*.tar.gz
+            source/packaging/**/.bin/*SUMS
+          if-no-files-found: error
