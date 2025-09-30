@@ -37,6 +37,10 @@ while [ $# -gt 0 ]; do
         help
         exit
         ;;
+    --version)
+        echo "$VERSION"
+        exit
+        ;;
     --host)
         OPT_HOST=$2
         shift 2

@@ -77,6 +77,10 @@ while [ $# -gt 0 ]; do
         help
         exit
         ;;
+    --version)
+        echo "$VERSION"
+        exit
+        ;;
     --server)
         OPT_SERVER_URL="$2"
         shift 2
