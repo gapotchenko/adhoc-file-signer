@@ -22,7 +22,7 @@ jobs:
       - name: Pack artifacts
         run: just pack
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v4
         with:
           name: adhoc-file-signer-artifacts-publish
           path: |
