@@ -45,10 +45,6 @@ while :; do
     "$@"
     STATUS=$?
     log "Process exited with status $STATUS."
-    if [ "$STATUS" -eq 130 ]; then
-        log "Cancelled. Exiting."
-        exit 130
-    fi
     RETRY_COUNT=$((RETRY_COUNT + 1))
     if [ "$MAX_RETRIES" -ne 0 ] && [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
         log "Reached max retries ($MAX_RETRIES). Exiting."
