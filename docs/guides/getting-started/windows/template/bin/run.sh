@@ -10,7 +10,7 @@ export TERM=dumb
 export NO_COLOR=1
 export PATH="$PATH:$BASE_DIR/usr/bin"
 
-# If this script is terminated, terminate all child processes.
+# Terminate all child processes when this script is terminated
 trap 'trap - INT TERM; kill -TERM -$$ 2>/dev/null; wait' INT TERM
 
 lib/supervise.sh -- tailscale funnel 3205 &
@@ -26,7 +26,7 @@ MS/Windows)
     done
     ;;
 *)
-    # Wait for background processes to finish.
+    # Wait for the background processes to finish.
     wait
     ;;
 esac
