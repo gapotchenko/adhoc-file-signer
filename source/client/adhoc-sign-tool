@@ -16,11 +16,12 @@ Copyright © Gapotchenko and Contributors
 Processes the specified file(s) using the 'adhoc-file-signer' service.
 
 Usage:
-  adhoc-sign-tool sign --server <server-url> -k <api-key> <file...>
+  adhoc-sign-tool sign --server <url> -k <api-key> <file...>
+                       [--description <text>] [--description-url <url>]
                        [--dry] [--verbose]
-  adhoc-sign-tool echo --server <server-url> -k <api-key> <file...>
+  adhoc-sign-tool echo --server <url> -k <api-key> <file...>
                        [--verbose]
-  adhoc-sign-tool ping --server <server-url> -k <api-key> [--verbose]
+  adhoc-sign-tool ping --server <url> -k <api-key> [--verbose]
 
 Commands:
   sign  Sign the specified file(s) using the server.
@@ -29,13 +30,17 @@ Commands:
   ping  Ping the server using its API. Useful for testing connectivity and
         verifying authorization.
 
-Options:
+General options:
   --server      The server URL. If omitted, the value of
                 GP_ADHOC_FILE_SIGNER_SERVER environment variable is used.
   -k --api-key  The API authorization key. If omitted, the value of
                 GP_ADHOC_FILE_SIGNER_API_KEY environment variable is used.
   --verbose     Enable verbose output.
-  --dry         Perform a dry run without applying any modifications."
+  --dry         Perform a dry run without applying any modifications.
+
+Signing parameter options:
+  --description      Provide a description of the signed content.
+  --description-url  Provide a URL with more information about the signed content."
 }
 
 # -----------------------------------------------------------------------------
@@ -51,9 +56,12 @@ fi
 OPT_COMMAND=
 OPT_SERVER_URL="${GP_ADHOC_FILE_SIGNER_SERVER-}"
 OPT_API_KEY="${GP_ADHOC_FILE_SIGNER_API_KEY-}"
-OPT_FILES=""
-OPT_DRY=""
-OPT_VERBOSE=""
+OPT_FILES=
+OPT_DRY=
+OPT_VERBOSE=
+
+OPT_DESCRIPTION=
+OPT_DESCRIPTION_URL=
 
 OPT_HAS_STDIN_FILE=0
 
@@ -72,7 +80,7 @@ $1"
 
 # Parse options
 while [ $# -gt 0 ]; do
-    case "$1" in
+    case $1 in
     --help)
         help
         exit
@@ -82,11 +90,11 @@ while [ $# -gt 0 ]; do
         exit
         ;;
     --server)
-        OPT_SERVER_URL="$2"
+        OPT_SERVER_URL=$2
         shift 2
         ;;
     -k | --api-key)
-        OPT_API_KEY="$2"
+        OPT_API_KEY=$2
         shift 2
         ;;
     --dry)
@@ -96,6 +104,14 @@ while [ $# -gt 0 ]; do
     --verbose)
         OPT_VERBOSE=1
         shift
+        ;;
+    --description)
+        OPT_DESCRIPTION=$2
+        shift 2
+        ;;
+    --description-url)
+        OPT_DESCRIPTION_URL=$2
+        shift 2
         ;;
     --)
         shift
@@ -147,10 +163,30 @@ if [ -z "$OPT_API_KEY" ]; then
 fi
 
 if [ -n "$OPT_DRY" ]; then
-    case "$OPT_COMMAND" in
+    case $OPT_COMMAND in
     sign) ;;
     *)
         echo "$NAME: '--dry' option can only be used with 'sign' command." >&2
+        exit 2
+        ;;
+    esac
+fi
+
+if [ -n "$OPT_DESCRIPTION" ]; then
+    case $OPT_COMMAND in
+    sign) ;;
+    *)
+        echo "$NAME: '--description' option can only be used with 'sign' command." >&2
+        exit 2
+        ;;
+    esac
+fi
+
+if [ -n "$OPT_DESCRIPTION_URL" ]; then
+    case $OPT_COMMAND in
+    sign) ;;
+    *)
+        echo "$NAME: '--description-url' option can only be used with 'sign' command." >&2
         exit 2
         ;;
     esac
@@ -163,7 +199,7 @@ while [ $# -gt 0 ]; do
 done
 
 # Validate positional options
-case "$OPT_COMMAND" in
+case $OPT_COMMAND in
 echo | sign)
     if [ -z "$OPT_FILES" ]; then
         echo "$NAME: missing file argument." >&2
@@ -322,9 +358,10 @@ sha256_digest() {
 
 call_file_api() {
     local file=$1
-    local call
+    local extraopts=$2
 
-    case "$OPT_COMMAND" in
+    local call
+    case $OPT_COMMAND in
     sign)
         call=sign-file
         ;;
@@ -342,9 +379,31 @@ call_file_api() {
     local fileext
     fileext=$(get_file_extension "$file")
 
+    # Build call parameters
+    set -- -H "Content-Encoding: $REQUEST_CONTENT_ENCODING"
+
+    set -- "$@" -H "Want-Repr-Digest: sha-256=1"
+    if [ -n "${HTTP_REPR_DIGEST-}" ]; then
+        set -- "$@" -H "Repr-Digest: $HTTP_REPR_DIGEST"
+    fi
+
+    if [ -n "$fileext" ]; then
+        set -- "$@" -H "X-File-Extension: $fileext"
+    fi
+
+    if [ -n "${OPT_DESCRIPTION-}" ]; then
+        set -- "$@" -H "X-Call-Arg-Description: $OPT_DESCRIPTION"
+    fi
+    if [ -n "${OPT_DESCRIPTION_URL-}" ]; then
+        set -- "$@" -H "X-Call-Arg-Description-Url: $OPT_DESCRIPTION_URL"
+    fi
+
+    # Make a call
+    # shellcheck disable=SC2086
     compress_file "$file" |
-        curl -sSL "$2" -D "$hdrfile" --compressed -X POST --data-binary @- \
-            -H "X-File-Extension: $fileext" -H "Content-Encoding: $REQUEST_CONTENT_ENCODING" -H "Want-Repr-Digest: sha-256=1" -H "Repr-Digest: ${HTTP_REPR_DIGEST-}" \
+        curl -sSL $extraopts \
+            -D "$hdrfile" --compressed -X POST --data-binary @- \
+            "$@" \
             -H "$USER_AGENT_HTTP_HEADER" "$OPT_SERVER_URL/$call?apiKey=$OPT_API_KEY"
 }
 
@@ -478,7 +537,7 @@ process_file() {
 # Create temporary files before entering any subshells, ensuring they can be
 # tracked and cleaned up on exit by a trap
 tmpfile=$(mktemp -t "$NAME.XXXXXX")
-digestfile1="$tmpfile"
+digestfile1=$tmpfile
 digestfile2=$(mktemp -t "$NAME.digest2.XXXXXX")
 
 # Preserve the original stdin on FD 3
