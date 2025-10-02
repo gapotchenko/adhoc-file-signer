@@ -35,7 +35,10 @@ function handleEchoFileCall(request: Request): Promise<Response> {
 
 /** Signs the file.  */
 function handleSignFileCall(request: Request): Promise<Response> {
-  return cgiFileTransform(request, "sign-file.sh --");
+  return cgiFileTransform(
+    request,
+    "sign-file.sh --desc \"${HTTP_X_CALL_ARG_DESCRIPTION-}\" --desc-url \"${HTTP_X_CALL_ARG_DESCRIPTION_URL-}\" --",
+  );
 }
 
 async function cgiFileTransform(
