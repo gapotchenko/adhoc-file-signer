@@ -32,6 +32,8 @@ Certificate selection options:
 Signing parameter options:
   --file-digest  File digest algorithm to use for creating file signatures.
                  Defaults to \$GP_ADHOC_FILE_SIGNER_FILE_DIGEST.
+  --desc         Provide a description of the signed content.
+  --desc-url     Provide a URL with more information about the signed content.
 
 Timestamping parameter options:
   --time-server  RFC 3161 timestamp server URL. If omitted, the signed file
@@ -68,6 +70,8 @@ OPT_CERTIFICATE_PASSWORD=${GP_ADHOC_FILE_SIGNER_CERTIFICATE_PASSWORD-}
 OPT_CSP=${GP_ADHOC_FILE_SIGNER_CSP-}
 OPT_KEY_CONTAINER=${GP_ADHOC_FILE_SIGNER_KEY_CONTAINER-}
 OPT_FILE_DIGEST=${GP_ADHOC_FILE_SIGNER_FILE_DIGEST-}
+OPT_DESCRIPTION=
+OPT_DESCRIPTION_URL=
 OPT_TIMESTAMP_SERVER=${GP_ADHOC_FILE_SIGNER_TIMESTAMP_SERVER-}
 OPT_TIMESTAMP_DIGEST=${GP_ADHOC_FILE_SIGNER_TIMESTAMP_DIGEST-}
 
@@ -105,6 +109,14 @@ while [ $# -gt 0 ]; do
         ;;
     --file-digest)
         OPT_FILE_DIGEST=$2
+        shift 2
+        ;;
+    --desc)
+        OPT_DESCRIPTION=$2
+        shift 2
+        ;;
+    --desc-url)
+        OPT_DESCRIPTION_URL=$2
         shift 2
         ;;
     --time-server)
@@ -319,6 +331,12 @@ signtool_sign() {
     # Signing parameters
     if [ -n "$OPT_FILE_DIGEST" ]; then
         set -- "$@" -fd "$OPT_FILE_DIGEST"
+    fi
+    if [ -n "$OPT_DESCRIPTION" ]; then
+        set -- "$@" -d "$OPT_DESCRIPTION"
+    fi
+    if [ -n "$OPT_DESCRIPTION_URL" ]; then
+        set -- "$@" -du "$OPT_DESCRIPTION_URL"
     fi
 
     # Timestamping parameters
