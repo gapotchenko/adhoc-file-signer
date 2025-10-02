@@ -86,7 +86,7 @@ opt_add_file() {
 
 # Parse options
 while [ $# -gt 0 ]; do
-    case "$1" in
+    case $1 in
     --help)
         help
         exit
