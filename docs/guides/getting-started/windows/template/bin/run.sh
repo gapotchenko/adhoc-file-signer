@@ -2,8 +2,8 @@
 
 set -eu
 
-SCRIPT_DIR="$(dirname "$(readlink -fn -- "$0")")"
-BASE_DIR="$(dirname "$SCRIPT_DIR")"
+SCRIPT_DIR=$(dirname "$(readlink -fn -- "$0")")
+BASE_DIR=$(dirname "$SCRIPT_DIR")
 cd "$BASE_DIR"
 
 export TERM=dumb
@@ -18,15 +18,13 @@ lib/supervise.sh -- opt/adhoc-file-signer/bin/adhoc-sign-server --host 127.0.0.1
 
 case $(uname -o) in
 MS/Windows)
-    # 'wait' causes CPU spinning in BusyBox for Windows.
-    # Using an endless loop instead as a workaround.
+    # Workaround for BusyBox on Windows.
     while :; do
-        # Do not sleep for too long to be able to receive signals soon enough
-        sleep 1
+        sleep 30
     done
     ;;
 *)
-    # Wait for the background processes to finish.
+    # Wait for child processes to exit.
     wait
     ;;
 esac
