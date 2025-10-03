@@ -40,7 +40,8 @@ General options:
 
 Signing parameter options:
   --description      Provide a description of the signed content.
-  --description-url  Provide a URL with more information about the signed content."
+  --description-url  Provide a URL with more information about the signed
+                     content."
 }
 
 # -----------------------------------------------------------------------------
