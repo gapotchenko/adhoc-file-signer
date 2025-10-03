@@ -2,7 +2,7 @@
 
 ## 1.1.0
 
-Release date: not released yet
+Release date: October 3, 2025
 
 - Added ability to provide a description of the signed content
 - Added ability to provide a URL with more information about the signed content
