@@ -77,11 +77,12 @@ capabilities.
 #### Usage
 
 ```
-  adhoc-sign-tool sign --server <server-url> -k <api-key> <file...>
+  adhoc-sign-tool sign --server <url> -k <api-key> <file...>
+                       [--description <text>] [--description-url <url>]
                        [--dry] [--verbose]
-  adhoc-sign-tool echo --server <server-url> -k <api-key> <file...>
+  adhoc-sign-tool echo --server <url> -k <api-key> <file...>
                        [--verbose]
-  adhoc-sign-tool ping --server <server-url> -k <api-key> [--verbose]
+  adhoc-sign-tool ping --server <url> -k <api-key> [--verbose]
 
 Commands:
   sign  Sign the specified file(s) using the server.
@@ -90,13 +91,18 @@ Commands:
   ping  Ping the server using its API. Useful for testing connectivity and
         verifying authorization.
 
-Options:
+General options:
   --server      The server URL. If omitted, the value of
                 GP_ADHOC_FILE_SIGNER_SERVER environment variable is used.
   -k --api-key  The API authorization key. If omitted, the value of
                 GP_ADHOC_FILE_SIGNER_API_KEY environment variable is used.
   --verbose     Enable verbose output.
   --dry         Perform a dry run without applying any modifications.
+
+Signing parameter options:
+  --description      Provide a description of the signed content.
+  --description-url  Provide a URL with more information about the signed
+                     content.
 ```
 
 To sign a file, run `adhoc-sign-tool` with the appropriate parameters:
