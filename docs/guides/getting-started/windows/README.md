@@ -292,7 +292,7 @@ for global access. A convenient way to achieve this is by using
 [Tailscale VPN](https://tailscale.com/) and its
 [Funnel](https://tailscale.com/kb/1223/funnel) feature.
 
-Funnel creates a secure tunnel between you local server and the internet,
+Funnel creates a secure tunnel between your local server and the internet,
 providing a publicly accessible HTTPS endpoint that can be used to reach the
 Adhoc File Signer Server from anywhere.
 
