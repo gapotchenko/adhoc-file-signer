@@ -20,7 +20,7 @@ Once the archive is unpacked, the tools are ready to use.
 The client tools require the following utilities to be available on the command
 line:
 
-1. [curl](https://curl.se/)
+1. [curl](https://curl.se/) (already installed on most of the systems)
 2. [zstd](https://github.com/facebook/zstd) (optional; provides more efficient
    data compression when available)
 
