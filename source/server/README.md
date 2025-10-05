@@ -35,7 +35,7 @@ Adhoc File Signer Server requires the following tools to be available on the
 command line:
 
 1. [Deno](https://deno.com/) 2.5+
-2. [zstd](https://github.com/facebook/zstd) (optional; provides more efficient
+2. [zstd](https://github.com/facebook/zstd) (optional; enables more efficient
    data compression when available)
 
 The server runs in a POSIX environment, which makes the implementation
