@@ -1,5 +1,11 @@
 # What's New in Adhoc File Signer
 
+## 1.2.0
+
+Release date: not released yet
+
+- Added support for signing `.snupkg` (Symbol NuGet package) files
+
 ## 1.1.0
 
 Release date: October 3, 2025

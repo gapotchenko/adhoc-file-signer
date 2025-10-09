@@ -486,7 +486,7 @@ run_on_windows() {
     fileext=$(get_file_extension "$file")
 
     case "$fileext" in
-    nupkg)
+    nupkg | snupkg)
         nuget_sign "$file"
         ;;
     *)
