@@ -1,26 +1,53 @@
 #!/bin/sh
 
-# supervise.sh - a tiny supervisor script.
-# Ensures that the specified command is always running.
+set -eu
 
-# Default configuration
-DELAY=2       # seconds
-MAX_RETRIES=0 # 0 means unlimited
+# -----------------------------------------------------------------------------
+# Help
+# -----------------------------------------------------------------------------
 
-usage() {
-    echo "Usage: supervise.sh [-d delay] [-m max-retries] -- command [args...]" >&2
-    exit 1
+NAME=supervise.sh
+VERSION=1.0.0
+
+help() {
+    echo "$NAME v$VERSION
+Copyright © Gapotchenko and Contributors
+
+Ensures that the specified command stays running.
+
+Usage:
+  $NAME [-d <delay>] [-m <max-retries>] -- command [args...]
+
+Options:
+  -d --delay        Wait time in seconds before restarting the command.
+                    The default delay is 2 seconds.
+  -m --max-retries  Maximum number of restart attempts before giving up.
+                    Use 0 for unlimited retries (default).
+
+Project page: https://github.com/gapotchenko/supervise.sh"
 }
 
+# -----------------------------------------------------------------------------
+# Options
+# -----------------------------------------------------------------------------
+
+# Default configuration
+OPT_DELAY=2
+OPT_MAX_RETRIES=0
+
 # Parse options
-while [ "$#" -gt 0 ]; do
-    case "$1" in
+while [ $# -gt 0 ]; do
+    case $1 in
+    --help)
+        help
+        exit
+        ;;
     -d | --delay)
-        DELAY="$2"
+        OPT_DELAY=$2
         shift 2
         ;;
     -m | --max-retries)
-        MAX_RETRIES="$2"
+        OPT_MAX_RETRIES=$2
         shift 2
         ;;
     --)
@@ -28,28 +55,41 @@ while [ "$#" -gt 0 ]; do
         break
         ;;
     *)
-        usage
+        echo "$NAME: unknown option: $1" >&2
+        exit 1
         ;;
     esac
 done
 
-[ "$#" -gt 0 ] || usage
+if [ $# -eq 0 ]; then
+    echo "$NAME: missing program arguments
+Try '$NAME --help' for more information." >&2
+    exit 1
+fi
+
+# -----------------------------------------------------------------------------
+# Auxilary Functions
+# -----------------------------------------------------------------------------
 
 log() {
-    printf '%s: supervise.sh: %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >&2
+    printf '%s: %s: %s\n' "$NAME" "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >&2
 }
+
+# -----------------------------------------------------------------------------
+# Core Functionality
+# -----------------------------------------------------------------------------
 
 RETRY_COUNT=0
 
 while :; do
-    "$@"
-    STATUS=$?
+    STATUS=0
+    "$@" || STATUS=$?
     log "Process exited with status $STATUS."
     RETRY_COUNT=$((RETRY_COUNT + 1))
-    if [ "$MAX_RETRIES" -ne 0 ] && [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
-        log "Reached max retries ($MAX_RETRIES). Exiting."
+    if [ "$OPT_MAX_RETRIES" -ne 0 ] && [ "$RETRY_COUNT" -ge "$OPT_MAX_RETRIES" ]; then
+        log "Reached max retries ($OPT_MAX_RETRIES). Exiting."
         exit 1
     fi
-    log "Restarting in $DELAY seconds (attempt $RETRY_COUNT)..."
-    sleep "$DELAY"
+    log "Restarting in $OPT_DELAY seconds (attempt $RETRY_COUNT)..."
+    sleep "$OPT_DELAY"
 done
