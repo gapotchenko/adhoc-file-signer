@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# supervise.sh - a lightweight process-level supervisor.
+# https://github.com/gapotchenko/supervise.sh
+
 set -eu
 
 # -----------------------------------------------------------------------------
@@ -7,7 +10,7 @@ set -eu
 # -----------------------------------------------------------------------------
 
 NAME=supervise.sh
-VERSION=1.0.0
+VERSION=1.0.1
 
 help() {
     echo "$NAME v$VERSION
@@ -22,9 +25,7 @@ Options:
   -d --delay        Wait time in seconds before restarting the command.
                     The default delay is 2 seconds.
   -m --max-retries  Maximum number of restart attempts before giving up.
-                    Use 0 for unlimited retries (default).
-
-Project page: https://github.com/gapotchenko/supervise.sh"
+                    Use 0 for unlimited retries (default)."
 }
 
 # -----------------------------------------------------------------------------
