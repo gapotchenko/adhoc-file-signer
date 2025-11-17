@@ -5,6 +5,7 @@
 Release date: not released yet
 
 - Added support for signing `.snupkg` (Symbol NuGet package) files
+- Added support for signing `.vsix` (Visual Studio Extension Package) files
 
 ## 1.1.0
 

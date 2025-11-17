@@ -477,6 +477,64 @@ nuget_sign() {
     done
 }
 
+dotnet_sign_code() {
+    local file=$1
+
+    local certthumb
+    if [ "$(get_file_extension "$OPT_CERTIFICATE_FILE")" = "cer" ]; then
+        # Public key certificate in DER format.
+        certthumb=$(sha256sum "$(translate_windows_path "$OPT_CERTIFICATE_FILE")" | awk '{print $1}')
+    else
+        # Private key certificate in PKCS#12 container format.
+        certthumb=
+    fi
+
+    set -- # empty argv
+
+    # Certificate parameters
+    if [ -n "$certthumb" ]; then
+        set -- "$@" -cfp "$certthumb"
+    fi
+    if [ -n "$OPT_CERTIFICATE_FILE" ]; then
+        set -- "$@" -cf "$OPT_CERTIFICATE_FILE"
+    fi
+    if [ -n "$OPT_CERTIFICATE_PASSWORD" ]; then
+        set -- "$@" -p "$OPT_CERTIFICATE_PASSWORD"
+    fi
+    if [ -n "$OPT_CSP" ]; then
+        set -- "$@" -csp "$OPT_CSP"
+    fi
+    if [ -n "$OPT_KEY_CONTAINER" ]; then
+        set -- "$@" -k "$OPT_KEY_CONTAINER"
+    fi
+
+    # Signing parameters
+    if [ -n "$OPT_FILE_DIGEST" ]; then
+        set -- "$@" -fd "$OPT_FILE_DIGEST"
+    fi
+    if [ -n "$OPT_DESCRIPTION" ]; then
+        set -- "$@" -d "$OPT_DESCRIPTION"
+    fi
+    if [ -n "$OPT_DESCRIPTION_URL" ]; then
+        set -- "$@" -u "$OPT_DESCRIPTION_URL"
+    fi
+
+    # Timestamping parameters
+    if [ -n "$OPT_TIMESTAMP_SERVER" ]; then
+        set -- "$@" -t "$OPT_TIMESTAMP_SERVER"
+    fi
+    if [ -n "$OPT_TIMESTAMP_DIGEST" ]; then
+        set -- "$@" -td "$OPT_TIMESTAMP_DIGEST"
+    fi
+
+    # Call signing tool
+    sign code certificate-store "$file" "$@" -rc false
+
+    if hsm_is_used; then
+        hsm_mark_logon
+    fi
+}
+
 # -----------------------------------------------------------------------------
 
 run_on_windows() {
@@ -488,6 +546,9 @@ run_on_windows() {
     case "$fileext" in
     nupkg | snupkg)
         nuget_sign "$file"
+        ;;
+    vsix)
+        dotnet_sign_code "$file"
         ;;
     *)
         signtool_sign "$file"
