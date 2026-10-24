@@ -1,13 +1,21 @@
-set unstable := true
-set fallback := true
-set dotenv-load := true
-set windows-shell := ["gnu-tk", "-i", "-c"]
+set fallback
+set dotenv-load
+
+[windows]
+set shell := ["gnu-tk", "-i", "-c"]
+[windows]
 set script-interpreter := ["gnu-tk", "-i", "-l", "sh", "-eu"]
 
 export DENO_FUTURE := "1"
 
+# -----------------------------------------------------------------------------
+
 @help:
     just --list
+
+# -----------------------------------------------------------------------------
+# Development
+# -----------------------------------------------------------------------------
 
 # Start IDE using the project environment
 [group("development")]
@@ -35,6 +43,10 @@ check:
 [group("development")]
 lint:
     deno lint
+
+# -----------------------------------------------------------------------------
+# Diagnostics
+# -----------------------------------------------------------------------------
 
 # Run the development server in debug mode
 [group("diagnostics")]

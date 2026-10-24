@@ -1,9 +1,16 @@
-set windows-shell := ["gnu-tk", "-i", "-c"]
+[windows]
+set shell := ["gnu-tk", "-i", "-c"]
+[windows]
 set script-interpreter := ["gnu-tk", "-i", "-l", "sh", "-eu"]
-set unstable := true
+
+# -----------------------------------------------------------------------------
 
 @help:
     just --list
+
+# -----------------------------------------------------------------------------
+# Development
+# -----------------------------------------------------------------------------
 
 # Format source code
 [group("development")]
@@ -13,13 +20,13 @@ format:
     deno fmt *.md
     deno fmt **/*.md
     echo 'Formatting **/*.sh...'
-    find . -type d -name '.?*' -prune -o -type f -name '*file' -prune -o -type f \( ! -name '*.*' -o -name '*.sh' \) -exec shfmt -l -w "{}" \;
+    find . -type d -name '.?*' -prune -o -type f -name '*file' -prune -o -type f \( ! -name '*.*' -o -name '*.sh' \) -exec shfmt -l -w {} \;
     echo 'Formatting **/justfile...'
-    find . -type d -name '.?*' -prune -o -type f -name justfile -exec just --unstable --fmt --justfile "{}" \;
+    find . -type d -name '.?*' -prune -o -type f -name justfile -exec just --fmt --justfile {} \;
 
 # Check source code
 [group("development")]
 [script]
 check:
     echo 'Checking **/*.sh...'
-    find . -type d -name '.?*' -prune -o -type f -name '*file' -prune -o -type f \( ! -name '*.*' -o -name '*.sh' \) -exec shellcheck "{}" \;
+    find . -type d -name '.?*' -prune -o -type f -name '*file' -prune -o -type f \( ! -name '*.*' -o -name '*.sh' \) -exec shellcheck {} \;

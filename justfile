@@ -1,13 +1,21 @@
-set windows-shell := ["gnu-tk", "-i", "-c"]
+[windows]
+set shell := ["gnu-tk", "-i", "-c"]
+[windows]
 set script-interpreter := ["gnu-tk", "-i", "-l", "sh", "-eu"]
-set unstable := true
+
+# -----------------------------------------------------------------------------
 
 @help:
     just --list
 
+# -----------------------------------------------------------------------------
+# Development
+# -----------------------------------------------------------------------------
+
 # Format source code
 [group("development")]
 format:
+    just --fmt
     deno fmt *.md
     cd .github; deno fmt **/*.yml
     cd source; just format
@@ -23,6 +31,10 @@ check:
 [group("development")]
 lint:
     cd source; just lint
+
+# -----------------------------------------------------------------------------
+# Build
+# -----------------------------------------------------------------------------
 
 [group("build")]
 pack:

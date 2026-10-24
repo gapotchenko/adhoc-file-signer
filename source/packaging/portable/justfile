@@ -1,4 +1,4 @@
-set fallback := true
+set fallback
 set windows-shell := ["gnu-tk", "-i", "-c"]
 
 # Show the help for this justfile
