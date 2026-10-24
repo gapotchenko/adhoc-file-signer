@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      # Avoid wasting type on updating man pages which are not used anyway
+      # Avoid wasting time on updating man pages which are not used anyway
       - run: sudo rm -f /var/lib/man-db/auto-update
 
       - name: Setup just
