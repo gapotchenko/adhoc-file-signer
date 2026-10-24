@@ -541,8 +541,10 @@ tmpfile=$(mktemp -t "$NAME.XXXXXX")
 digestfile1=$tmpfile
 digestfile2=$(mktemp -t "$NAME.digest2.XXXXXX")
 
-# Preserve the original stdin on FD 3
-exec 3<&0
+# Preserve stdin, falling back to /dev/null if it is closed
+if ! { exec 3<&0; } 2>/dev/null; then
+    exec 3</dev/null
+fi
 
 # Process files
 echo "$OPT_FILES" | awk '!seen[$0]++' | while IFS= read -r file; do
